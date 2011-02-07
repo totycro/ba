@@ -1,0 +1,154 @@
+\documentclass[%
+			%fontsize=11pt,%
+			paper=a4,% 
+			%DIV12, % mehr text pro seite als defaultyyp
+			DIV12, % mehr text pro seite als defaultyyp
+			%DIV=calc,%
+			%twoside=false,%
+			draft=false,% final|draft % draft ist platzsparender (kein code, bilder..)
+			titlepage
+			]{scrartcl}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+
+% for color-highlighted code
+\usepackage[usenames]{color} % for grey comments
+%\usepackage{alltt}
+
+\usepackage[doublespacing]{setspace}
+\usepackage{tabularx}
+\usepackage{comment}
+\usepackage[final]{listings} % sourcecode in document
+\usepackage{url}      % for urls
+\usepackage{multicol}
+
+\usepackage{graphicx}
+
+%\usepackage[square]{natbib} % \cite ; square|round etc.
+\usepackage[numbers,square]{natbib}
+%\usepackage[numbers,round]{natbib}
+
+%\usepackage{bibgerm}
+%\bibliographystyle{plain}
+\bibliographystyle{alpha}
+%\bibliographystyle{alphadin}
+%\bibliographystyle{plainnat}
+
+%\bibdata{bib.bib}
+
+\newcommand{\zit}[3]{#1 \cite{#2}, #3}
+\newcommand{\zitx}[1]{\cite{#1}}
+
+% smaller url style
+\makeatletter
+\def\url@leostyle{%
+\@ifundefined{selectfont}{\def\UrlFont{\sf}}{\def\UrlFont{\small\ttfamily}}}
+\makeatother
+\urlstyle{leo}
+
+\newcommand{\myfig}[4] {
+ \begin{figure}
+	 \includegraphics[#3]{#1}
+	 \caption{#4}
+	 \label{fig:#2}
+ \end{figure}
+}
+
+\title{Quadtrees}
+\author{Bernhard Mallinger \\ e0707663}
+%\subtitle{}
+%\date{13. November 2007}
+\publishers{Betreut durch Univ.-Ass. Dipl.-Ing., BSc Christian Schauer}
+
+%\usepackage{fancyhdr}
+%\setlength{\headrulewidth}{0.0pt}
+\pagestyle{plain}
+
+\definecolor{grey}{gray}{.2} % for grey commnts
+\lstset{language=sh,%
+escapeinside={@}{@},
+extendedchars=true,%
+%inputencoding=utf8x,%
+basicstyle=\ttfamily\small,%
+commentstyle=\color{grey},%
+keywordstyle=,% no bold tt in standard font
+captionpos=b,
+tabsize=2,
+showstringspaces=false,
+breaklines=true,
+backgroundcolor=\color{lgray}
+}
+
+\newcommand{\inlinecode}[1]{\mbox{\texttt{#1}}}
+
+\newcommand{\mynull}{\textit{NULL}}
+
+% just for screen-display!
+%\usepackage{newcent}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents 
+
+\newpage
+
+\part{Theorie}
+\section{Einführung}
+Quadtrees stellen eine Datenstruktur dar, welche von Binärbäumen abgeleitet sind. Sie erweitern dessen Prinzip der rekursiven, hierarchischen Aufteilung eines Raumes auf mehrere Dimensionen. 
+Im Allgemeinen beschränkt man sich hier zur Vereinfachung auf zweidimensionale Daten, wobei die Verallgemeinerung auf \textit{n}-dimensionale Daten trivial ist.
+
+Anstatt wie bei Binärbäumen den Raum bei jedem Schritt in zwei Unterbäume zu teilen, werden bei Quadtrees vier Kinder verwendet, um alle möglichen Richtungen bezüglich des aktuellen Knoten abzudecken. Der Name "`Quadtree"' leitet sich davon ab (lat. "`quad-"': "`vier-"').
+
+Räumlichen Strukturen wie Quadtrees sind generall dann sinnvoll, wenn die Entfernung zweier Punkte für die Anwendung relevant ist. Beispiele hierfür sind unter anderem Repräsentation von Bilder oder Kollisionserkennung.
+
+Beim Zugriff auf die so in einem Quadtree gespeicherten Daten unterscheidet man zwischen verschiedenen Anfragetypen:
+\begin{description}
+	\item[Point Query.] Mit dieser Anfrage versucht man herauszufinden, welche Daten sich bei einem bestimmten Punkt befinden. Anworten auf diese Anfrage können entweder \mynull\ bzw.\ ein Datenobjekt sein.
+	\item[Range Query.] Hier interessiert man sich für Bereiche, welche hinsichtlich mehreren Dimensionen ausgedehnt sein können. Zurückgegeben wird eine Liste von Datenobjekten.
+	\item[Neighborhood Query.] Dieser Anfragetyp fokusiert sich auf Nähebeziehungen. Konkret werden die Knoten gesucht, welche die geringste Entfernung zu einem bestimmten Knoten aufweisen. Der Rückgabewert kann hier eine Liste oder ein einzelnes Datenobjekt sein.
+\end{description}
+
+
+\subsection{Funktionsprinzip}
+
+\myfig{img/quadtree}{quadtree}{width=.5\textwidth}{Alle Kinder repräsentieren Teilbäume, welche sich vollständig in NW-, NE-, SW-, SE-Richtung des aktuellen Knoten befinden.}
+
+
+\section{Punktbasierte Quadtrees}
+\subsection{Point Quadtree}
+\myfig{img/pointquadtree-ins7+tree-trimmed}{pointquadtree}{width=.9\textwidth}{Gegenüberstellung: Ein Point Quadtree in Baum- bzw.\ Graphendarstellung}
+
+\subsubsection{Suche}
+\subsubsection{Einfügen}
+\subsubsection{Löschen}
+
+\subsection{Pseudo Quadtree}
+\myfig{img/pseudoquadtree-ins3-trimmed}{pseudoquadtree}{width=.6\textwidth}{Pseudo Quadtree}
+
+\subsection{\textit{k}-d Tree}
+\myfig{img/kdtree-tree-full-trimmed}{kdtree}{width=.8\textwidth}{\textit{k}-d Tree}
+
+\section{Bereichsbasierte Quadtrees}
+\subsection{Region Quadtree}
+
+\subsection{MX Quadtree}
+\myfig{img/mxquadtre-full-trimmed}{mxquadtree}{width=.7\textwidth}{MX Quadtree}
+
+\subsection{PR Quadtree}
+
+\part{Praxis}
+
+\section{Praktikum}
+
+
+\newpage
+
+\nocite{*} % display all entries of bib-file
+\bibliography{bib}
+
+\end{document}
