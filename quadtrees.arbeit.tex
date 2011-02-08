@@ -51,6 +51,7 @@
 
 \newcommand{\myfig}[4] {
  \begin{figure}
+	 \centering
 	 \includegraphics[#3]{#1}
 	 \caption{#4}
 	 \label{fig:#2}
@@ -97,26 +98,42 @@ backgroundcolor=\color{lgray}
 
 \newpage
 
+%%%%
+% TODO
+%
+% binäre suche im anfang reinbringen -- bin tree
+
 \part{Theorie}
 \section{Einführung}
 Quadtrees stellen eine Datenstruktur dar, welche von Binärbäumen abgeleitet sind. Sie erweitern dessen Prinzip der rekursiven, hierarchischen Aufteilung eines Raumes auf mehrere Dimensionen. 
 Im Allgemeinen beschränkt man sich hier zur Vereinfachung auf zweidimensionale Daten, wobei die Verallgemeinerung auf \textit{n}-dimensionale Daten trivial ist.
 
-Anstatt wie bei Binärbäumen den Raum bei jedem Schritt in zwei Unterbäume zu teilen, werden bei Quadtrees vier Kinder verwendet, um alle möglichen Richtungen bezüglich des aktuellen Knoten abzudecken. Der Name "`Quadtree"' leitet sich davon ab (lat. "`quad-"': "`vier-"').
+Anstatt wie bei Binärbäumen den Raum bei jedem Schritt in zwei Unterbäume zu teilen, werden bei Quadtrees vier Kinder verwendet, um alle möglichen Richtungen in zwei Dimensionen bezüglich des aktuellen Knoten abzudecken. Der Name "`Quadtree"' leitet sich hiervon ab (lat. "`quad-"': "`vier-"'). 
+Analog dazu bezeichnet man 3-dimensionale Bäume als "`Octtrees"'. Es ist weiters einfach zu sehen, dass $n$-dimensionale Bäume $2^n$ Kinder pro Knoten aufweisen.
 
-Räumlichen Strukturen wie Quadtrees sind generall dann sinnvoll, wenn die Entfernung zweier Punkte für die Anwendung relevant ist. Beispiele hierfür sind unter anderem Repräsentation von Bilder oder Kollisionserkennung.
+Räumlichen Strukturen wie Quadtrees sind generall dann sinnvoll, wenn die Entfernung zweier Punkte für die Anwendung relevant ist. Beispiele hierfür sind unter anderem Repräsentation von Bildern (angrenzende Bereiche besitzen oftmals ähnliche Farben) oder Kollisionserkennung, wo das Interesse sogar auf sich überschneidende Strukturen liegt.
 
 Beim Zugriff auf die so in einem Quadtree gespeicherten Daten unterscheidet man zwischen verschiedenen Anfragetypen:
 \begin{description}
 	\item[Point Query.] Mit dieser Anfrage versucht man herauszufinden, welche Daten sich bei einem bestimmten Punkt befinden. Anworten auf diese Anfrage können entweder \mynull\ bzw.\ ein Datenobjekt sein.
-	\item[Range Query.] Hier interessiert man sich für Bereiche, welche hinsichtlich mehreren Dimensionen ausgedehnt sein können. Zurückgegeben wird eine Liste von Datenobjekten.
+	\item[Range Query.] Hier interessiert man sich für die Knoten, welche innerhalb von Bereichen, die hinsichtlich mehreren Dimensionen ausgedehnt sein können, liegen. Zurückgegeben wird eine möglicherweise leere Liste von Datenobjekten.
 	\item[Neighborhood Query.] Dieser Anfragetyp fokusiert sich auf Nähebeziehungen. Konkret werden die Knoten gesucht, welche die geringste Entfernung zu einem bestimmten Knoten aufweisen. Der Rückgabewert kann hier eine Liste oder ein einzelnes Datenobjekt sein.
 \end{description}
 
 
 \subsection{Funktionsprinzip}
 
-\myfig{img/quadtree}{quadtree}{width=.5\textwidth}{Alle Kinder repräsentieren Teilbäume, welche sich vollständig in NW-, NE-, SW-, SE-Richtung des aktuellen Knoten befinden.}
+Wie eingangs erwähnt wird bei einem Quadtree der Raum in einem Schritt in zwei Dimensionen geteilt.
+In diesem Kontext bezeichnet man die Abschnitte der Unterteilung als "`Quadranten"'.
+Dies kann, wie Abbildung \ref{fig:quadtree} auf Seite \pageref{fig:quadtree} demonstriert, direkt an den Koordinaten der Knoten stattfinden, je nach Quadtreetyp werden hier jedoch verschiedene Strategien eingesetzt.
+
+Die einzelnen Knoten eines Baumes beinhalten Verweise auf vier Kindstrukturen, welche diejenigen Daten beinhalten, die sich vollständig in der entsprechenden Richtung des Knotens befinden. 
+Gleichzeitig sind alle Knoten bei einem großen Teil der Quadtreetypen zugleich auch Datenknoten und enthalten somit die zu speichernden Werte.
+Die Koordinaten der zu speichernden Daten bestimmen demnach die Gestalt der Struktur.
+
+Dieses Prinzip der rekursiven Dekomposition erlaubt das effiziente Suchen in logarithmischer Zeit.\footnote{Siehe Kapitel \ref{sec:pointquadtree-suche} auf Seite \pageref{sec:pointquadtree-suche}}
+\myfig{img/quadtree}{quadtree}{width=.5\textwidth}{Alle Kinder repräsentieren Teilbäume, welche sich vollständig in NW-, NE-, SW-, SE-Richtung des aktuellen Knoten befinden. Je nach Konvention können die Quadranten auch mittels ihrer Nummerierung referentiert werden.}
+
 
 
 \section{Punktbasierte Quadtrees}
@@ -124,6 +141,7 @@ Beim Zugriff auf die so in einem Quadtree gespeicherten Daten unterscheidet man 
 \myfig{img/pointquadtree-ins7+tree-trimmed}{pointquadtree}{width=.9\textwidth}{Gegenüberstellung: Ein Point Quadtree in Baum- bzw.\ Graphendarstellung}
 
 \subsubsection{Suche}
+\label{sec:pointquadtree-suche}
 \subsubsection{Einfügen}
 \subsubsection{Löschen}
 
