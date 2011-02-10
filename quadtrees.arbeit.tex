@@ -2,7 +2,7 @@
 			%fontsize=11pt,%
 			paper=a4,% 
 			%DIV12, % mehr text pro seite als defaultyyp
-			DIV12, % mehr text pro seite als defaultyyp
+			DIV12,
 			%DIV=calc,%
 			%twoside=false,%
 			draft=false,% final|draft % draft ist platzsparender (kein code, bilder..)
@@ -41,7 +41,9 @@
 %\bibdata{bib.bib}
 
 \newcommand{\zit}[3]{#1 \cite{#2}, #3}
-\newcommand{\zitx}[1]{\cite{#1}}
+\newcommand{\zitx}[2]{#1 \cite{#2}}
+\newcommand{\footzit}[3]{\footnote{\zit{#1}{#2}{#3}}}
+\newcommand{\footzitx}[2]{\footnote{\zitx{#1}{#2}}}
 
 % smaller url style
 \makeatletter
@@ -51,7 +53,7 @@
 \urlstyle{leo}
 
 \newcommand{\myfig}[4] {
- \begin{figure}
+ \begin{figure}[tbph]
 	 \centering
 	 \includegraphics[#3]{#1}
 	 \caption{#4}
@@ -87,6 +89,7 @@ backgroundcolor=\color{lgray}
 \newcommand{\inlinecode}[1]{\mbox{\texttt{#1}}}
 
 \newcommand{\mynull}{\textit{NULL}}
+%\newcommand{\mynull}{\textbf{nil}}
 
 % just for screen-display!
 %\usepackage{newcent}
@@ -103,22 +106,28 @@ backgroundcolor=\color{lgray}
 % TODO
 %
 % binäre suche im anfang reinbringen -- bin tree
+%
+% point qt: suche: range + neighborhood 
+%
+% anwendungen (vllt extrakapitel)
+%
+% graphendarstellung? (wort)
 
 \part{Theorie}
 \section{Einführung}
 Quadtrees stellen eine Datenstruktur dar, welche von Binärbäumen abgeleitet sind. Sie erweitern dessen Prinzip der rekursiven, hierarchischen Aufteilung eines Raumes auf mehrere Dimensionen. 
-Im Allgemeinen beschränkt man sich hier zur Vereinfachung auf zweidimensionale Daten, wobei die Verallgemeinerung auf \textit{n}-dimensionale Daten trivial ist.
+Im Allgemeinen beschränkt man sich hier zur Vereinfachung auf zweidimensionale Daten, wobei die Verallgemeinerung auf \textit{k}-dimensionale Daten trivial ist.
 
 Anstatt wie bei Binärbäumen den Raum bei jedem Schritt in zwei Unterbäume zu teilen, werden bei Quadtrees vier Kinder verwendet, um alle möglichen Richtungen in zwei Dimensionen bezüglich des aktuellen Knoten abzudecken. Der Name "`Quadtree"' leitet sich hiervon ab (lat. "`quad-"': "`vier-"'). 
-Analog dazu bezeichnet man 3-dimensionale Bäume als "`Octtrees"'. Es ist weiters einfach zu sehen, dass $n$-dimensionale Bäume $2^n$ Kinder pro Knoten aufweisen.
+Analog dazu bezeichnet man 3-dimensionale Bäume als "`Octtrees"'. Es ist weiters einfach zu sehen, dass $k$-dimensionale Bäume $2^k$ Kinder pro Knoten aufweisen.\footzit{Vgl.}{Bentley:1979}{Seite 16}
 
-Räumlichen Strukturen wie Quadtrees sind generall dann sinnvoll, wenn die Entfernung zweier Punkte für die Anwendung relevant ist. Beispiele hierfür sind unter anderem Repräsentation von Bildern (angrenzende Bereiche besitzen oftmals ähnliche Farben) oder Kollisionserkennung, wo das Interesse sogar auf sich überschneidende Strukturen liegt.
+Räumliche Strukturen wie Quadtrees sind generall dann sinnvoll, wenn die Entfernung zweier Punkte für die Anwendung relevant ist. Beispiele hierfür sind unter anderem Repräsentation von Bildern (angrenzende Bereiche besitzen oftmals ähnliche Farben) oder Kollisionserkennung, wo das Interesse sogar auf sich überschneidende Strukturen liegt.
 
-Beim Zugriff auf die so in einem Quadtree gespeicherten Daten unterscheidet man zwischen verschiedenen Anfragetypen:
+Beim Zugriff auf die so in einem Quadtree gespeicherten Daten unterscheidet man zwischen verschiedenen Anfragetypen:\footnote{Basierend auf \cite{Knuth:1998:ACP:280635}, Seite 559 und der Erweiterung durch \cite{Bentley:1975:nearest}}
 \begin{description}
 	\item[Point Query.] Mit dieser Anfrage versucht man herauszufinden, welche Daten sich bei einem bestimmten Punkt befinden. Anworten auf diese Anfrage können entweder \mynull\ bzw.\ ein Datenobjekt sein.
 	\item[Range Query.] Hier interessiert man sich für die Knoten, welche innerhalb von Bereichen, die hinsichtlich mehreren Dimensionen ausgedehnt sein können, liegen. Zurückgegeben wird eine möglicherweise leere Liste von Datenobjekten.
-	\item[Neighborhood Query.] Dieser Anfragetyp fokusiert sich auf Nähebeziehungen. Konkret werden die Knoten gesucht, welche die geringste Entfernung zu einem bestimmten Knoten aufweisen. Der Rückgabewert kann hier eine Liste oder ein einzelnes Datenobjekt sein.
+	\item[Neighborhood Query.] Dieser Anfragetyp fokussiert sich auf Nähebeziehungen. Konkret werden die Knoten gesucht, welche die geringste Entfernung zu einem bestimmten Knoten aufweisen. Der Rückgabewert kann hier eine Liste oder ein einzelnes Datenobjekt sein.
 \end{description}
 
 
@@ -133,38 +142,62 @@ Gleichzeitig sind alle Knoten bei einem großen Teil der Quadtreetypen zugleich 
 Die Koordinaten der zu speichernden Daten bestimmen demnach die Gestalt der Struktur.
 
 Dieses Prinzip der rekursiven Dekomposition erlaubt das effiziente Suchen in logarithmischer Zeit.\footnote{Siehe Kapitel \ref{sec:pointquadtree-suche} auf Seite \pageref{sec:pointquadtree-suche}}
-\myfig{img/quadtree}{quadtree}{width=.5\textwidth}{Alle Kinder repräsentieren Teilbäume, welche sich vollständig in NW-, NE-, SW-, SE-Richtung des aktuellen Knoten befinden. Je nach Konvention können die Quadranten auch mittels ihrer Nummerierung referentiert werden.}
+\myfig{img/quadtree}{quadtree}{width=.4\textwidth}{Alle Kinder repräsentieren Teilbäume, welche sich vollständig in NW-, NE-, \mbox{SW-} oder SE-Richtung des aktuellen Knoten befinden. Je nach Konvention können die Quadranten auch mittels ihrer Nummerierung referentiert werden.}
 
 
 \section{Punktbasierte Quadtrees}
 \subsection{Point Quadtree}
-Dieser Quadtreetyp wurde erstmals 1974 von Finkel und Bentley in \cite{DBLP:journals/acta/FinkelB74} eingeführt.
-\footnote{\zit{Vgl.}{compgeom:2000}{Seite 318}}
+Dieser Quadtreetyp wurde erstmals 1974 von Finkel und Bentley in \cite{DBLP:journals/acta/FinkelB74} eingeführt.\footzit{Vgl.}{compgeom:2000}{Seite 318}
 Point Quadtrees kann man als direkte Verallgemeinerung von binären Suchbäumen auf mehrdimensionale Räume auffassen. 
-%\footnote{\zit{Vgl.}{DBLP:books/aw/Samet90}{Seite 48}}
+%\footnote{\zit{Vgl.}{Samet90}{Seite 48}}
 Ähnlich zu diesen erfolgt die Aufteilung direkt an den Koordinaten der Knoten, sowie an beiden Dimensionen gleichzeitig. 
 
 % vllt deBerg S 316 tiefe O( (d+1) n )
 % und S 322
 % As we have seen in this chapter, the size and depth of a quadtree for a set of n points cannot be bounded in terms of the number of the number of points only.
+
+Abbildung \ref{fig:pointquadtree} auf Seite \pageref{fig:pointquadtree} zeigt eine Instanz eines Point Quadtrees in zwei üblichen Darstellungsvarianten: Baum- und Graphendarstellung.
+In der Ersteren wird nur die Struktur des Baumes betrachtet, die Lage der Datenknoten ist ausschließlich relativ zueinander sichtbar.
+Die Zweitere konzentriert sich mehr auf die absolute Position der Punkte in einem Koordinatensystem und zeigt zusätzlich dazu die rekursive Dekompositionsstruktur ein.
+Die Bezeichnung der Knoten in der Grafik gibt die Reihenfolge der Einfügung an. Bereits hier wird deutlich, dass die Form des Baumes durch diese Reihenfolge determiniert wird.\footnote{Vgl. Kapitel \ref{sec:pointquadtree:insert} auf Seite \pageref{sec:pointquadtree:insert}}
 \myfig{img/pointquadtree-ins7+tree-trimmed}{pointquadtree}{width=.9\textwidth}{Gegenüberstellung: Ein Point Quadtree in Baum- bzw.\ Graphendarstellung}
 
 \subsubsection{Suche}
 \label{sec:pointquadtree-suche}
-Der Algorithmus zur Suche von Koordinaten ergibt sich unmittelbar aus dem rekursiven Aufbauprinzip des Quadtrees. 
+Der Algorithmus zur Suche von Koordinaten (Point Query) ergibt sich unmittelbar aus dem rekursiven Aufbauprinzip des Quadtrees. 
 
-Die Suche beginnt beginnt an der Wurzel. In jedem Schritt werden je ein Vergleich der $x$- und $y$-Koordinate des aktuellen Knotens mit dem gesuchten Knoten durchgeführt, wodurch der Quadrant bestimmt wird, in welchen sich der gesuchte Knoten befindet. Ist dieser Quadrant leer, sprich ist kein Kindknoten bezüglich dieser Richtung am aktuellen Knoten vorhanden, wird die Suche erfolglos abgebrochen; andernfalls wird sie bei diesem Kindnoten fortgesetzt, bis die Koordinaten des gesuchten Knoten mit jenen des aktuellen Knoten übereinstimmen.
+Die Suche beginnt beginnt an der Wurzel. In jedem Schritt werden je ein Vergleich der $x$- und $y$-Koordinate des aktuellen Knotens mit dem gesuchten Knoten durchgeführt, wodurch der Quadrant bestimmt wird, in welchen sich der gesuchte Knoten befindet. Ist dieser Quadrant leer, d.h.\ ist kein Kindknoten bezüglich dieser Richtung am aktuellen Knoten vorhanden, wird die Suche erfolglos abgebrochen; andernfalls wird sie bei diesem Kindnoten fortgesetzt, bis die Koordinaten des gesuchten Knoten mit jenen des aktuellen Knoten übereinstimmen.
 
-Durch die rekursive Aufteilung kann hier im Average Case mit logarithmischer Laufzeit gerechnet werden ($O(log_4 N)$). Allerdings hängt diese Größe von der Balanzierung des Baumes ab, wofür es beim Point Quadtree keine Garantien gibt. Dies führt im Falle einer Entartung zu einer linearen Laufzeit ($O(n)$).
+Durch die rekursive Aufteilung kann hier im Average Case mit logarithmischer Laufzeit gerechnet werden ($O(log_4\ N)$).
+Allerdings hängt diese Größe von der Balanzierung des Baumes ab, wofür es beim Point Quadtree keine Garantien gibt. Dies führt im Falle einer Entartung zu einer linearen Laufzeit ($O(n)$).\footzit{Vgl.}{Samet90}{Seite 52}
+
+%Weiters kann gezeigt werden, dass Range Queries in $O(n\ log_k\ n)$ abgearbeitet werden können.\footzit{Vgl.}{Lueker78}{Seite 1}
 
 \subsubsection{Einfügen}
+\label{sec:pointquadtree:insert}
+Das Verfahren zum Einfügen neuer Daten baut direkt auf die Suche auf.
+In dem Quadranten, in welchem eine normale Suche abbrechen würde, wird das Datum eingefügt, indem an der entsprechenden Stelle, die sich offensichtlicher Weise in diesem Quadranten befinden muss, der Datenknoten platziert wird.
+Der asymptotische Aufwand dieser Operation ist trivialerweise identisch mit jenem der Suche.
+
+Der neue eingefügte Knoten teilt den Raum wiederum an seinen $x$- bzw. $y$-Koordinaten und erweitert so die Struktur des Baumes.  
+Es ist schnell ersichtlich, dass hier, genau wie bei einem Binärbaum, Entartungen auftreten können, da sich die Struktur dynamisch mit jedem eingefügten Element herausbildet. 
+% umformulieren:
+Ein besonders Problem stellen hier etwa geordnete Daten da. Werden diese in der gegebenen Reihenfolge eingefügt, degeneriert der Baum zu einer linearen Listen. Sind andererseits beim Aufbau des Baumes bereits alle Daten verfügbar, kann durch folgende Strategie ein optimale Balanzierung erreicht werden: Der Median der sortierten Liste von Daten wird als Wurzel verwendet, die restlichen Elemente werden in 4 Gruppen eingeteilt, welche den Quadranten dieser Wurzel zugeordnet werden. Auf jede dieser Unterteilungen wird der Prozess rekursiv angewendet.\footzit{Vgl.}{Samet90}{Seite 52f}
+% bild entartung?
+
 \subsubsection{Löschen}
+% bei bintree immer ersatz -- hier nicht
+Das Entfernen eines Knotens aus einem Quadtree ist im Allgemeinen eine komplexe Operation, da die Knoten alleine die Struktur des Baumes bilden, und diese Struktur auch nach dem Löschen weiterhin gewisse Eigenschaften innehaben muss. Ursprünglich wurde vorgeschlagen, alle Kinder des zu entfernenden Knoten neu einzufügen, was einen linearen Aufwand bedeuten würde.\footzitx{Vgl.}{DBLP:journals/acta/FinkelB74}.
+
+% samet optimierung
 
 \subsection{Pseudo Quadtree}
 \myfig{img/pseudoquadtree-ins3-trimmed}{pseudoquadtree}{width=.6\textwidth}{Pseudo Quadtree}
 
 \subsection{\textit{k}-d Tree}
 Erstmals in \cite{Bentley:1975}
+% slac-pub-2189.pdf seite 10
+% Data Structures for Range Searching bentley/friedmann
 \myfig{img/kdtree-tree-full-trimmed}{kdtree}{width=.8\textwidth}{\textit{k}-d Tree}
 
 \section{Bereichsbasierte Quadtrees}
