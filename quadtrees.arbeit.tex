@@ -109,9 +109,18 @@ backgroundcolor=\color{lgray}
 %
 % point qt: suche: range + neighborhood 
 %
-% anwendungen (vllt extrakapitel)
+% anwendungen (vllt extrakapitel) (kriterien für anwendbarkeit)
 %
 % graphendarstellung? (wort)
+%
+% seite 3 (aus paper zitieren)
+%
+% to pirate:
+% v.a.: http://www.springerlink.com/content/x7147683u3241843/
+% u.a.: http://www.springerlink.com/content/v171j240584691x5/
+% (für pseudo) http://www.springerlink.com/content/k4k475357h707034/
+% ^^ techreport? verfügbar
+
 
 \part{Theorie}
 \section{Einführung}
@@ -186,13 +195,42 @@ Ein besonders Problem stellen hier etwa geordnete Daten da. Werden diese in der 
 % bild entartung?
 
 \subsubsection{Löschen}
-% bei bintree immer ersatz -- hier nicht
-Das Entfernen eines Knotens aus einem Quadtree ist im Allgemeinen eine komplexe Operation, da die Knoten alleine die Struktur des Baumes bilden, und diese Struktur auch nach dem Löschen weiterhin gewisse Eigenschaften innehaben muss. Ursprünglich wurde vorgeschlagen, alle Kinder des zu entfernenden Knoten neu einzufügen, was einen linearen Aufwand bedeuten würde.\footzitx{Vgl.}{DBLP:journals/acta/FinkelB74}.
+\label{sec:pointquadtree:delete}
+Das Entfernen eines Knotens aus einem Quadtree ist im Allgemeinen eine komplexe Operation, da die Knoten alleine die Struktur des Baumes bilden, und diese auch nach dem Löschen weiterhin gewisse Eigenschaften innehaben muss.
+Bei Binärbäumen stellt dies kein allzu großes Problem dar, da in einem eindimensionalen Raum immer ein geeigneter Ersatz in Form des nähesten Knotens für einen zu entfernenden Knoten zur Verfügung steht.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 2}
+Im Fall von Quadtrees muss eine Substitution hingegen Bedingungen hinsichtlich zweier Dimensionen genügen, wodurch es ein Näheverhältnis wie im eindimensionalen Fall nicht gibt.\footnote{Vgl. Ebenda}
+Hier ist ein ein Ersatz nur dann möglich, wenn ein Blattknoten existiert, für den sich im Bereich zwischen den Achsen, welche durch die Koordinaten des Blattknoten bzw.\ deren des zu entfernenden Knoten verlaufen, kein anderer Knoten befindet.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 3}
 
-% samet optimierung
+Ursprünglich wurde vorgeschlagen, alle Kinder des zu entfernenden Knoten neu einzufügen, was einen sehr teuren Prozess darstellen kann.\footzitx{Vgl.}{DBLP:journals/acta/FinkelB74}.
+Sollte kein Knoten das oben genannte Kriterium erfüllen, kann nur durch günstige Wahl des Ersatzknotens die Anzahl der neu einzufügenden Knoten minimiert werden, wie etwa in \cite{DBLP:journals/cacm/Samet80a} gezeigt wird.
+
+Eine weitere Optimierung kann dadurch erreicht werden, dass gelöschte Knoten nicht aus dem Baum entfernt, sondern nur als gelöscht markiert werden, um so die Struktur zu erhalten.
+Die markierten Knoten dürfen bei zukünftigen Suchen nicht mehr zurückgegeben werden.
+Nach jeder Entfernung erhöht sich hierdurch der Anteil der "`toten"' Knoten, was sich negativ auf die Performance aller Operationen auswirkt, und periodische Restrukturierungsmaßnahmen des Baumes erfordert.
+Durch dieses Verfahren kann folglich der Aufwand einzelner Löschoperationen abgefedert werden, auf Kosten von regelmäßigen Wartungskosten.
 
 \subsection{Pseudo Quadtree}
+Der Pseudo Quadtree ist eine Abwandlung des Point Quadtrees, welche Löschen in logarithmischer Zeit sowie einfachere Rebalanzierung bei Deformation ermöglicht. Diese Form des Quadtrees wurde 1982 von Overmars und van Leeuwen in \cite{DBLP:journals/acta/OvermarsL82} entwickelt.
+
+Dem Pseudo Quadtree liegt die Analyse zu Grunde, dass die Probleme beim Entfernen von Knoten und bei der Balanzierung bei Point Quadtrees daher stammen, dass die Datenpunkte selbst die Struktur des Baumes bilden, und so nur äußerst wenig Flexibilität vorhanden ist.
+Aus diesem Grund wurde unterscheidet sich der Pseudo Quadtree davon insofern, als dass die Dekomposition des Raum an beliebigen Punkten stattfinden kann. 
+
+Konkret funktioniert das Einfügen beim Pseudo Quadtree wie folgt:
+Der Quadrant eines Datenpunktes wird gesucht.
+Ist dieser leer, wird der Knoten hier eingefügt, ohne den Raum an dessen Koordinaten weiter zu unterteilen.
+Befindet sich hier hingegen bereits ein anderer Knoten, muss eine neue Untergliederung eingeführt werden.
+Hier können beliebige Strategien verwendet werden, um einen Teilungspunkt zu bestimmen, wodurch ein der Anwendung angepasster, gut balanzierter Baum entstehen kann.
+
+Abbildung \ref{fig:pseudoquadtree} auf Seite \pageref{fig:pseudoquadtree} zeigt einen Pseudo Quadtree, welcher dieselben Daten wie der Point Quadtree in Abbildung \ref{fig:pointquadtree} auf Seite \pageref{fig:pointquadtree} beinhaltet.
+In diesem Fall wurde der Mittelpunkt von zwei Knoten als Punkt zur Teilung verwendet.
 \myfig{img/pseudoquadtree-ins3-trimmed}{pseudoquadtree}{width=.6\textwidth}{Pseudo Quadtree}
+
+Sollte trotz einer angepassten Strategie ein Ungleichgewicht entstehen, kann der Subbaum, dessen Wurzel der höchste Knoten ist, bei welchem eine unbalanzierte Verteilung seiner Kindknoten festgestellt wird, neu strukturiert werden, indem eine neue Aufteilung der vorhandenen Knoten berechnet wird.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 5} % cp
+Es kann gezeigt werden, dass im allgemeinen Fall eine Teilung möglich ist, in der sich in jedem der 4 Quadranten höchstens ein Drittel der Knoten befinden.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 7} % cp
+
+Durch diese Aufteilung des Raumes an beliebigen Punkten befinden sich Daten schließlich nur noch an den Blättern. Dies wiederum ist der optimale Fall bezüglich dem Entfernen von Knoten -- ein Knoten ohne Kinder kann jederzeit ohne zusätzlichen Aufwand gelöscht werden. Da das Entfernen eines Knotens immer auch das Suchen desselben erfordert, entsteht somit ein logarithmischer Aufwand.
+
+%\ref{sec:pointquadtree:delete} \pageref{sec:pointquadtree:delete}
 
 \subsection{\textit{k}-d Tree}
 Erstmals in \cite{Bentley:1975}
@@ -214,6 +252,13 @@ Erstmals in \cite{Bentley:1975}
 
 \section{Praktikum}
 
+\subsection{Problemstellung}
+
+\subsection{Implementierung}
+
+\subsection{Analyse}
+
+\subsection{Conclusio}
 
 \newpage
 
