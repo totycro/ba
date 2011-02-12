@@ -24,6 +24,7 @@
 \usepackage[final]{listings} % sourcecode in document
 \usepackage{url}      % for urls
 \usepackage{multicol}
+\usepackage{caption}
 
 \usepackage{graphicx}
 
@@ -44,6 +45,13 @@
 \newcommand{\zitx}[2]{#1 \cite{#2}}
 \newcommand{\footzit}[3]{\footnote{\zit{#1}{#2}{#3}}}
 \newcommand{\footzitx}[2]{\footnote{\zitx{#1}{#2}}}
+
+\newcommand{\inlinecode}[1]{\mbox{\texttt{#1}}}
+
+\newcommand{\mynull}{\textit{NULL}}
+%\newcommand{\mynull}{\textbf{nil}}
+
+\newcommand{\kd}{\mbox{\textit{k}-d}}
 
 % smaller url style
 \makeatletter
@@ -86,11 +94,6 @@ breaklines=true,
 backgroundcolor=\color{lgray}
 }
 
-\newcommand{\inlinecode}[1]{\mbox{\texttt{#1}}}
-
-\newcommand{\mynull}{\textit{NULL}}
-%\newcommand{\mynull}{\textbf{nil}}
-
 % just for screen-display!
 %\usepackage{newcent}
 
@@ -105,6 +108,12 @@ backgroundcolor=\color{lgray}
 %%%%
 % TODO
 %
+% Einleitung mit erklärung:
+% k
+% n
+% schlüssel
+% mehrdimensionale daten (bisschen wie kdtree.pdf)
+%
 % binäre suche im anfang reinbringen -- bin tree
 %
 % point qt: suche: range + neighborhood 
@@ -115,7 +124,6 @@ backgroundcolor=\color{lgray}
 %
 % seite 3 (aus paper zitieren)
 %
-% to pirate:
 % v.a.: http://www.springerlink.com/content/x7147683u3241843/
 % u.a.: http://www.springerlink.com/content/v171j240584691x5/
 % (für pseudo) http://www.springerlink.com/content/k4k475357h707034/
@@ -127,7 +135,7 @@ backgroundcolor=\color{lgray}
 Quadtrees stellen eine Datenstruktur dar, welche von Binärbäumen abgeleitet sind. Sie erweitern dessen Prinzip der rekursiven, hierarchischen Aufteilung eines Raumes auf mehrere Dimensionen. 
 Im Allgemeinen beschränkt man sich hier zur Vereinfachung auf zweidimensionale Daten, wobei die Verallgemeinerung auf \textit{k}-dimensionale Daten trivial ist.
 
-Anstatt wie bei Binärbäumen den Raum bei jedem Schritt in zwei Unterbäume zu teilen, werden bei Quadtrees vier Kinder verwendet, um alle möglichen Richtungen in zwei Dimensionen bezüglich des aktuellen Knoten abzudecken. Der Name "`Quadtree"' leitet sich hiervon ab (lat. "`quad-"': "`vier-"'). 
+Anstatt wie bei Binärbäumen den Raum bei jedem Schritt in zwei Unterbäume zu teilen, werden bei Quadtrees vier Kinder verwendet, um alle möglichen Richtungen in zwei Dimensionen bezüglich des aktuellen Knoten abzudecken. Der Name "`Quadtree"' leitet sich hiervon ab (lat. "`quadri-"': "`vier-"'). 
 Analog dazu bezeichnet man 3-dimensionale Bäume als "`Octtrees"'. Es ist weiters einfach zu sehen, dass $k$-dimensionale Bäume $2^k$ Kinder pro Knoten aufweisen.\footzit{Vgl.}{Bentley:1979}{Seite 16}
 
 Räumliche Strukturen wie Quadtrees sind generall dann sinnvoll, wenn die Entfernung zweier Punkte für die Anwendung relevant ist. Beispiele hierfür sind unter anderem Repräsentation von Bildern (angrenzende Bereiche besitzen oftmals ähnliche Farben) oder Kollisionserkennung, wo das Interesse sogar auf sich überschneidende Strukturen liegt.
@@ -210,6 +218,7 @@ Nach jeder Entfernung erhöht sich hierdurch der Anteil der "`toten"' Knoten, wa
 Durch dieses Verfahren kann folglich der Aufwand einzelner Löschoperationen abgefedert werden, auf Kosten von regelmäßigen Wartungskosten.
 
 \subsection{Pseudo Quadtree}
+\label{sec:pseudoquadtree}
 Der Pseudo Quadtree ist eine Abwandlung des Point Quadtrees, welche Löschen in logarithmischer Zeit sowie einfachere Rebalanzierung bei Deformation ermöglicht. Diese Form des Quadtrees wurde 1982 von Overmars und van Leeuwen in \cite{DBLP:journals/acta/OvermarsL82} entwickelt.
 
 Dem Pseudo Quadtree liegt die Analyse zu Grunde, dass die Probleme beim Entfernen von Knoten und bei der Balanzierung bei Point Quadtrees daher stammen, dass die Datenpunkte selbst die Struktur des Baumes bilden, und so nur äußerst wenig Flexibilität vorhanden ist.
@@ -232,11 +241,41 @@ Durch diese Aufteilung des Raumes an beliebigen Punkten befinden sich Daten schl
 
 %\ref{sec:pointquadtree:delete} \pageref{sec:pointquadtree:delete}
 
-\subsection{\textit{k}-d Tree}
-Erstmals in \cite{Bentley:1975}
+\subsection{\kd\ Tree}
+Diese Variante wurde von Bentley kurz nach dem Point Quadtree 1974 in \cite{Bentley:1975} entwickelt. Der Name \kd\ deutet an, dass dieser Baum $k$-dimensionale Schlüssel verwendet. 
+
+Der \kd\ Tree kann wie der Point Quadtree als Verallgemeinerung des Binärbaums gesehen werden, hier wird hingegen ein etwas anderer Ansatz verfolgt:
+Anstatt den Raum gleichzeitig in allen Dimensionen zu partitionieren und somit die Notwendigkeit von $2^k$ Kindern pro Knoten zu erfordern, wird in jedem Schritt nur eine Dimension berücksichtigt und so eine binäre Unterteilung von eigentlich mehrdimensionalen Schlüsseln ermöglicht.
+Diese Mehrdimensionalität wird bei \kd\ Trees weiters dadurch ausgedrückt, dass die Dimensionen, bezüglich derer an einer gewissen Tiefe geteilt wird, beliebig alterniert.
+Im zweidimensionalen Fall könnte hier etwa bei geraden Tiefenebenen an der $x$-Achse bzw bei ungeraden an der $y$-Achse geteilt werden, wie etwa Abbildung \ref{fig:kdtree} auf Seite \pageref{fig:kdtree} zeigt.
+Ursprünglich wurde genau dieses Abwechslungsmuster vorgeschlagen,\footzit{Vgl.}{Bentley:1975}{Seite 2}
+wobei dieses auch dynamisch beliebig gewählt und so an die Daten angepasst werden kann\footzit{Vgl.}{Samet90}{Seite 66}.
+Verwendet man hier einen dynamischen Ansatz, muss jedoch bei jedem Knoten der Diskriminator mitgespeichert werden.
+
+\myfig{img/kdtree-tree-full-trimmed}{kdtree}{width=.78\textwidth}{Ein \textit{k}-d Tree: Die Beschriftung links der Unterteilungen gibt die Achse an, bezüglich welcher die Knoten aufgeteilt werden.
+\\ \\
+Bezüglich den vorhergegangenen Abbildung wurden hier die Koordinaten der Knoten leicht verändert, da in diesem Fall ein äußerst schlecht balanzierter \kd\ Tree entstehen würde, was der Autor aus Demonstrationszwecken vermeiden möchte.}
+
+Dieser Typ bietet gegenüber einem Point Quadtree Vorteile bezüglich des Platzbedarfs:
+anstatt $2^k$ sind hier nur 2 Kinder pro Knoten erforderlich. Dies löst das Problem von vielen unnötigen Leereinträgen, welche bei einem Point Quadtree bei einer großen Dimensionsanzahl auftreten können.
+
+Die Operationen Suche und Einfügen ergeben sich direkt aus dem Funktionsprinzip des \kd\ Trees, beide benötigen offensichtlich eine logarithmische Laufzeit im Average Case\footzit{Vgl.}{Bentley:1975}{Seite 1} (sofern der Baum nicht entartet).
+Schwieriger ist hingegen das Löschen:
+Nach dem Entfernen eines Knotens darf die Struktur des \kd\ Trees nicht verletzt werden, weshalb ein geeigneter Ersatz gefunden werden muss.
+Für dieses Problem wurde eine Strategie entwickelt, welche auf der Lösung des analogen Problems bei Binärbäumen basiert und zugleich die Mehrdimensionalität im \kd\ Tree berücksichtigt.\footzit{Für eine detaillierte Beschreibung dieses Verfahrens siehe}{Bentley:1975}{Seite 7} 
+Anstatt im Worst Case (bei Löschung der Wurzel) $n$ Neueinfügungen mit dem naiven Ansatz benötigt diese Methode nur $O(n^{1-\frac{1}{k}})$.
+
+Um diesem Problem gänzlich zu entgehen kann ähnlich dem Pseudo Quadtree\footnote{Siehe Kapitel \ref{sec:pseudoquadtree}} auch ein Pseudo \kd\ Tree\footzitx{Vgl.}{DBLP:journals/acta/OvermarsL82} verwendet werden,
+in welchem analog zum Pseudo Quadtree die Unterteilung des Raumes nicht an den Koordinaten der Knoten, sondern an beliebigen Punkten vorgenommen wird, und so Daten nur in Blättern gespeichert werden.
+
+
+
+% nicht paralellisiert suchen (quelle?)
+%
+% pseudo quadtree
+
 % slac-pub-2189.pdf seite 10
 % Data Structures for Range Searching bentley/friedmann
-\myfig{img/kdtree-tree-full-trimmed}{kdtree}{width=.8\textwidth}{\textit{k}-d Tree}
 
 \section{Bereichsbasierte Quadtrees}
 \subsection{Region Quadtree}
