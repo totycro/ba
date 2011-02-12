@@ -5,6 +5,8 @@
 			DIV12,
 			%DIV=calc,%
 			%twoside=false,%
+			liststotoc,
+			bibtotoc,
 			draft=false,% final|draft % draft ist platzsparender (kein code, bilder..)
 			titlepage
 			]{scrartcl}
@@ -60,11 +62,11 @@
 \makeatother
 \urlstyle{leo}
 
-\newcommand{\myfig}[4] {
+\newcommand{\myfig}[5] {
  \begin{figure}[tbph]
 	 \centering
 	 \includegraphics[#3]{#1}
-	 \caption{#4}
+	 \caption[#4]{#5}
 	 \label{fig:#2}
  \end{figure}
 }
@@ -159,7 +161,7 @@ Gleichzeitig sind alle Knoten bei einem großen Teil der Quadtreetypen zugleich 
 Die Koordinaten der zu speichernden Daten bestimmen demnach die Gestalt der Struktur.
 
 Dieses Prinzip der rekursiven Dekomposition erlaubt das effiziente Suchen in logarithmischer Zeit.\footnote{Siehe Kapitel \ref{sec:pointquadtree-suche} auf Seite \pageref{sec:pointquadtree-suche}}
-\myfig{img/quadtree}{quadtree}{width=.4\textwidth}{Alle Kinder repräsentieren Teilbäume, welche sich vollständig in NW-, NE-, \mbox{SW-} oder SE-Richtung des aktuellen Knoten befinden. Je nach Konvention können die Quadranten auch mittels ihrer Nummerierung referentiert werden.}
+\myfig{img/quadtree}{quadtree}{width=.4\textwidth}{Funktionsprinzip eines Quadtrees}{Alle Kinder repräsentieren Teilbäume, welche sich vollständig in NW-, NE-, \mbox{SW-} oder SE-Richtung des aktuellen Knoten befinden. Je nach Konvention können die Quadranten auch mittels ihrer Nummerierung referentiert werden.}
 
 
 \section{Punktbasierte Quadtrees}
@@ -177,7 +179,7 @@ Abbildung \ref{fig:pointquadtree} auf Seite \pageref{fig:pointquadtree} zeigt ei
 In der Ersteren wird nur die Struktur des Baumes betrachtet, die Lage der Datenknoten ist ausschließlich relativ zueinander sichtbar.
 Die Zweitere konzentriert sich mehr auf die absolute Position der Punkte in einem Koordinatensystem und zeigt zusätzlich dazu die rekursive Dekompositionsstruktur ein.
 Die Bezeichnung der Knoten in der Grafik gibt die Reihenfolge der Einfügung an. Bereits hier wird deutlich, dass die Form des Baumes durch diese Reihenfolge determiniert wird.\footnote{Vgl. Kapitel \ref{sec:pointquadtree:insert} auf Seite \pageref{sec:pointquadtree:insert}}
-\myfig{img/pointquadtree-ins7+tree-trimmed}{pointquadtree}{width=.9\textwidth}{Gegenüberstellung: Ein Point Quadtree in Baum- bzw.\ Graphendarstellung}
+\myfig{img/pointquadtree-ins7+tree-trimmed}{pointquadtree}{width=.9\textwidth}{Point Quadtreee}{Gegenüberstellung: Ein Point Quadtree in Baum- bzw.\ Graphendarstellung}
 
 \subsubsection{Suche}
 \label{sec:pointquadtree-suche}
@@ -232,7 +234,7 @@ Hier können beliebige Strategien verwendet werden, um einen Teilungspunkt zu be
 
 Abbildung \ref{fig:pseudoquadtree} auf Seite \pageref{fig:pseudoquadtree} zeigt einen Pseudo Quadtree, welcher dieselben Daten wie der Point Quadtree in Abbildung \ref{fig:pointquadtree} auf Seite \pageref{fig:pointquadtree} beinhaltet.
 In diesem Fall wurde der Mittelpunkt von zwei Knoten als Punkt zur Teilung verwendet.
-\myfig{img/pseudoquadtree-ins3-trimmed}{pseudoquadtree}{width=.6\textwidth}{Pseudo Quadtree}
+\myfig{img/pseudoquadtree-ins3-trimmed}{pseudoquadtree}{width=.6\textwidth}{Pseudo Quadtree}{Pseudo Quadtree}
 
 Sollte trotz einer angepassten Strategie ein Ungleichgewicht entstehen, kann der Subbaum, dessen Wurzel der höchste Knoten ist, bei welchem eine unbalanzierte Verteilung seiner Kindknoten festgestellt wird, neu strukturiert werden, indem eine neue Aufteilung der vorhandenen Knoten berechnet wird.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 5} % cp
 Es kann gezeigt werden, dass im allgemeinen Fall eine Teilung möglich ist, in der sich in jedem der 4 Quadranten höchstens ein Drittel der Knoten befinden.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 7} % cp
@@ -252,7 +254,7 @@ Ursprünglich wurde genau dieses Abwechslungsmuster vorgeschlagen,\footzit{Vgl.}
 wobei dieses auch dynamisch beliebig gewählt und so an die Daten angepasst werden kann\footzit{Vgl.}{Samet90}{Seite 66}.
 Verwendet man hier einen dynamischen Ansatz, muss jedoch bei jedem Knoten der Diskriminator mitgespeichert werden.
 
-\myfig{img/kdtree-tree-full-trimmed}{kdtree}{width=.78\textwidth}{Ein \textit{k}-d Tree: Die Beschriftung links der Unterteilungen gibt die Achse an, bezüglich welcher die Knoten aufgeteilt werden.
+\myfig{img/kdtree-tree-full-trimmed}{kdtree}{width=.78\textwidth}{\kd\ Tree}{Ein \kd\ Tree: Die Beschriftung links der Unterteilungen gibt die Achse an, bezüglich welcher die Knoten aufgeteilt werden.
 \\ \\
 Bezüglich den vorhergegangenen Abbildung wurden hier die Koordinaten der Knoten leicht verändert, da in diesem Fall ein äußerst schlecht balanzierter \kd\ Tree entstehen würde, was der Autor aus Demonstrationszwecken vermeiden möchte.}
 
@@ -269,19 +271,13 @@ Um diesem Problem gänzlich zu entgehen kann ähnlich dem Pseudo Quadtree\footno
 in welchem analog zum Pseudo Quadtree die Unterteilung des Raumes nicht an den Koordinaten der Knoten, sondern an beliebigen Punkten vorgenommen wird, und so Daten nur in Blättern gespeichert werden.
 
 
-
 % nicht paralellisiert suchen (quelle?)
-%
-% pseudo quadtree
-
-% slac-pub-2189.pdf seite 10
-% Data Structures for Range Searching bentley/friedmann
 
 \section{Bereichsbasierte Quadtrees}
 \subsection{Region Quadtree}
 
 \subsection{MX Quadtree}
-\myfig{img/mxquadtre-full-trimmed}{mxquadtree}{width=.7\textwidth}{MX Quadtree}
+\myfig{img/mxquadtre-full-trimmed}{mxquadtree}{width=.7\textwidth}{MX Quadtree}{MX Quadtree}
 % erstmals? in quadtrees79.pdf   operations on images using quadtrees. hunter and steiglitz
 
 
@@ -298,6 +294,10 @@ in welchem analog zum Pseudo Quadtree die Unterteilung des Raumes nicht an den K
 \subsection{Analyse}
 
 \subsection{Conclusio}
+
+\newpage
+
+\listoffigures
 
 \newpage
 
