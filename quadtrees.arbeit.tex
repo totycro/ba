@@ -27,6 +27,7 @@
 \usepackage{url}      % for urls
 \usepackage{multicol}
 \usepackage{caption}
+\usepackage{enumerate}
 
 \usepackage{graphicx}
 
@@ -167,7 +168,6 @@ Die Koordinaten der zu speichernden Daten bestimmen demnach die Gestalt der Stru
 Dieses Prinzip der rekursiven Dekomposition erlaubt das effiziente Suchen in logarithmischer Zeit.\footnote{Siehe Kapitel \ref{sec:pointquadtree-suche} auf Seite \pageref{sec:pointquadtree-suche}}
 \myfig{img/quadtree}{quadtree}{width=.4\textwidth}{Funktionsprinzip eines Quadtrees}{Alle Kinder repräsentieren Teilbäume, welche sich vollständig in NW-, NE-, \mbox{SW-} oder SE-Richtung des aktuellen Knoten befinden. Je nach Konvention können die Quadranten auch mittels ihrer Nummerierung referentiert werden.}
 
-
 \section{Punktbasierte Quadtrees}
 \label{sec:pointbased}
 \subsection{Point Quadtree}
@@ -288,45 +288,45 @@ Weiters wird in diesem Abschnitt nur insofern auf die verschiedenen Operationen 
 
 \subsection{MX Quadtree}
 Der MX Quadtree zeichnet durch seine Art der Raumunterteilung aus:
-Es wird ein Bereich vorrausgesetzt, in dem alle Datenpunkte liegen.
-Dieser wird rekursiv in vier gleichgroße Quadranten partitioniert, bis auf der untersten Ebene 1x1 große Felder erreicht werden, welche die Daten beinhalten.
-Um dies zu ermöglichen, dürfen die Schlüssel nur diskrete Werte annehmen.
+Der Bereich, in dem die Datenpunkte liegen, wird unabhängig von den konkreten Daten unterteilt,
+und zwar rekursiv in vier gleichgroße Quadranten, 
+bis auf der untersten Ebene 1x1 große Felder erreicht werden, welche die Daten beinhalten.\footzit{Vgl.}{Samet:1985:SCP:282957.282966}{Seite 1f}
 
-Ein klassischer Anwendungsfall dieses Prinzip sind Rastergrafiken, welche ein geeignetes mentales Modell für MX Quadtrees darstellen, da hier jeder Datenpunkt offensichtlich genau einer Koordinate zugeordnet ist.\footzitx{Vgl.}{bb29082}
+Diese Art der Dekomposition setzt folgendes vorraus:
+\renewcommand{\labelenumi}{({\theenumi})}
+\begin{enumerate}
+	\item \textbf{Konstanter Bereich.}
+		Die Region, in welcher sich Daten befinden, muss a priori bekannt sein und während des gesamten Programmablaufs konstant bleiben.
+	\item \textbf{Diskrete Koordinaten.}
+		Die Schlüssel dürfen nur diskrete Werte annehmen, ähnlich den Einträgen einer Matrix, woher sich auch der Name "`MX"' ableitet.\footzit{Vgl.}{Samet90}{Seite 86}
+	\item \textbf{Fläche des Raumes beträgt $2^n$ x $2^n$.}
+		Da der Raum aus praktischen Gründen in 4 gleichgroße Teile partitioniert wird, entsteht eine diese Gesamtgröße. Bei Datenregionen, welche nicht diese Ausdehnung besitzen, können Leereinträge verwendet werden, um diese Größe zu erreichen.
+\end{enumerate}
+
+\myfig{img/mxquadtre-full-origdata-trimmed}{mxquadtree}{width=.7\textwidth}{MX Quadtree}{MX Quadtree. Diese Instanz ist eher spärlich besetzt.}
+Abbildung \ref{fig:mxquadtree} auf Seite \pageref{fig:mxquadtree} zeigt dieselben Daten wie in den vorhergegangen Grafiken in Form eines MX Quadtrees.
+Dabei fällt auf, dass die Aufteilung des Raumes hier unabhängig von der Reihenfolge des Einfügens der Knoten ist,
+was eine Konsequenz aus der Partitionierung auf Basis der Raumstruktur ist.
+Dies führt auch zu einer konstanten Höhe $h$ des Baumes ohne Bezug zu den konkret vorhandenen Datenblättern, wodurch wiederum nur die begrenzte Anzahl von Knoten $2^h * 2^h$ in einem MX Quadtree gespeichert werden können.
+Diese Einschränkung ist jedoch durch die obigen Bedingungen gesichert.
+
+Ein klassischer Anwendungsfall dieses Prinzip sind Rastergrafiken, welche ein geeignetes mentales Modell für MX Quadtrees darstellen, da hier jeder Datenpunkt  (Pixel) offensichtlich genau 1x1 groß ist und einer Koordinate zugeordnet ist.\footzitx{Vgl.}{bb29082}
 Davon abgeleitet spricht man in diesem Kontext von weißen, schwarzen und grauen Knoten\footzit{Vgl}{DBLP:journals/cacm/Gargantini82}{Seite 2}:% cp
 \begin{description}
 	\item[Schwarze Knoten] sind entweder Datenblätter oder Knoten mit vier schwarzen Kindern.
 	\item[Graue Knoten] stellen Knoten dar, welche mindestens ein graues Kind besitzen oder mindestens je ein schwarzes und ein weißes Kind.
-	\item[Weiße Knoten] sind leere Blätter ohne Daten bzw.\ Knoten, die weder direkt noch indirekt auf Daten verweisen. Diese werden im Allgemeinen nicht explizit repräsentiert.
+	\item[Weiße Knoten] sind leere Blätter ohne Daten bzw.\ Knoten, die weder direkt noch indirekt mittels Kindverweise auf Daten verweisen. Diese werden im Allgemeinen nicht explizit repräsentiert.
 \end{description}
 
-% Ein konkreten MX Quadtree enthält somit nur schwarze und graue Knoten.
-% todo: überleitung
+Ein konkreter MX Quadtree enthält somit nur schwarze und graue Knoten.
+Das Nicht-repräsentieren weißer Knoten führt dazu, dass die Struktur des Baumes erst beim Einfügen aufgebaut wird.
+Dies ist jedoch nur eine Optimierung; es wäre genauso möglich, den vollständigen Baum mit weißen Knoten bzw.\ Blättern aufzufüllen, welche später grau oder schwarz eingefärbt bzw.\ von schwarzen Blättern ersetzt werden.
 
-\myfig{img/mxquadtre-full-origdata-trimmed}{mxquadtree}{width=.7\textwidth}{MX Quadtree}{MX Quadtree. Diese Instanz ist eher spärlich besetzt.}
-Abbildung \ref{fig:mxquadtree} auf Seite \pageref{fig:mxquadtree} zeigt dieselben Daten wie in den vorhergegangen Grafiken in Form eines MX Quadtrees. Dabei fällt auf, dass die Aufteilung des Raumes hier unabhängig von der Reihenfolge des Einfügens der Knoten ist.
+Das Löschen von Knoten im MX Quadtree ist weiters trivial, da im Gegensatz zu Point Quadtrees hier die Daten keinen Einfluss auf die Struktur des Baumes haben und nur in Blättern gespeichert werden. Nach dem Entfernen des eigentlichen Datenblattes muss nur die Färbung der Knoten am Pfad von der Wurzel zu diesem Blatt überprüft und gegebenenfalls angepasst werden.
 
-%Beim Einfügen eines neuen Knotens wird die Struktur des Baumes entlang des Pfades des Schlüssels gebildet.
-
-
-% eher ungeeignet bei ganz wenigen daten und großer tiefe
-
-% einfügereihenfolge irrelevant
-% -> keine entartung
-% determiniert durch a priori raumaufteilung
-% -> raum vorher bekannt
-
-% höhe konstant
-
-% löschen: daten nur in blättern
-
-% 2^n
-% mx = matrix
-% 
 
 % für grafisches entwickelt, wie z.b. hier:
 % quadtrees79.pdf   operations on images using quadtrees. hunter and steiglitz
-\cite{Samet:1985:SCP:282957.282966}
 % später mx genannt -> samet verweis
 
 
