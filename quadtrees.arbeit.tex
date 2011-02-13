@@ -116,6 +116,8 @@ backgroundcolor=\color{lgray}
 % schlüssel
 % mehrdimensionale daten (bisschen wie kdtree.pdf)
 %
+% schlüssel unique -- überlauflisten
+%
 % binäre suche im anfang reinbringen -- bin tree
 %
 % point qt: suche: range + neighborhood 
@@ -129,7 +131,9 @@ backgroundcolor=\color{lgray}
 % v.a.: http://www.springerlink.com/content/x7147683u3241843/
 % u.a.: http://www.springerlink.com/content/v171j240584691x5/
 % (für pseudo) http://www.springerlink.com/content/k4k475357h707034/
-% ^^ techreport? verfügbar
+% ^ techreport? verfügbar
+%
+% bild für entartung
 
 
 \part{Theorie}
@@ -165,6 +169,7 @@ Dieses Prinzip der rekursiven Dekomposition erlaubt das effiziente Suchen in log
 
 
 \section{Punktbasierte Quadtrees}
+\label{sec:pointbased}
 \subsection{Point Quadtree}
 Dieser Quadtreetyp wurde erstmals 1974 von Finkel und Bentley in \cite{DBLP:journals/acta/FinkelB74} eingeführt.\footzit{Vgl.}{compgeom:2000}{Seite 318}
 Point Quadtrees kann man als direkte Verallgemeinerung von binären Suchbäumen auf mehrdimensionale Räume auffassen. 
@@ -274,11 +279,55 @@ in welchem analog zum Pseudo Quadtree die Unterteilung des Raumes nicht an den K
 % nicht paralellisiert suchen (quelle?)
 
 \section{Bereichsbasierte Quadtrees}
-\subsection{Region Quadtree}
+%\subsection{Region Quadtree}
+
+Wie im Kapitel \ref{sec:pointbased} ausführlich erläutert wurde, erfolgt die räumliche Dekomposition bei punktbasierten Quadtrees immer anhand der gegebenen Punkte.\footnote{Bei Point bzw.\ \kd\ Trees gilt dies direkt; bei Pseudo Quadtrees hingegen besteht die Abhängigkeit vielmehr indirekt: die Aufteilung stellt eine Funktion der Punkte dar.}
+Dieses Kapitel beschäftigt sich mit Quadtrees, deren Form vordergründig a priori durch die Struktur des Raumes determiniert wird, was in etwa mit dem Prinzip von Tries vergleichbar ist.\footzit{Vgl.}{Samet90}{Seite 85}
+
+Weiters wird in diesem Abschnitt nur insofern auf die verschiedenen Operationen eingegangen, als sie sich von punktbasierten Quadtrees unterscheiden.
 
 \subsection{MX Quadtree}
-\myfig{img/mxquadtre-full-trimmed}{mxquadtree}{width=.7\textwidth}{MX Quadtree}{MX Quadtree}
-% erstmals? in quadtrees79.pdf   operations on images using quadtrees. hunter and steiglitz
+Der MX Quadtree zeichnet durch seine Art der Raumunterteilung aus:
+Es wird ein Bereich vorrausgesetzt, in dem alle Datenpunkte liegen.
+Dieser wird rekursiv in vier gleichgroße Quadranten partitioniert, bis auf der untersten Ebene 1x1 große Felder erreicht werden, welche die Daten beinhalten.
+Um dies zu ermöglichen, dürfen die Schlüssel nur diskrete Werte annehmen.
+
+Ein klassischer Anwendungsfall dieses Prinzip sind Rastergrafiken, welche ein geeignetes mentales Modell für MX Quadtrees darstellen, da hier jeder Datenpunkt offensichtlich genau einer Koordinate zugeordnet ist.\footzitx{Vgl.}{bb29082}
+Davon abgeleitet spricht man in diesem Kontext von weißen, schwarzen und grauen Knoten\footzit{Vgl}{DBLP:journals/cacm/Gargantini82}{Seite 2}:% cp
+\begin{description}
+	\item[Schwarze Knoten] sind entweder Datenblätter oder Knoten mit vier schwarzen Kindern.
+	\item[Graue Knoten] stellen Knoten dar, welche mindestens ein graues Kind besitzen oder mindestens je ein schwarzes und ein weißes Kind.
+	\item[Weiße Knoten] sind leere Blätter ohne Daten bzw.\ Knoten, die weder direkt noch indirekt auf Daten verweisen. Diese werden im Allgemeinen nicht explizit repräsentiert.
+\end{description}
+
+% Ein konkreten MX Quadtree enthält somit nur schwarze und graue Knoten.
+% todo: überleitung
+
+\myfig{img/mxquadtre-full-origdata-trimmed}{mxquadtree}{width=.7\textwidth}{MX Quadtree}{MX Quadtree. Diese Instanz ist eher spärlich besetzt.}
+Abbildung \ref{fig:mxquadtree} auf Seite \pageref{fig:mxquadtree} zeigt dieselben Daten wie in den vorhergegangen Grafiken in Form eines MX Quadtrees. Dabei fällt auf, dass die Aufteilung des Raumes hier unabhängig von der Reihenfolge des Einfügens der Knoten ist.
+
+%Beim Einfügen eines neuen Knotens wird die Struktur des Baumes entlang des Pfades des Schlüssels gebildet.
+
+
+% eher ungeeignet bei ganz wenigen daten und großer tiefe
+
+% einfügereihenfolge irrelevant
+% -> keine entartung
+% determiniert durch a priori raumaufteilung
+% -> raum vorher bekannt
+
+% höhe konstant
+
+% löschen: daten nur in blättern
+
+% 2^n
+% mx = matrix
+% 
+
+% für grafisches entwickelt, wie z.b. hier:
+% quadtrees79.pdf   operations on images using quadtrees. hunter and steiglitz
+\cite{Samet:1985:SCP:282957.282966}
+% später mx genannt -> samet verweis
 
 
 \subsection{PR Quadtree}
@@ -298,6 +347,8 @@ in welchem analog zum Pseudo Quadtree die Unterteilung des Raumes nicht an den K
 \newpage
 
 \listoffigures
+
+Alle in dieser Arbeit verwendeten Bilder wurden vom Autor erstellt.
 
 \newpage
 
