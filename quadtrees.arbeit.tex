@@ -135,6 +135,8 @@ backgroundcolor=\color{lgray}
 % ^ techreport? verfügbar
 %
 % bild für entartung
+%
+% bild pr tree 
 
 
 \part{Theorie}
@@ -324,13 +326,32 @@ Dies ist jedoch nur eine Optimierung; es wäre genauso möglich, den vollständi
 
 Das Löschen von Knoten im MX Quadtree ist weiters trivial, da im Gegensatz zu Point Quadtrees hier die Daten keinen Einfluss auf die Struktur des Baumes haben und nur in Blättern gespeichert werden. Nach dem Entfernen des eigentlichen Datenblattes muss nur die Färbung der Knoten am Pfad von der Wurzel zu diesem Blatt überprüft und gegebenenfalls angepasst werden.
 
-
-% für grafisches entwickelt, wie z.b. hier:
-% quadtrees79.pdf   operations on images using quadtrees. hunter and steiglitz
-% später mx genannt -> samet verweis
-
-
 \subsection{PR Quadtree}
+
+Die Einschränkung durch diskrete Koordinaten bei MX Quadtrees ist manchmal in der Praxis nicht tragbar.
+Nichtsdestoweniger ist die Eigenschaft, dass dieser Baumtyp nicht entarten kann (da die Einfügereihenfolge keine Rolle spielt), oft sehr sinnvoll. 
+
+Der PR Quadtree stellt eine Möglichkeit dar, dieses Problem zu Lösen. 
+Er ist eine Kombination von Point und Region Quadtree, daher auch der Name.
+Hier orientiert sich die Aufteilung des Raumes ähnlich zu MX Quadtrees wiederum an der rekursiven Dekomposition eines fixen Bereiches, dieser kann jedoch beliebig werden.
+
+Die Einfügeoperation läuft wie folgt ab:
+Der tiefste Quadrant, welcher die Koordinaten eines einzufügenden Knotens beinhaltet, wird gesucht.
+Ist dieser leer, kann der Knoten hier platziert werden.
+Andernfalls muss eine weitere Unterteilung vorgenommen werden, was durch Partitionierung des Quadranten in gleichgroße Teile geschieht. 
+Der Knoten, welcher sich in dem Quadranten befand, wird in die neue Unterteilung überführt, und es wird neuerlich versucht, den einzufügenden Knoten in diese zu integrieren. 
+Sollte es hier erneut zu Konflikten kommen, wird der Prozess der Partitionierung rekursiv so lange wiederholt, bis beide Knoten in verschiedene Quadranten eingeteilt werden.
+Dies ist trivialerweise garantiert, wenn die Koordinaten verschieden voneinander sind.
+% ref z.b. SametPolygon S 4
+
+Bei diesem Vorgang ist die Dekompositionsstruktur offensichtlich unabhängig von den konkreten Schlüsseln, wodurch die Einfügereihenfolge irrelevant wird und der Baum nicht im Sinne von Point Quadtrees entarten kann.\footzit{Vgl}{Samet90}{Seite 96}.
+
+Diese Strategie kann jedoch problematisch werden, wenn Datenpunkte nahe aneinander liegen. In diesem Fall müssen viele Unterteilungen getroffen werden, bis sie in verschiedene Quadranten eingeteilt werden können. 
+Diese Struktur ist somit mit dieser Einschränkung für alle Schlüsseltypen geeignet.\footzit{Vgl}{Samet90}{Seite 95f}
+
+Das Löschen aus einem PR Quadtree ist wiederum unkompliziert, da sich die Daten nur in Blättern befinden.
+Durch das Entfernen eines Blattes können Unterteilungen überflüssig werden, wenn etwa ein Knoten nur ein Kind besitzt.
+In diesem Fall kann der entsprechende Knoten einfach durch das Kind ersetzt werden.
 
 \part{Praxis}
 
