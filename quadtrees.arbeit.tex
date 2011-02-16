@@ -74,7 +74,7 @@
 }
 
 \title{Quadtrees}
-\author{Bernhard Mallinger \\ e0707663}
+\author{Bernhard Mallinger \\ e0707663 \\ TU Wien}
 %\subtitle{}
 %\date{13. November 2007}
 \publishers{Betreut durch Univ.-Ass. Dipl.-Ing., BSc Christian Schauer}
@@ -140,10 +140,11 @@ backgroundcolor=\color{lgray}
 Quadtrees stellen eine Datenstruktur dar, welche von Binärbäumen abgeleitet sind. Sie erweitern dessen Prinzip der rekursiven, hierarchischen Aufteilung eines Raumes auf mehrere Dimensionen. 
 Im Allgemeinen beschränkt man sich hier zur Vereinfachung auf zweidimensionale Daten, wobei die Verallgemeinerung auf \textit{k}-dimensionale Daten trivial ist.\footzit{Vgl}{DBLP:journals/acta/FinkelB74}{Seite 9}
 
-Anstatt wie bei Binärbäumen den Raum bei jedem Schritt in zwei Unterbäume zu teilen, werden bei Quadtrees vier Kinder verwendet, um alle möglichen Richtungen in zwei Dimensionen bezüglich des aktuellen Knoten abzudecken. Der Name "`Quadtree"' leitet sich hiervon ab (lat. "`quadri-"': "`vier-"'). 
+Anstatt wie bei Binärbäumen den Raum in jedem Schritt in zwei Unterbäume zu teilen, werden bei Quadtrees vier Kinder verwendet, um alle möglichen Richtungen in zwei Dimensionen bezüglich des aktuellen Knoten abzudecken. Der Name "`Quadtree"' leitet sich hiervon ab (lat. "`quadri-"': "`vier-"'). 
 Analog dazu bezeichnet man 3-dimensionale Bäume als "`Octtrees"'. Es ist weiters einfach zu sehen, dass $k$-dimensionale Bäume $2^k$ Kinder pro Knoten aufweisen.\footzit{Vgl.}{Bentley:1979}{Seite 16}
 
-Räumliche Strukturen wie Quadtrees sind generell dann sinnvoll, wenn die Entfernung zweier Punkte für die Anwendung relevant ist. Beispiele hierfür sind unter anderem Repräsentation von Bildern (angrenzende Bereiche besitzen oftmals ähnliche Farben), Kollisionserkennung, wo das Interesse auf sich überschneidende Strukturen liegt, oder Bereichsabfragen in Datenbanken.
+Räumliche Strukturen wie Quadtrees sind generell dann sinnvoll, wenn die Entfernung zweier Punkte für die Anwendung relevant ist.
+Beispiele hierfür sind unter anderem Repräsentation von Bildern (angrenzende Bereiche besitzen oftmals ähnliche Farben), Kollisionserkennung, wo das Interesse auf sich überschneidenden Strukturen liegt, oder Bereichsabfragen in Datenbanken.
 
 Beim Zugriff auf die so in einem Quadtree gespeicherten Daten unterscheidet man zwischen verschiedenen Anfragetypen:\footnote{Basierend auf \cite{Knuth:1998:ACP:280635}, Seite 559 und der Erweiterung durch \cite{Bentley:1975:nearest}}
 \begin{description}
@@ -232,7 +233,7 @@ Das Entfernen eines Knotens aus einem Quadtree ist im Allgemeinen eine komplexe 
 Daher ist es notwendig, eventuelle Kinder eines entfernten Knoten gemäß dem Baumaufbau neu zu platzieren.\footzit{Vgl.}{DBLP:journals/acta/FinkelB74}{Seite 8}
 Bei Binärbäumen stellt dies kein allzu großes Problem dar, da in einem eindimensionalen Raum immer ein geeigneter Ersatz in Form des nächsten Knotens für einen zu entfernenden Knoten zur Verfügung steht.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 2}
 Im Fall von Quadtrees muss eine Substitution hingegen Bedingungen hinsichtlich zweier Dimensionen genügen, wodurch es ein Näheverhältnis wie im eindimensionalen Fall nicht gibt.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 2}
-Hier ist ein ein Ersatz nur dann möglich, wenn ein Blattknoten existiert, für den sich im Bereich zwischen den Achsen, welche durch die Koordinaten des Blattknoten bzw.\ deren des zu entfernenden Knoten verlaufen, kein anderer Knoten befindet.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 3}
+Hier ist ein Ersatz nur dann möglich, wenn ein Blattknoten existiert, für den sich im Bereich zwischen den Achsen, welche durch die Koordinaten des Blattknoten bzw.\ deren des zu entfernenden Knoten verlaufen, kein anderer Knoten befindet.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 3}
 
 Ursprünglich wurde vorgeschlagen, alle Kinder des zu entfernenden Knoten neu einzufügen, was einen sehr aufwändigen Prozess darstellen kann.\footzit{Vgl.}{DBLP:journals/acta/FinkelB74}{Seite 8}
 Sollte kein Knoten das oben genannte Kriterium erfüllen, kann nur durch günstige Wahl des Ersatzknotens die Anzahl der neu einzufügenden Knoten minimiert werden, wie etwa in \cite{DBLP:journals/cacm/Samet80a} gezeigt wird.
@@ -263,7 +264,7 @@ In diesem Fall wurde der Mittelpunkt von zwei Knoten als Punkt zur Teilung verwe
 
 Sollte trotz einer angepassten Strategie ein Ungleichgewicht entstehen, kann der Subbaum, dessen Wurzel der höchste Knoten ist, bei welchem eine unbalancierte Verteilung seiner Kindknoten festgestellt wird, neu strukturiert werden, indem eine neue Aufteilung der vorhandenen Knoten berechnet wird.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 4f} % cp
 Es kann gezeigt werden, dass im allgemeinen Fall eine Teilung möglich ist, in der sich in jedem der 4 Quadranten höchstens ein Drittel der Knoten befinden.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 7} % cp
-Mit dieser Methode kann weiters garantiert werden, dass eine Pseudo Quadtree aufgebaut werden kann, dessen Höhe garantiert $\lceil \log_{d+1} n\rceil$ nicht überschreitet, wobei $n$ die Anzahl der Daten darstellt.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 8}
+Mit dieser Methode kann weiters garantiert werden, dass ein Pseudo Quadtree aufgebaut werden kann, dessen Höhe garantiert $\lceil \log_{d+1} n\rceil$ nicht überschreitet, wobei $n$ die Anzahl der Daten darstellt.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 8}
 
 Durch diese Aufteilung des Raumes an beliebigen Punkten befinden sich Daten schließlich nur noch an den Blättern. Dies wiederum ist der optimale Fall bezüglich dem Entfernen von Knoten -- ein Knoten ohne Kinder kann jederzeit ohne zusätzlichen Aufwand gelöscht werden. Da das Entfernen eines Knotens immer auch das Suchen desselben erfordert, entsteht somit ein logarithmischer Aufwand.
 
@@ -273,8 +274,8 @@ Durch diese Aufteilung des Raumes an beliebigen Punkten befinden sich Daten schl
 Diese Variante wurde von Bentley kurz nach dem Point Quadtree 1974 in \cite{Bentley:1975} entwickelt. Der Name \kd\ deutet an, dass dieser Baum $k$-dimensionale Schlüssel verwendet. 
 
 Der \kd\ Tree kann wie der Point Quadtree als Verallgemeinerung des Binärbaums gesehen werden, hier wird hingegen ein etwas anderer Ansatz verfolgt:
-Anstatt den Raum gleichzeitig in allen Dimensionen zu partitionieren und somit die Notwendigkeit von $2^k$ Kindern pro Knoten zu erfordern, wird in jedem Schritt nur eine Dimension berücksichtigt und so eine binäre Unterteilung von eigentlich mehrdimensionalen Schlüsseln ermöglicht.
-Diese Mehrdimensionalität wird bei \kd\ Trees weiters dadurch ausgedrückt, dass die Dimensionen, bezüglich derer an einer gewissen Tiefe geteilt wird, beliebig alterniert.
+Anstatt den Raum gleichzeitig in allen Dimensionen zu partitionieren und somit $2^k$ Kinder pro Knoten zu erfordern, wird in jedem Schritt nur eine Dimension berücksichtigt und so eine binäre Unterteilung von eigentlich mehrdimensionalen Schlüsseln ermöglicht.
+Diese Mehrdimensionalität wird bei \kd\ Trees weiters dadurch ausgedrückt, dass die Dimensionen, bezüglich derer an einer gewissen Tiefe geteilt wird, beliebig alternieren.
 Im zweidimensionalen Fall könnte hier etwa bei geraden Tiefenebenen an der $x$-Achse bzw bei ungeraden an der $y$-Achse geteilt werden, wie etwa Abbildung \ref{fig:kdtree} auf Seite \pageref{fig:kdtree} zeigt.
 Ursprünglich wurde genau dieses Abwechslungsmuster vorgeschlagen,\footzit{Vgl.}{Bentley:1975}{Seite 2}
 wobei dieses auch dynamisch beliebig gewählt und so an die Daten angepasst werden kann\footzit{Vgl.}{Samet90}{Seite 66}.
@@ -285,7 +286,8 @@ Verwendet man hier einen dynamischen Ansatz, muss jedoch bei jedem Knoten der Di
 Bezüglich den vorhergegangenen Abbildung wurden hier die Koordinaten der Knoten leicht verändert, da in diesem Fall ein äußerst schlecht balancierter \kd\ Tree entstehen würde, was der Autor aus Demonstrationszwecken vermeiden möchte.}
 
 Dieser Typ bietet gegenüber einem Point Quadtree Vorteile bezüglich des Platzbedarfs:
-anstatt $2^k$ sind hier nur 2 Kinder pro Knoten erforderlich. Dies löst das Problem von vielen unnötigen Leereinträgen, welche bei einem Point Quadtree bei einer großen Dimensionsanzahl auftreten können.
+anstatt $2^k$ sind hier nur 2 Kinder pro Knoten erforderlich.
+Dies löst das Problem von vielen unnötigen Leereinträgen, welche bei einem Point Quadtree bei einer großen Dimensionsanzahl auftreten können.
 
 Weiters müssen bei einem Point Quadtree bei einer Suche in jedem Schritt alle Dimensionen verglichen werden.
 Bei einer großen Anzahl von Dimensionen kann dies überflüssig sein, wenn sich etwa Datensätze bereits durch eine echte Teilmenge ihrer Schlüssel einteilen lassen.
@@ -345,7 +347,7 @@ Davon abgeleitet spricht man in diesem Kontext von weißen, schwarzen und grauen
 	\item[Weiße Knoten] sind leere Blätter ohne Daten bzw.\ Knoten, die weder direkt noch indirekt mittels Kindverweise auf Daten verweisen. Diese werden im Allgemeinen nicht explizit repräsentiert.
 \end{description}
 
-Eine konkreter Instanz eines MX Quadtree enthält somit nur schwarze und graue Knoten.
+Eine konkrete Instanz eines MX Quadtree enthält somit nur schwarze und graue Knoten.
 Das Nicht-Repräsentieren weißer Knoten führt dazu, dass die Struktur des Baumes erst beim Einfügen aufgebaut wird.
 Dies ist jedoch nur eine Optimierung; es wäre genauso möglich, den vollständigen Baum mit weißen Knoten bzw.\ Blättern aufzufüllen, welche später grau oder schwarz eingefärbt bzw.\ von schwarzen Blättern ersetzt werden.
 
@@ -371,7 +373,8 @@ Dies ist trivialerweise garantiert, wenn die Koordinaten verschieden voneinander
 
 Bei diesem Vorgang ist die Dekompositionsstruktur offensichtlich unabhängig von den konkreten Schlüsseln, wodurch die Einfügereihenfolge irrelevant wird und der Baum nicht im Sinne von Point Quadtrees entarten kann.\footzit{Vgl}{Samet90}{Seite 96}.
 
-Diese Strategie kann jedoch problematisch werden, wenn Datenpunkte nahe aneinander liegen. In diesem Fall müssen viele Unterteilungen getroffen werden, bis sie in verschiedene Quadranten eingeteilt werden können. 
+Diese Strategie kann jedoch problematisch werden, wenn Datenpunkte nahe aneinander liegen.
+Hier müssen viele Unterteilungen getroffen werden, bis sie in verschiedene Quadranten eingeteilt werden können. 
 Diese Struktur ist somit mit dieser Einschränkung für alle Schlüsseltypen geeignet.\footzit{Vgl}{Samet90}{Seite 95f}
 
 Das Löschen aus einem PR Quadtree ist wiederum unkompliziert, da sich die Daten nur in Blättern befinden.
