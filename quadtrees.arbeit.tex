@@ -33,13 +33,14 @@
 
 %\usepackage[square]{natbib} % \cite ; square|round etc.
 \usepackage[numbers,square]{natbib}
-%\usepackage[numbers,round]{natbib}
+%\usepackage[square, authoryear]{natbib}
 
 %\usepackage{bibgerm}
 %\bibliographystyle{plain}
 %\bibliographystyle{alpha}
 \bibliographystyle{alphadin}
 %\bibliographystyle{dinat}
+%\bibliographystyle{chicago}
 %\bibliographystyle{plainnat}
 
 %\bibdata{bib.bib}
@@ -121,19 +122,17 @@ backgroundcolor=\color{lgray}
 %
 % binäre suche im anfang reinbringen -- bin tree
 %
-% point qt: suche: range + neighborhood 
+% point qt: suche: neighborhood 
 %
 % anwendungen (vllt extrakapitel) (kriterien für anwendbarkeit)
 %
-% graphendarstellung? (wort)
-%
 % seite 3 (aus paper zitieren)
-%
-% bild für entartung
 %
 % bild pr tree 
 %
 % kurz erweiterung auf mehrere dimensionen am bsp von octtree besprechen
+%
+% pr quadtree vllt noch mehr literatur finden
 
 
 \part{Theorie}
@@ -144,13 +143,13 @@ Im Allgemeinen beschränkt man sich hier zur Vereinfachung auf zweidimensionale 
 Anstatt wie bei Binärbäumen den Raum bei jedem Schritt in zwei Unterbäume zu teilen, werden bei Quadtrees vier Kinder verwendet, um alle möglichen Richtungen in zwei Dimensionen bezüglich des aktuellen Knoten abzudecken. Der Name "`Quadtree"' leitet sich hiervon ab (lat. "`quadri-"': "`vier-"'). 
 Analog dazu bezeichnet man 3-dimensionale Bäume als "`Octtrees"'. Es ist weiters einfach zu sehen, dass $k$-dimensionale Bäume $2^k$ Kinder pro Knoten aufweisen.\footzit{Vgl.}{Bentley:1979}{Seite 16}
 
-Räumliche Strukturen wie Quadtrees sind generall dann sinnvoll, wenn die Entfernung zweier Punkte für die Anwendung relevant ist. Beispiele hierfür sind unter anderem Repräsentation von Bildern (angrenzende Bereiche besitzen oftmals ähnliche Farben), Kollisionserkennung, wo das Interesse auf sich überschneidende Strukturen liegt, oder Bereichsabfragen in Datenbanken.
+Räumliche Strukturen wie Quadtrees sind generell dann sinnvoll, wenn die Entfernung zweier Punkte für die Anwendung relevant ist. Beispiele hierfür sind unter anderem Repräsentation von Bildern (angrenzende Bereiche besitzen oftmals ähnliche Farben), Kollisionserkennung, wo das Interesse auf sich überschneidende Strukturen liegt, oder Bereichsabfragen in Datenbanken.
 
 Beim Zugriff auf die so in einem Quadtree gespeicherten Daten unterscheidet man zwischen verschiedenen Anfragetypen:\footnote{Basierend auf \cite{Knuth:1998:ACP:280635}, Seite 559 und der Erweiterung durch \cite{Bentley:1975:nearest}}
 \begin{description}
 	\item[Point Query.]
 		Mit dieser Anfrage versucht man herauszufinden, welche Daten sich bei einem bestimmten Punkt befinden.
-		Anworten auf diese Anfrage können entweder \mynull\ bzw.\ ein Datenobjekt sein.
+		Antworten auf diese Anfrage können entweder \mynull\ bzw.\ ein Datenobjekt sein.
 	\item[Range Query.]
 		Hier interessiert man sich für die Knoten, welche innerhalb von Bereichen, die hinsichtlich mehreren Dimensionen ausgedehnt sein können, liegen.
 		Zurückgegeben wird eine möglicherweise leere Liste von Datenobjekten.
@@ -172,7 +171,7 @@ Die Koordinaten der zu speichernden Daten bestimmen demnach die Gestalt der Stru
 Die eigentlichen Daten werden je nach Quadtreetyp in allen Knoten oder nur den Blättern gespeichert.
 
 Dieses Prinzip der rekursiven, hierarchischen Dekomposition erlaubt das effiziente Suchen in logarithmischer Zeit, sofern eine adäquate Balancierung sichergestellt ist.\footnote{Siehe Kapitel \ref{sec:pointquadtree-suche} auf Seite \pageref{sec:pointquadtree-suche}}
-\myfig{img/quadtree}{quadtree}{width=.4\textwidth}{Funktionsprinzip eines Quadtrees}{Alle Kinder eines Knotens repräsentieren Teilbäume, welche sich vollständig in NW-, NE-, \mbox{SW-} oder SE-Richtung des aktuellen Knoten befinden. Je nach Konvention können die Quadranten auch mittels ihrer Nummerierung referentiert werden.}
+\myfig{img/quadtree}{quadtree}{width=.4\textwidth}{Funktionsprinzip eines Quadtrees}{Alle Kinder eines Knotens repräsentieren Teilbäume, welche sich vollständig in NW-, NE-, \mbox{SW-} oder SE-Richtung des aktuellen Knoten befinden. Je nach Konvention können die Quadranten auch mittels ihrer Nummerierung referenziert werden.}
 
 \section{Punktbasierte Quadtrees}
 \label{sec:pointbased}
@@ -189,19 +188,24 @@ Abbildung \ref{fig:pointquadtree} auf Seite \pageref{fig:pointquadtree} zeigt ei
 In der Ersteren wird nur die Struktur des Baumes betrachtet, die Lage der Datenknoten ist ausschließlich relativ zueinander sichtbar.
 Die Zweitere konzentriert sich mehr auf die absolute Position der Punkte in einem Koordinatensystem und zeigt zusätzlich dazu die rekursive Dekompositionsstruktur ein.
 Die Bezeichnung der Knoten in der Grafik gibt hier die Reihenfolge des Einfügens an. Bereits hier wird deutlich, dass die Form des Baumes durch diese Reihenfolge determiniert wird.\footnote{Vgl. Kapitel \ref{sec:pointquadtree:insert} auf Seite \pageref{sec:pointquadtree:insert}}
-\myfig{img/pointquadtree-ins7+tree-trimmed}{pointquadtree}{width=.9\textwidth}{Point Quadtreee}{Gegenüberstellung: Ein Point Quadtree in Baum- bzw.\ Graphendarstellung}
+\myfig{img/pointquadtree-ins7+tree-trimmed}{pointquadtree}{width=.9\textwidth}{Point Quadtree}{Gegenüberstellung: Ein Point Quadtree in Baum- bzw.\ Graphendarstellung}
 
 \subsubsection{Suche}
 \label{sec:pointquadtree-suche}
 Der Algorithmus zur Suche von Koordinaten (Point Query) ergibt sich unmittelbar aus dem rekursiven Aufbauprinzip des Quadtrees. 
 
-Die Suche beginnt beginnt an der Wurzel. In jedem Schritt werden je ein Vergleich der $x$- und $y$-Koordinate des aktuellen Knotens mit dem gesuchten Knoten durchgeführt, wodurch der Quadrant bestimmt wird, in welchen sich der gesuchte Knoten befindet. Ist dieser Quadrant leer, d.h.\ ist kein Kindknoten bezüglich dieser Richtung am aktuellen Knoten vorhanden, wird die Suche erfolglos abgebrochen; andernfalls wird sie bei dem Kindnoten, welcher diesen Quadranten abdeckt, rekursiv fortgesetzt, bis die Koordinaten des gesuchten Knoten mit jenen des aktuellen Knoten übereinstimmen.
+Die Suche beginnt beginnt an der Wurzel. In jedem Schritt werden je ein Vergleich der $x$- und $y$-Koordinate des aktuellen Knotens mit dem gesuchten Knoten durchgeführt, wodurch der Quadrant bestimmt wird, in welchen sich der gesuchte Knoten befindet. Ist dieser Quadrant leer, d.h.\ ist kein Kindknoten bezüglich dieser Richtung am aktuellen Knoten vorhanden, wird die Suche erfolglos abgebrochen; andernfalls wird sie bei dem Kindknoten, welcher diesen Quadranten abdeckt, rekursiv fortgesetzt, bis die Koordinaten des gesuchten Knoten mit jenen des aktuellen Knoten übereinstimmen.
 
-Durch die rekursive Aufteilung kann hier im Average Case mit logarithmischer Laufzeit gerechnet werden ($O(log_4\ N)$). 
-Dies kann durch dies Gesamtpfadlänge\footnote{engl. TPL: Total path length} abgeschätzt werden, welche nach empirischen Ergebnissen bei Einfügung in zufälliger Reihenfolge in etwa $N\ log_4\ N$ beträgt.\footzit{Vgl.}{DBLP:journals/acta/FinkelB74}{Seite 4}
+Durch die rekursive Aufteilung kann hier im Average Case mit einer  Gesamtpfadlänge\footnote{engl. TPL: Total path length} von $N \log_4 N$ gerechnet werden, was in empirischen Untersuchungen mit Einfügungen in zufälliger Reihenfolge bestätigt wurde.\footzit{Vgl.}{DBLP:journals/acta/FinkelB74}{Seite 4}
+Dies führt in der Folge bei der Suche nach einzelnen Punkten zu einer Laufzeit von $O(\log_4 N)$.
+Allerdings hängt diese Größe von der Balancierung des Baumes ab, wofür es beim Point Quadtree keine Garantien gibt,\footnote{Vgl. Kapitel \ref{sec:pointquadtree:insert} auf Seite \pageref{sec:pointquadtree:insert}}
+was im Falle einer Entartung (Worst Case) zu einer linearen Laufzeit ($O(n)$) führt.\footzit{Vgl.}{Samet90}{Seite 52}
 
-Allerdings hängt diese Größe von der Balanzierung des Baumes ab, wofür es beim Point Quadtree keine Garantien gibt.\footnote{Vgl. Kapitel \ref{sec:pointquadtree:insert} auf Seite \pageref{sec:pointquadtree:insert}}
-Dies führt im Falle einer Entartung (Worst Case) zu einer linearen Laufzeit ($O(n)$).\footzit{Vgl.}{Samet90}{Seite 52}
+Die Bereichssuche gestaltet sich ähnlich der Punktabfrage.
+Der essentielle Unterschied besteht darin, dass hier die Suche möglicherweise in mehreren Quadranten eines Knotens fortgesetzt werden muss.
+Die zu durchsuchenden Quadranten werden bestimmt, indem überprüft wird, ob der Bereich dieses Quadranten mit dem gesuchten Bereich überlappt.
+Weiters wird für jeden Knoten, welcher besucht wird, festgestellt, ob dieser sich in dem spezifizierten Bereich befindet; dieser wird gegebenenfalls zurückgegeben.\footzit{Vgl.}{DBLP:journals/acta/FinkelB74}{Seite 5f}
+In dieser Formulierung wird ebenso sofort deutlich, dass die gesuchte Region nicht unbedingt ein Rechteck bilden muss.
 
 %Weiters kann gezeigt werden, dass Range Queries in $O(n\ log_k\ n)$ abgearbeitet werden können.\footzit{Vgl.}{Lueker78}{Seite 1}
 
@@ -212,10 +216,13 @@ In dem Quadranten, in welchem eine normale Suche abbrechen würde, wird das Datu
 Konkret geschieht dies durch Setzen des diesem Quadranten zugeordneten Zeigers im Elternknoten.
 Der asymptotische Aufwand dieser Operation ist natürlich identisch mit jenem der Suche.
 
-Der neue eingefügte Knoten teilt den Raum wiederum an seinen $x$- bzw. $y$-Koordinaten und erweitert so die Struktur des Baumes.  
-Es ist schnell ersichtlich, dass hier, genau wie bei einem Binärbaum, Entartungen auftreten können, da sich die Struktur dynamisch mit jedem eingefügten Element herausbildet. 
-Ein besonders Problem stellen hier etwa geordnete Daten da. Werden diese in der gegebenen Reihenfolge eingefügt, degeneriert der Baum zu einer linearen Listen, wodurch ein linearer Such- und somit gleichzeitig auch Einfügeaufwand entsteht.
-Sind andererseits beim Aufbau des Baumes bereits alle Daten verfügbar, kann durch folgende Strategie ein optimale Balanzierung erreicht werden: Der Median der sortierten Liste von Daten wird als Wurzel verwendet, die restlichen Elemente werden in 4 Gruppen eingeteilt, welche den Quadranten dieser Wurzel zugeordnet werden.
+Der neu eingefügte Knoten teilt den Raum wiederum an seinen $x$- bzw. $y$-Koordinaten und erweitert so die Struktur des Baumes.  
+Es ist schnell ersichtlich, dass hier, genau wie bei einem Binärbaum, Entartungen auftreten können, da sich die Struktur dynamisch mit jedem eingefügten Element herausbildet.
+
+Ein besonders Problem stellen hier etwa geordnete Daten da. Werden diese in der gegebenen Reihenfolge eingefügt, degeneriert der Baum zu einer linearen Liste, wodurch ein linearer Such- und somit gleichzeitig auch Einfügeaufwand entsteht, wie Abbildung \ref{fig:entartung} auf Seite \pageref{fig:entartung} demonstriert.
+\myfig{img/pointquadtree-entartet-trimmed}{entartung}{width=.6\textwidth}{Entarteter Point Quadtree}{Ein Entarteter Point Quadtree}
+
+Sind andererseits beim Aufbau des Baumes bereits alle Daten verfügbar, kann durch folgende Strategie ein optimale Balancierung erreicht werden: Der Median der sortierten Liste von Daten wird als Wurzel verwendet, die restlichen Elemente werden in 4 Gruppen eingeteilt, welche den Quadranten dieser Wurzel zugeordnet werden.
 Auf jede dieser Unterteilungen wird der Prozess rekursiv angewendet. Dadurch kann erreicht werden, dass für jeden Knoten kein Kind mehr als die Hälfte aller Subknoten von diesem enthält, was empirisch zu 15\% geringeren Gesamtpfadlängen führt.\footzit{Vgl.}{DBLP:journals/acta/FinkelB74}{Seite 8f}
 
 
@@ -223,11 +230,11 @@ Auf jede dieser Unterteilungen wird der Prozess rekursiv angewendet. Dadurch kan
 \label{sec:pointquadtree:delete}
 Das Entfernen eines Knotens aus einem Quadtree ist im Allgemeinen eine komplexe Operation, da die Knoten alleine die Struktur des Baumes bilden, und diese auch nach dem Löschen weiterhin gewisse Eigenschaften innehaben muss.
 Daher ist es notwendig, eventuelle Kinder eines entfernten Knoten gemäß dem Baumaufbau neu zu platzieren.\footzit{Vgl.}{DBLP:journals/acta/FinkelB74}{Seite 8}
-Bei Binärbäumen stellt dies kein allzu großes Problem dar, da in einem eindimensionalen Raum immer ein geeigneter Ersatz in Form des nähesten Knotens für einen zu entfernenden Knoten zur Verfügung steht.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 2}
+Bei Binärbäumen stellt dies kein allzu großes Problem dar, da in einem eindimensionalen Raum immer ein geeigneter Ersatz in Form des nächsten Knotens für einen zu entfernenden Knoten zur Verfügung steht.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 2}
 Im Fall von Quadtrees muss eine Substitution hingegen Bedingungen hinsichtlich zweier Dimensionen genügen, wodurch es ein Näheverhältnis wie im eindimensionalen Fall nicht gibt.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 2}
 Hier ist ein ein Ersatz nur dann möglich, wenn ein Blattknoten existiert, für den sich im Bereich zwischen den Achsen, welche durch die Koordinaten des Blattknoten bzw.\ deren des zu entfernenden Knoten verlaufen, kein anderer Knoten befindet.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 3}
 
-Ursprünglich wurde vorgeschlagen, alle Kinder des zu entfernenden Knoten neu einzufügen, was einen sehr teuren Prozess darstellen kann.\footzit{Vgl.}{DBLP:journals/acta/FinkelB74}{Seite 8}
+Ursprünglich wurde vorgeschlagen, alle Kinder des zu entfernenden Knoten neu einzufügen, was einen sehr aufwändigen Prozess darstellen kann.\footzit{Vgl.}{DBLP:journals/acta/FinkelB74}{Seite 8}
 Sollte kein Knoten das oben genannte Kriterium erfüllen, kann nur durch günstige Wahl des Ersatzknotens die Anzahl der neu einzufügenden Knoten minimiert werden, wie etwa in \cite{DBLP:journals/cacm/Samet80a} gezeigt wird.
 
 Eine weitere Optimierung kann dadurch erreicht werden, dass gelöschte Knoten nicht aus dem Baum entfernt, sondern nur als gelöscht markiert werden, um so die Struktur zu erhalten.
@@ -237,16 +244,16 @@ Durch dieses Verfahren kann folglich der Aufwand einzelner Löschoperationen abg
 
 \subsection{Pseudo Quadtree}
 \label{sec:pseudoquadtree}
-Der Pseudo Quadtree ist eine Abwandlung des Point Quadtrees, welche Löschen in logarithmischer Zeit sowie einfachere Rebalanzierung bei Deformation ermöglicht. Diese Form des Quadtrees wurde 1982 von Overmars und van Leeuwen in \cite{DBLP:journals/acta/OvermarsL82} entwickelt.
+Der Pseudo Quadtree ist eine Abwandlung des Point Quadtrees, welche Löschen in logarithmischer Zeit sowie einfachere Rebalancierung bei Deformation ermöglicht. Diese Form des Quadtrees wurde 1982 von Overmars und van Leeuwen in \cite{DBLP:journals/acta/OvermarsL82} entwickelt.
 
-Dem Pseudo Quadtree liegt die Analyse zu Grunde, dass die Probleme beim Entfernen von Knoten und bei der Balanzierung bei Point Quadtrees daher stammen, dass die Datenpunkte selbst die Struktur des Baumes bilden, und so nur äußerst wenig Flexibilität vorhanden ist.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 6}
+Dem Pseudo Quadtree liegt die Analyse zu Grunde, dass die Probleme beim Entfernen von Knoten und bei der Balancierung bei Point Quadtrees daher stammen, dass die Datenpunkte selbst die Struktur des Baumes bilden, und so nur äußerst wenig Flexibilität vorhanden ist.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 6}
 Aus diesem Grund wurde unterscheidet sich der Pseudo Quadtree davon insofern, als dass die Dekomposition des Raum an beliebigen Punkten stattfinden kann. 
 
 Konkret funktioniert das Einfügen beim Pseudo Quadtree wie folgt:
 Der Quadrant eines Datenpunktes wird gesucht.
 Ist dieser leer, wird der Knoten hier eingefügt, ohne den Raum an dessen Koordinaten weiter zu unterteilen.
 Befindet sich hier hingegen bereits ein anderer Knoten, muss eine neue Untergliederung eingeführt werden.
-Hier können beliebige Strategien verwendet werden, um einen Teilungspunkt zu bestimmen, wodurch ein der Anwendung angepasster, gut balanzierter Baum entstehen kann.
+Hier können beliebige Strategien verwendet werden, um einen Teilungspunkt zu bestimmen, wodurch ein der Anwendung angepasster, gut balancierter Baum entstehen kann.
 Als einzige Postcondition dieser Strategie muss garantiert werden,
 dass die Knoten in verschiedene Quadranten eingeteilt werden.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 6}
 
@@ -254,8 +261,9 @@ Abbildung \ref{fig:pseudoquadtree} auf Seite \pageref{fig:pseudoquadtree} zeigt 
 In diesem Fall wurde der Mittelpunkt von zwei Knoten als Punkt zur Teilung verwendet.
 \myfig{img/pseudoquadtree-ins3-trimmed}{pseudoquadtree}{width=.6\textwidth}{Pseudo Quadtree}{Pseudo Quadtree}
 
-Sollte trotz einer angepassten Strategie ein Ungleichgewicht entstehen, kann der Subbaum, dessen Wurzel der höchste Knoten ist, bei welchem eine unbalanzierte Verteilung seiner Kindknoten festgestellt wird, neu strukturiert werden, indem eine neue Aufteilung der vorhandenen Knoten berechnet wird.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 5} % cp
+Sollte trotz einer angepassten Strategie ein Ungleichgewicht entstehen, kann der Subbaum, dessen Wurzel der höchste Knoten ist, bei welchem eine unbalancierte Verteilung seiner Kindknoten festgestellt wird, neu strukturiert werden, indem eine neue Aufteilung der vorhandenen Knoten berechnet wird.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 4f} % cp
 Es kann gezeigt werden, dass im allgemeinen Fall eine Teilung möglich ist, in der sich in jedem der 4 Quadranten höchstens ein Drittel der Knoten befinden.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 7} % cp
+Mit dieser Methode kann weiters garantiert werden, dass eine Pseudo Quadtree aufgebaut werden kann, dessen Höhe garantiert $\lceil \log_{d+1} n\rceil$ nicht überschreitet, wobei $n$ die Anzahl der Daten darstellt.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 8}
 
 Durch diese Aufteilung des Raumes an beliebigen Punkten befinden sich Daten schließlich nur noch an den Blättern. Dies wiederum ist der optimale Fall bezüglich dem Entfernen von Knoten -- ein Knoten ohne Kinder kann jederzeit ohne zusätzlichen Aufwand gelöscht werden. Da das Entfernen eines Knotens immer auch das Suchen desselben erfordert, entsteht somit ein logarithmischer Aufwand.
 
@@ -274,16 +282,22 @@ Verwendet man hier einen dynamischen Ansatz, muss jedoch bei jedem Knoten der Di
 
 \myfig{img/kdtree-tree-full-trimmed}{kdtree}{width=.78\textwidth}{\kd\ Tree}{Ein \kd\ Tree: Die Beschriftung links der Unterteilungen gibt die Achse an, bezüglich welcher die Knoten aufgeteilt werden.
 \\ \\
-Bezüglich den vorhergegangenen Abbildung wurden hier die Koordinaten der Knoten leicht verändert, da in diesem Fall ein äußerst schlecht balanzierter \kd\ Tree entstehen würde, was der Autor aus Demonstrationszwecken vermeiden möchte.}
+Bezüglich den vorhergegangenen Abbildung wurden hier die Koordinaten der Knoten leicht verändert, da in diesem Fall ein äußerst schlecht balancierter \kd\ Tree entstehen würde, was der Autor aus Demonstrationszwecken vermeiden möchte.}
 
 Dieser Typ bietet gegenüber einem Point Quadtree Vorteile bezüglich des Platzbedarfs:
 anstatt $2^k$ sind hier nur 2 Kinder pro Knoten erforderlich. Dies löst das Problem von vielen unnötigen Leereinträgen, welche bei einem Point Quadtree bei einer großen Dimensionsanzahl auftreten können.
 
+Weiters müssen bei einem Point Quadtree bei einer Suche in jedem Schritt alle Dimensionen verglichen werden.
+Bei einer großen Anzahl von Dimensionen kann dies überflüssig sein, wenn sich etwa Datensätze bereits durch eine echte Teilmenge ihrer Schlüssel einteilen lassen.
+In diesem Fall reicht das Überprüfen dieser Teilmenge,
+was in einem Point Quadtree nicht realisierbar ist, sich mit dem \kd\ Tree jedoch effizient verwirklichen lässt.\footzit{Vgl}{Samet90}{Seite 66}
+
 Die Operationen Suche und Einfügen ergeben sich direkt aus dem Funktionsprinzip des \kd\ Trees, beide benötigen offensichtlich eine logarithmische Laufzeit im Average Case\footzit{Vgl.}{Bentley:1975}{Seite 1} (sofern der Baum nicht entartet).
 Schwieriger ist hingegen das Löschen:
 Nach dem Entfernen eines Knotens darf die Struktur des \kd\ Trees nicht verletzt werden, weshalb ein geeigneter Ersatz gefunden werden muss.
-Für dieses Problem wurde eine Strategie entwickelt, welche auf der Lösung des analogen Problems bei Binärbäumen basiert und zugleich die Mehrdimensionalität im \kd\ Tree berücksichtigt.\footzit{Für eine detaillierte Beschreibung dieses Verfahrens siehe}{Bentley:1975}{Seite 7} 
-Anstatt im Worst Case (bei Löschung der Wurzel) $n$ Neueinfügungen mit dem naiven Ansatz benötigt diese Methode nur $O(n^{1-\frac{1}{k}})$.
+Für dieses Problem wurde eine Strategie entwickelt, welche auf der Lösung des analogen Problems bei Binärbäumen basiert und zugleich die Mehrdimensionalität im \kd\ Tree berücksichtigt.
+Der wesentliche Aspekt dieses Verfahrens ist, dass der Ersatzknoten nicht wie beim Binärbaum immer ein Blatt ist, sondern im Allgemeinen auch Kinder hat, wodurch der Ersatzknoten auch substituiert werden muss.\footzit{Für eine detaillierte Beschreibung dieses Verfahrens siehe}{Bentley:1975}{Seite 7} 
+Anstatt im Worst Case (bei Löschung der Wurzel) $n$ Neueinfügungen mit dem naiven Ansatz benötigt diese Methode nur $O(\log n)$ (bei einer Knotenanzahl von $n$).
 
 Um diesem Problem gänzlich zu entgehen kann ähnlich dem Pseudo Quadtree\footnote{Siehe Kapitel \ref{sec:pseudoquadtree}} auch ein Pseudo \kd\ Tree\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 13ff} verwendet werden,
 in welchem analog zum Pseudo Quadtree die Unterteilung des Raumes nicht an den Koordinaten der Knoten, sondern an beliebigen Punkten vorgenommen wird, und so Daten nur in Blättern gespeichert werden.
@@ -305,14 +319,14 @@ Der Bereich, in dem die Datenpunkte liegen, wird unabhängig von den konkreten D
 und zwar rekursiv in vier gleichgroße Quadranten, 
 bis auf der untersten Ebene 1x1 große Felder erreicht werden, welche die Daten beinhalten.\footzit{Vgl.}{Samet:1985:SCP:282957.282966}{Seite 1f}
 
-Diese Art der Dekomposition setzt folgendes vorraus:
+Diese Art der Dekomposition setzt folgendes voraus:
 \renewcommand{\labelenumi}{({\theenumi})}
 \begin{enumerate}
 	\item \textbf{Konstanter Bereich.}
 		Die Region, in welcher sich Daten befinden, muss a priori bekannt sein und während des gesamten Programmablaufs konstant bleiben.
 	\item \textbf{Diskrete Koordinaten.}
 		Die Schlüssel dürfen nur diskrete Werte annehmen, ähnlich den Einträgen einer Matrix, woher sich auch der Name "`MX"' ableitet.\footzit{Vgl.}{Samet90}{Seite 86}
-	\item \textbf{Fläche des Raumes ist quadratisch mit einer Zweierpotenz als Seitenlänge.}
+	\item \textbf{Die Fläche des Raumes ist quadratisch mit einer Zweierpotenz als Seitenlänge.}
 		Da der Raum aus praktischen Gründen in 4 gleichgroße Teile partitioniert wird, entsteht eine Gesamtgröße von $2^n$x$2^n$. Bei Datenregionen, welche nicht diese Ausdehnung besitzen, können Leereinträge verwendet werden, um diese Größe zu erreichen.
 \end{enumerate}
 
@@ -320,7 +334,7 @@ Diese Art der Dekomposition setzt folgendes vorraus:
 Abbildung \ref{fig:mxquadtree} auf Seite \pageref{fig:mxquadtree} zeigt dieselben Daten wie in den vorhergegangen Grafiken in Form eines MX Quadtrees.
 Dabei fällt auf, dass die Aufteilung des Raumes hier unabhängig von der Reihenfolge des Einfügens der Knoten ist,
 was eine Konsequenz aus der Partitionierung auf Basis der Raumstruktur ist.
-Dies führt auch zu einer konstanten Höhe $h$ des Baumes ohne Bezug zu den konkret vorhandenen Datenblättern, wodurch wiederum nur die begrenzte Anzahl von Knoten $2^h * 2^h$ in einem MX Quadtree gespeichert werden können.
+Dies führt auch zu einer konstanten Höhe $h$ des Baumes ohne Bezug zu den konkret vorhandenen Datenblättern, wodurch wiederum nur die begrenzte Anzahl von Knoten $2^h * 2^h$ in einem MX Quadtree gespeichert werden können.\footzit{Vgl}{Samet90}{Seite 88}
 Diese Einschränkung ist jedoch durch die obigen Bedingungen gesichert.
 
 Ein klassischer Anwendungsfall dieses Prinzip sind Rastergrafiken, welche ein geeignetes mentales Modell für MX Quadtrees darstellen, da hier jeder Datenpunkt  (Pixel) offensichtlich genau 1x1 groß ist und einer Koordinate zugeordnet ist.\footzitx{Vgl.}{bb29082}
@@ -331,8 +345,8 @@ Davon abgeleitet spricht man in diesem Kontext von weißen, schwarzen und grauen
 	\item[Weiße Knoten] sind leere Blätter ohne Daten bzw.\ Knoten, die weder direkt noch indirekt mittels Kindverweise auf Daten verweisen. Diese werden im Allgemeinen nicht explizit repräsentiert.
 \end{description}
 
-Ein konkreter MX Quadtree enthält somit nur schwarze und graue Knoten.
-Das Nicht-repräsentieren weißer Knoten führt dazu, dass die Struktur des Baumes erst beim Einfügen aufgebaut wird.
+Eine konkreter Instanz eines MX Quadtree enthält somit nur schwarze und graue Knoten.
+Das Nicht-Repräsentieren weißer Knoten führt dazu, dass die Struktur des Baumes erst beim Einfügen aufgebaut wird.
 Dies ist jedoch nur eine Optimierung; es wäre genauso möglich, den vollständigen Baum mit weißen Knoten bzw.\ Blättern aufzufüllen, welche später grau oder schwarz eingefärbt bzw.\ von schwarzen Blättern ersetzt werden.
 
 Das Löschen von Knoten im MX Quadtree ist weiters trivial, da im Gegensatz zu Point Quadtrees hier die Daten keinen Einfluss auf die Struktur des Baumes haben und nur in Blättern gespeichert werden. Nach dem Entfernen des eigentlichen Datenblattes muss nur die Färbung der Knoten am Pfad von der Wurzel zu diesem Blatt überprüft und gegebenenfalls angepasst werden.
@@ -342,15 +356,15 @@ Das Löschen von Knoten im MX Quadtree ist weiters trivial, da im Gegensatz zu P
 Die Einschränkung durch diskrete Koordinaten bei MX Quadtrees ist manchmal in der Praxis nicht tragbar.
 Nichtsdestoweniger ist die Eigenschaft, dass dieser Baumtyp nicht entarten kann (da die Einfügereihenfolge keine Rolle spielt), oft sehr sinnvoll. 
 
-Der PR Quadtree stellt eine Möglichkeit dar, dieses Problem zu Lösen. 
-Er ist eine Kombination von Point und Region Quadtree, daher auch der Name.
-Hier orientiert sich die Aufteilung des Raumes ähnlich zu MX Quadtrees wiederum an der rekursiven Dekomposition eines fixen Bereiches, dieser kann jedoch beliebig werden.
+Der PR Quadtree stellt eine Möglichkeit dar, diesen Zwiespalt zu Lösen. 
+Er ist eine Kombination von Point und Region Quadtree, wovon sich auch der Name ableitet (\textbf{P}oint \textbf{R}egion Quadtree).\footzit{Vgl.}{Samet90}{Seite 92f}
+Hier orientiert sich die Aufteilung des Raumes ähnlich den MX Quadtrees wiederum an der rekursiven Dekomposition eines fixen Bereiches, diese kann jedoch beliebig tief werden.
 
 Die Einfügeoperation läuft wie folgt ab:
 Der tiefste Quadrant, welcher die Koordinaten eines einzufügenden Knotens beinhaltet, wird gesucht.
 Ist dieser leer, kann der Knoten hier platziert werden.
 Andernfalls muss eine weitere Unterteilung vorgenommen werden, was durch Partitionierung des Quadranten in gleichgroße Teile geschieht. 
-Der Knoten, welcher sich in dem Quadranten befand, wird in die neue Unterteilung überführt, und es wird neuerlich versucht, den einzufügenden Knoten in diese zu integrieren. 
+Der Knoten, welcher sich in dem Quadranten befand, wird in die neue Unterteilung überführt, und es wird neuerlich versucht, den einzufügenden Knoten in dieser zu platzieren. 
 Sollte es hier erneut zu Konflikten kommen, wird der Prozess der Partitionierung rekursiv so lange wiederholt, bis beide Knoten in verschiedene Quadranten eingeteilt werden.
 Dies ist trivialerweise garantiert, wenn die Koordinaten verschieden voneinander sind.
 % ref z.b. SametPolygon S 4

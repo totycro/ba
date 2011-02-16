@@ -4,6 +4,9 @@ BASENAME="quadtrees.arbeit"
 
 all: pdf1
 
+spell:
+	 aspell -l de -t -c ${TEXFILE}
+
 everything:
 	make all
 	make bib
