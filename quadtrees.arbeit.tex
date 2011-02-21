@@ -435,12 +435,44 @@ Nachdem dieser Bereich beim Gebäudebau eine wesentliches Argument darstellt, mu
 
 Konkret geschieht die Anzeige des Bereiches durch Übergeben aller Tiles des Einflussgebietes an eine Markierungsfunktion der Engine, welche diese schließlich einfärbt.
 
-\subsection{Ursprünglicher Lösungsansatz}
 Die ursprüngliche Implementierung dieser Aufgabe ist für einen flüssigen Spielablauf zu ineffizient, besonders erfahrene Spieler\_innen stoßen hier durch ihr schnelles Spieltempo auf Wartezeiten.
 Wie später noch deutlich werden wird, entstehen die Verzögerungen im Wesentlichen durch Berechnung der zu markierenden Tiles sowie das eigentliche Markieren der Engine. 
 In dieser Arbeit werde ich mich auf die Optimierung des ersten Teils beschränken, was für zufriedenstellende Laufzeitergebnisse alleine in der Praxis nicht ausreicht.
+Die Performance der Engine ist hier weiters schwer messbar, was verschiedene Gründe hat:
+Diese ist in einer anderen Programmiersprache als die Spiellogik implementiert, wodurch bei jedem Funktionsaufruf Zeit im Wrapper verbraucht wird, welcher das Interface bereitstellt.
+Die Markierungsfunktion erledigt weiters nur einen Teil der Arbeit -- das eigentliche Rendern findet in periodischen Durchläufen statt, in welchen das gesamte Bild berechnet wird.
+In diesen Prozess fließen viele äußere Faktoren ein. 
+
+\subsection{Ursprünglicher Lösungsansatz}
+
+Die bisherige Methode zur Speicherung der Tiles stellt eine Hashmap dar, in welcher die Koordinaten der Insel als Schlüssel auf die Tileobjekte verweisen. 
+Es sei darauf hingewiesen, dass hier Nähebeziehungen nicht repräsentiert werden.
+
+Der Lösungsansatz besteht im Wesentlichen aus drei Schritten:
+\begin{enumerate}
+	\item Berechnung der Koordinaten im Einflussbereichs.
+	\item Lookup in der Hashmap.
+	\item Überprüfung der Tiles bezüglich Siedlung und Markierbarkeit  
+\end{enumerate}
+
+Schritt 1 kann äußerst schnell durchgeführt werden.
+Zusammengefasst berechnet der verwendete Algorithmus die Grenze eines Viertels des Bereiches, die restlichen Viertel werden gespiegelt.
+Diese Begrenzungen können schließlich einfach zeilenweise aufgefüllt werden.
+In dieser Form ist der Ansatz nicht optimal (die Berechnung eines Achtels würde etwa auch \mbox{ausreichen}), in der Praxis ist hingegen der Anteil an der gesamten Laufzeit so gering, dass weitere Optimierungen nicht gerechtfertigt werden könnten.
+
+Der nächste Schritt kann für einzelne Elemente auch sehr schnell umgesetzt werden, bei großen Flächen entsteht hier durch die Anzahl der Tiles jedoch eine messbare Verzögerung.
+Es ist hier nicht möglich, mehrere angrenzende Tiles gleichzeitig anzusprechen, jedes muss einzeln aus der Hashmap abgefragt werden.
+Besonders wenn viele Tiles am Meer liegen, scheitern viele Lookups, denn die Koordinatenberechnung hat keine Informationen über die Struktur der Insel.
+
+Der dritte Schritt ist notwendig, da die Hashmap der Insel für verschiedene andere Anwendungsfälle sämtliche Tiles der Insel beinhalten muss; eine spezielle Hashmap zur Markierung könnte dies vereinfachen.
 
 \section{Implementierung}
+Nachdem bei diesem Markierungsproblem die Lage der Tiles zueinander eine entscheidende Rolle spielt, ist es naheliegend, dieses mittels Quadtrees zu lösen.
+In einem solchen kann die Struktur der Inseln auf eine Weise abgebildet werden,
+welches es der Suche ermöglicht, Gebiete am Meer bzw.\ außerhalb der Siedlung schnell zu ignorieren sowie größere, zusammenhängende Blöcke effizient als innerhalb des Bereiches liegend zu identifizieren.
+
+Der Aufbau und die Wartung des Quadtrees können zwar je nach Typ einen Mehraufwand darstellen, dieser ist jedoch nur beim Spielstart (währenddessen ohnehin mit einer Verzögerung gerechnet wird) bzw.\ seltener beim Bau verschiedener Gebäude, welche den Einflussbereich der Siedlung erweitern erforderlich.
+Insofern ist es hier sinnvoll, diesen Overhead in Kauf zu nehmen, um Verzögerungen in Momenten zu vermeiden, in welchen auf das Ergebnis einer Berechnung gewartet wird.
 
 \section{Analyse}
 
