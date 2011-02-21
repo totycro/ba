@@ -83,19 +83,19 @@
 %\setlength{\headrulewidth}{0.0pt}
 \pagestyle{plain}
 
-\definecolor{grey}{gray}{.2} % for grey commnts
-\lstset{language=sh,%
+\definecolor{grey}{gray}{.35} % for grey commnts
+\lstset{language=Python,%
 escapeinside={@}{@},
-extendedchars=true,%
+extendedchars=false,%
 %inputencoding=utf8x,%
 basicstyle=\ttfamily\small,%
 commentstyle=\color{grey},%
-keywordstyle=,% no bold tt in standard font
-captionpos=b,
+%keywordstyle=,% no bold tt in standard font
+%captionpos=b,
 tabsize=2,
 showstringspaces=false,
 breaklines=true,
-backgroundcolor=\color{lgray}
+breakindent=0pt
 }
 
 % just for screen-display!
@@ -341,6 +341,7 @@ Diese Einschränkung ist jedoch durch die obigen Bedingungen gesichert.
 
 Ein klassischer Anwendungsfall dieses Prinzip sind Rastergrafiken, welche ein geeignetes mentales Modell für MX Quadtrees darstellen, da hier jeder Datenpunkt  (Pixel) offensichtlich genau 1x1 groß ist und einer Koordinate zugeordnet ist.\footzitx{Vgl.}{bb29082}
 Davon abgeleitet spricht man in diesem Kontext von weißen, schwarzen und grauen Knoten\footzit{Vgl}{DBLP:journals/cacm/Gargantini82}{Seite 2}:% cp
+\label{coloring}
 \begin{description}
 	\item[Schwarze Knoten] sind entweder Datenblätter oder Knoten mit vier schwarzen Kindern.
 	\item[Graue Knoten] stellen Knoten dar, welche mindestens ein graues Kind besitzen oder mindestens je ein schwarzes und ein weißes Kind.
@@ -471,8 +472,55 @@ Nachdem bei diesem Markierungsproblem die Lage der Tiles zueinander eine entsche
 In einem solchen kann die Struktur der Inseln auf eine Weise abgebildet werden,
 welches es der Suche ermöglicht, Gebiete am Meer bzw.\ außerhalb der Siedlung schnell zu ignorieren sowie größere, zusammenhängende Blöcke effizient als innerhalb des Bereiches liegend zu identifizieren.
 
-Der Aufbau und die Wartung des Quadtrees können zwar je nach Typ einen Mehraufwand darstellen, dieser ist jedoch nur beim Spielstart (währenddessen ohnehin mit einer Verzögerung gerechnet wird) bzw.\ seltener beim Bau verschiedener Gebäude, welche den Einflussbereich der Siedlung erweitern erforderlich.
-Insofern ist es hier sinnvoll, diesen Overhead in Kauf zu nehmen, um Verzögerungen in Momenten zu vermeiden, in welchen auf das Ergebnis einer Berechnung gewartet wird.
+Der Aufbau und die Wartung des Quadtrees können zwar je nach Typ einen Mehraufwand darstellen, dieser ist jedoch nur beim Spielstart (währenddessen ohnehin mit einer Verzögerung gerechnet wird) bzw.\ seltener beim Bau verschiedener Gebäude, welche den Einflussbereich der Siedlung erweitern, erforderlich.
+Insofern ist es hier sinnvoll, diesen Overhead in Kauf zu nehmen, um Verzögerungen während des Baumodus zu vermeiden.
+
+Mit einer schnelleren Laufzeit kann hier vor allem dann gerechnet werden, wenn viele Bereiche bei der Suche ausgeschlossen werden können.
+In Abbildung \ref{fig:boatbuilder} auf Seite \pageref{fig:boatbuilder} liegen etwa die Hälfte der Tiles im Einflussgebiet des Gebäudes am Meer und sind somit im Quadtree nicht vorhanden.
+Bei einer günstigen Partitionierung des Raumes ist somit zu erwarten, dass auf relativ hoher Ebene gewisse Kinder von Knoten, welche diesen Bereich abdecken, in der Terminologie von Abschnitt \ref{coloring} "`weiß"' und somit durch \mynull\ repräsentiert sind, wodurch der Suchalgorithmus die Information bekommt, dass dieses gesamte Gebiet nicht weiter berücksichtigt werden muss.
+In der ursprünglichen Implementierung ist diese Information nicht vorhanden, wodurch jede Koordinate in dieses Bereichs in der Hashmap unnötigerweise abfragt wird.
+
+Da die Unterteilung des Raumes in Quadraten vorgenommen wird und der Einflussbereich der Gebäude ein Rechteck mit abgerundeten Ecken ist, 
+muss der Algorithmus an den Rändern bis zur Blattebene absteigen, um die genaue Grenze zu bestimmen.
+
+\subsection{Wahl des Quadtreetyp}
+
+Die Art der im Quadtree zu speichernden Daten sind ausschließlich 1x1 große Tiles. Da man diese ebenso als Punkte interpretieren kann, eignen sich für diese Anwendung punktbasierte sowie bereichsbasierte Quadtreetypen gleichermaßen.
+
+Weiters liegt hier eine fixe Raumaufteilung vor:
+Siedlungen sind durch die Insel begrenzt und wachsen im Allgemeinen auf diese Größe.
+Dies bedeutet, dass im Falle von punktbasierten Quadtrees, welche an sich entarten können, optimierte Bäume berechnet werden können, um diesem Problem zu entgegnen.
+Dadurch würde die Struktur dieser jener der bereichsbasierten Varianten ähneln, da alle Koordinaten innerhalb einer Inseln im Quadtree repräsentiert werden müssen, und die effizienteste Möglichkeit, dies zu tun, ist eine Aufteilung eines Bereiches genau in der Mitte, was exakt der Strategie des MX Quadtrees entspricht.
+
+Aus diesen Gründen, sowie der Einfachheit des Löschens, habe ich mich dazu entschieden, die gestellte Aufgabe mit einem MX Quadtree zu lösen.
+
+\clearpage
+
+\begin{lstlisting}[float,caption=Python-ähnlicher Pseudocode zur Lösung des Markierungsproblems]
+"""
+Klasse der Knoten des MX Quadtrees
+"""
+class Node(object):
+
+	[...]
+
+	"""
+	Rekursive Methode der Klasse Node, welche einen Callback auf alle Blaetter anwendet, die innerhalb der Bereichsspezifikation "area" liegen.
+	"""
+	def visit_radius_tiles(self, area, callback)
+		if self.is_leaf():
+			# Auf Blattebene muss nur ueberprueft werden, ob der Callback auf den aktuellen Knoten angewendet werden soll
+			if area.includes(self):
+				callback(self)
+		else:
+			quadrants = self.get_overlapping_quadrants(area)
+			for quadrant in quadrants:
+				# Optimierung: Sollte der ganze Quadrant im Bereich liegen, muessen die einzelnen Subknoten nicht mehr einzeln ueberprueft werden.
+				if self.check_full_quadrant_included(quadrant, area):
+					quadrant.visit_all_tiles(callback)
+				else:
+					quadrant.visit_radius_tiles(area, callback)
+\end{lstlisting}
 
 \section{Analyse}
 
@@ -483,6 +531,8 @@ Insofern ist es hier sinnvoll, diesen Overhead in Kauf zu nehmen, um Verzögerun
 \listoffigures
 
 Alle in dieser Arbeit verwendeten Bilder wurden vom Autor erstellt.
+
+\lstlistoflistings
 
 \newpage
 
