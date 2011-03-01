@@ -1,8 +1,8 @@
 \documentclass[%
-			%fontsize=11pt,%
+			%fontsize=12pt,%
 			paper=a4,% 
-			%DIV12, % mehr text pro seite als defaultyyp
-			DIV12,
+			%DIV10, % mehr text pro seite als defaultyyp
+			DIV11,
 			%DIV=calc,%
 			%twoside=false,%
 			liststotoc,
@@ -49,6 +49,8 @@
 \newcommand{\zitx}[2]{#1 \cite{#2}}
 \newcommand{\footzit}[3]{\footnote{\zit{#1}{#2}{#3}}}
 \newcommand{\footzitx}[2]{\footnote{\zitx{#1}{#2}}}
+
+\newcommand{\footurl}[2]{\footnote{\url{#1}, abgerufen am #2}}
 
 \newcommand{\inlinecode}[1]{\mbox{\texttt{#1}}}
 
@@ -395,29 +397,38 @@ Um das Umfeld der Aufgabenstellung deutlich zu machen, werde ich zuerst auf dies
 
 \subsection{Unknown Horizons}
 "`Unknown Horizons"' ist ein klassisches Aufbaustrategiespiel, in welchem eine Inselgruppe besiedelt wird. 
-Ziel ist es, eine florierende Wirtschaft aufzubauen, welche die Bevölkerung mit Waren versorgt, die wiederum mit Steuern die Aktionen der Spielerin/des Spielers finanziert.
-Historisch gesehen gibt es Ähnlichkeiten zur Besiedelung Amerikas durch europäische Siedler.
+Das Szenario ist historisch gesehen vergleichbar zur Besiedelung Amerikas durch europäische Siedler.
 
-Das Programm ist unter der GPL-2 lizenziert und somit freie, offene Software. Nähere Informationen sind unter \url{http://www.unknown-horizons.org} verfügbar.
+Ziel des Spieles ist es, eine florierende Wirtschaft aufzubauen, welche die Bevölkerung mit Waren versorgt, die wiederum mit Steuern die laufenden Kosten der Produktionsketten und den Bau neuer Gebäude finanzieren.
+Aus Spieler\_innensicht geschieht der Aufbau der Siedlung durch das Errichten von Gebäuden, welche anschließend weitestgehend autonom arbeiten.
+
+Das Programm ist unter der GPL-2\footurl{http://www.gnu.org/licenses/gpl-2.0.html}{01.03.2011} lizenziert und somit freie, offene Software. 
+Es befindet sich noch in einer relative frühen Phase der Entwicklung, obschon der bereits implementierte Teil "`spielbar"' ist.
+Nähere Informationen sind unter \url{http://www.unknown-horizons.org} verfügbar.
 
 \subsection{Technische Details}
 
-Die Spiellogik ist in Version 2 der Sprache Python \footnote{\url{http://www.python.org}} implementiert und
-baut auf die Engine FIFE\footnote{\url{http://fifengine.de/}} auf.
-Weiters läuft das Spiel in nur einem Thread ab, weswegen jede Berechnung den Programmablauf blockiert, und somit effizient sein muss.
+Die Spiellogik ist in Version 2.6 der Sprache Python\footurl{http://www.python.org}{01.03.2011} implementiert und
+baut auf die Engine FIFE\footurl{http://fifengine.de}{01.03.2011} auf.
+Weiters läuft das Spiel in nur einem Thread ab, weswegen jede Berechnung den Programmablauf blockiert, und somit sehr effizient sein muss.
 
 Die Spielwelt stellt eine zweidimensionale Fläche dar.
 Sie ist in 1x1 große Tiles unterteilt, welche daher die kleinste Größeneinheit sind. 
-Es gibt folglich nur ganzzahlige, diskrete Koordinaten.
-Weiters ist die Zuordnung von Tiles zu Koordinaten bijektiv und über den ganzen Spielverlauf hindurch konstant.
+Die Zuordnung von Tiles zu Koordinaten ist bijektiv und über den ganzen Spielverlauf hindurch konstant.
+Diese Tiles (dt.: "`Fliesen"') sind in verschiedene geographische Typen unterteilt (unter anderem Wasser, Land, Küste), denen zur graphischen Darstellung ein entsprechendes Bild zugeordnet ist. Desweiteren enthalten sie einen Verweis auf etwaige Gebäude, welche den Platz an dieser Koordinate einnehmen und stellen so die Basis der räumlichen Verwaltung der Inseln dar.
 
-\subsection{Problem}
+Aus diesem System folgt, dass alle Objekte im Spiel nur ganzzahlige, diskrete Koordinaten aufweisen.
+
+
+\subsection{Problembeschreibung}
 Die Problemstellung, welche in diesem Praktikum behandelt wird, ist eine Bereichsabfrage:
 
 Im Spiel hat jedes Gebäude einen Einflussbereich, innerhalb welchem gewisse Aktionen ausgeführt werden können.
 Ein Holzfäller etwa kann nur Bäume fällen, welche sich innerhalb dieses Radius befinden,
 eine Schule nur Einwohner dieses Bereiches betreuen.
-\myfig{img/uh-boatbuilder-overview}{boatbuilder}{width=.8\textwidth}{Screenshot aus "`Unknown Horizons"'}{Screenshot aus "`Unknown Horizons"'}
+\myfig{img/uh-boatbuilder-overview}{boatbuilder}{width=.8\textwidth}
+{Screenshot aus "`Unknown Horizons"'}
+{Screenshot aus "`Unknown Horizons"'. Abbgebildet ist hier ein Bootsbauer inklusive seinem Aktionsradius, welcher den Bereich beschreibt, aus welchem dieser Rohstoffe für den Bootsbau einsammeln kann.}
 Abbildung \ref{fig:boatbuilder} auf Seite \pageref{fig:boatbuilder} zeigt ein Gebäude, dessen Einflussbereich eingefärbt wurde.
 
 Dieses Gebiet umfasst alle Tiles, welche folgende Ungleichung erfüllen
@@ -430,19 +441,20 @@ sowie sich
 	\item an markierbaren Stellen
 \end{enumerate}
 befinden.
-Da die Fläche eines Gebäudes eine beliebige rechteckige Form sein kann, entsteht durch diese Gleichung ein Rechteck mit abgerundeten Ecken, welches durch Bedingungen 1 und 2 beliebig beschränkt sein kann.
+Da die Fläche eines Gebäudes eine beliebige rechteckige Form darstellen kann, entsteht durch diese Gleichung ein Rechteck mit abgerundeten Ecken, welches durch Bedingungen 1 und 2 beliebig beschränkt sein kann.
 
-Nachdem dieser Bereich beim Gebäudebau eine wesentliches Argument darstellt, muss er dargestellt werden, wenn der/die Benutzer\_in die Maus über die Spielwelt bewegt, um eine geeignete Position für ein zu bauendes Gebäude suchen, was offensichtlicherweise auch sehr schnell geschehen muss, um Wartezeiten zu vermeiden.
+Nachdem dieser Bereich beim Gebäudebau einen zentralen Faktor darstellt, muss er dargestellt werden, wenn die Maus über die Spielwelt bewegt wird, um eine geeignete Position für ein zu bauendes Gebäude zu suchen, was offensichtlicherweise auch sehr schnell geschehen muss, um hier Verzögerungen zu vermeiden.
+Die Einfärbungsroutine wird nur dann aufgerufen, wenn der Mauszeiger einen Moment über einer gewissen Koordinate verweilt, um "`Ruckler"' zu vermeiden. Im allgemeinen Anwendungsfall wird anschließend auf die Darstellung des Bereiches gewartet, um sicher zu stellen, dass das Gebäude mit diesem Aktionsradius die gewünschte Funktion übernehmen kann.
 
-Konkret geschieht die Anzeige des Bereiches durch Übergeben aller Tiles des Einflussgebietes an eine Markierungsfunktion der Engine, welche diese schließlich einfärbt.
+%Konkret geschieht die Anzeige des Bereiches durch das einzelne Übergeben aller Tiles des Einflussgebietes an eine Markierungsfunktion der Engine, welche die entsprechenden Objekte als einzufärben vermerkt und dies schließlich beim nächsten Durchlauf des Renderers durchführt.
 
-Die ursprüngliche Implementierung dieser Aufgabe ist für einen flüssigen Spielablauf zu ineffizient, besonders erfahrene Spieler\_innen stoßen hier durch ihr schnelles Spieltempo auf Wartezeiten.
-Wie später noch deutlich werden wird, entstehen die Verzögerungen im Wesentlichen durch Berechnung der zu markierenden Tiles sowie das eigentliche Markieren der Engine. 
+Die ursprüngliche Implementierung dieser Aufgabe ist für einen flüssigen Spielablauf zu ineffizient, besonders erfahrene Spieler\_innen stoßen hier durch ihr zügiges Spieltempo auf Verzögerungen.
+Wie später noch deutlich werden wird, entstehen die Verzögerungen im Wesentlichen durch Berechnung der zu markierenden Tiles, das Übergeben dieser an die Engine sowie das eigentliche Einfärben. 
 In dieser Arbeit werde ich mich auf die Optimierung des ersten Teils beschränken, was für zufriedenstellende Laufzeitergebnisse alleine in der Praxis nicht ausreicht.
 Die Performance der Engine ist hier weiters schwer messbar, was verschiedene Gründe hat:
-Diese ist in einer anderen Programmiersprache als die Spiellogik implementiert, wodurch bei jedem Funktionsaufruf Zeit im Wrapper verbraucht wird, welcher das Interface bereitstellt.
+Diese ist in einer anderen Programmiersprache als die Spiellogik implementiert, wodurch bei jedem Funktionsaufruf (etwa die Übergabe der einzelnen Tiles) Zeit im Wrapper verbraucht wird, welcher das Interface bereitstellt.
 Die Markierungsfunktion erledigt weiters nur einen Teil der Arbeit -- das eigentliche Rendern findet in periodischen Durchläufen statt, in welchen das gesamte Bild berechnet wird.
-In diesen Prozess fließen viele äußere Faktoren ein. 
+In diesen Prozess fließen somit viele äußere Faktoren ein. 
 
 \subsection{Ursprünglicher Lösungsansatz}
 
@@ -452,8 +464,8 @@ Es sei darauf hingewiesen, dass hier Nähebeziehungen nicht repräsentiert werde
 Der Lösungsansatz besteht im Wesentlichen aus drei Schritten:
 \begin{enumerate}
 	\item Berechnung der Koordinaten im Einflussbereichs.
-	\item Lookup in der Hashmap.
-	\item Überprüfung der Tiles bezüglich Siedlung und Markierbarkeit  
+	\item Lookup dieser Koordinaten in der Hashmap.
+	\item Überprüfung der Tiles bezüglich Siedlungszugehörigkeit und Markierbarkeit.
 \end{enumerate}
 
 Schritt 1 kann äußerst schnell durchgeführt werden.
@@ -461,9 +473,9 @@ Zusammengefasst berechnet der verwendete Algorithmus die Grenze eines Viertels d
 Diese Begrenzungen können schließlich einfach zeilenweise aufgefüllt werden.
 In dieser Form ist der Ansatz nicht optimal (die Berechnung eines Achtels würde etwa auch \mbox{ausreichen}), in der Praxis ist hingegen der Anteil an der gesamten Laufzeit so gering, dass weitere Optimierungen nicht gerechtfertigt werden könnten.
 
-Der nächste Schritt kann für einzelne Elemente auch sehr schnell umgesetzt werden, bei großen Flächen entsteht hier durch die Anzahl der Tiles jedoch eine messbare Verzögerung.
-Es ist hier nicht möglich, mehrere angrenzende Tiles gleichzeitig anzusprechen, jedes muss einzeln aus der Hashmap abgefragt werden.
-Besonders wenn viele Tiles am Meer liegen, scheitern viele Lookups, denn die Koordinatenberechnung hat keine Informationen über die Struktur der Insel.
+Der nächste Schritt kann für einzelne Elemente auch sehr schnell umgesetzt werden, bei großen Flächen entsteht hier jedoch durch die Anzahl der Tiles eine messbare Verzögerung.
+Es ist nicht möglich, mehrere angrenzende Tiles gleichzeitig anzusprechen, jedes muss einzeln aus der Hashmap abgefragt werden.
+Besonders wenn viele Tiles am Meer liegen, wie es etwa in Abbildung \ref{fig:boatbuilder} auf Seite \pageref{fig:boatbuilder} der Fall ist, scheitern alle diese Lookups, denn die Koordinatenberechnung hat keine Informationen über die Struktur der Insel.
 
 Der dritte Schritt ist notwendig, da die Hashmap der Insel für verschiedene andere Anwendungsfälle sämtliche Tiles der Insel beinhalten muss; eine spezielle Hashmap zur Markierung könnte dies vereinfachen.
 
@@ -493,6 +505,7 @@ Dies bedeutet, dass im Falle von punktbasierten Quadtrees, welche an sich entart
 Dadurch würde die Struktur dieser jener der bereichsbasierten Varianten ähneln, da alle Koordinaten innerhalb einer Inseln im Quadtree repräsentiert werden müssen, und die effizienteste Möglichkeit, dies zu tun, ist eine Aufteilung eines Bereiches genau in der Mitte, was exakt der Strategie des MX Quadtrees entspricht.
 
 Aus diesen Gründen, sowie der Einfachheit des Löschens, habe ich mich dazu entschieden, die gestellte Aufgabe mit einem MX Quadtree zu lösen.
+Es ist jedoch anzumerken, dass im Prinzip jeder der hier vorgestellten Typen für diese Problemstellung verwendet werden kann.
 
 \clearpage
 
