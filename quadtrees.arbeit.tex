@@ -1,7 +1,7 @@
 \documentclass[%
-			%fontsize=12pt,%
+			fontsize=12pt,%
 			paper=a4,% 
-			%DIV10, % mehr text pro seite als defaultyyp
+			%DIV12, % mehr text pro seite als defaultyyp
 			DIV11,
 			%DIV=calc,%
 			%twoside=false,%
@@ -97,7 +97,8 @@ commentstyle=\color{grey},%
 tabsize=2,
 showstringspaces=false,
 breaklines=true,
-breakindent=0pt
+breakindent=0pt,
+numbers=left
 }
 
 % just for screen-display!
@@ -479,37 +480,49 @@ Besonders wenn viele Tiles am Meer liegen, wie es etwa in Abbildung \ref{fig:boa
 
 Der dritte Schritt ist notwendig, da die Hashmap der Insel für verschiedene andere Anwendungsfälle sämtliche Tiles der Insel beinhalten muss; eine spezielle Hashmap zur Markierung könnte dies vereinfachen.
 
-\section{Implementierung}
+\section{Neue Lösung}
 Nachdem bei diesem Markierungsproblem die Lage der Tiles zueinander eine entscheidende Rolle spielt, ist es naheliegend, dieses mittels Quadtrees zu lösen.
 In einem solchen kann die Struktur der Inseln auf eine Weise abgebildet werden,
-welches es der Suche ermöglicht, Gebiete am Meer bzw.\ außerhalb der Siedlung schnell zu ignorieren sowie größere, zusammenhängende Blöcke effizient als innerhalb des Bereiches liegend zu identifizieren.
+welche es der Suche ermöglicht, Gebiete am Meer bzw.\ außerhalb der Siedlung schnell zu ignorieren sowie größere, zusammenhängende Blöcke effizient als innerhalb des Bereiches liegend zu identifizieren.
 
-Der Aufbau und die Wartung des Quadtrees können zwar je nach Typ einen Mehraufwand darstellen, dieser ist jedoch nur beim Spielstart (währenddessen ohnehin mit einer Verzögerung gerechnet wird) bzw.\ seltener beim Bau verschiedener Gebäude, welche den Einflussbereich der Siedlung erweitern, erforderlich.
+Der Aufbau und die Wartung des Quadtrees können zwar je nach Quadtreetyp einen Mehraufwand darstellen, dieser ist jedoch nur beim Spielstart (währenddessen ohnehin mit einer Verzögerung gerechnet wird) bzw.\ seltener beim Bau verschiedener Gebäude, welche den Einflussbereich der Siedlung erweitern, erforderlich.
 Insofern ist es hier sinnvoll, diesen Overhead in Kauf zu nehmen, um Verzögerungen während des Baumodus zu vermeiden.
 
-Mit einer schnelleren Laufzeit kann hier vor allem dann gerechnet werden, wenn viele Bereiche bei der Suche ausgeschlossen werden können.
+Mit einer schnelleren Laufzeit kann vor allem dann gerechnet werden, wenn viele Bereiche bei der Suche ausgeschlossen werden können.
 In Abbildung \ref{fig:boatbuilder} auf Seite \pageref{fig:boatbuilder} liegen etwa die Hälfte der Tiles im Einflussgebiet des Gebäudes am Meer und sind somit im Quadtree nicht vorhanden.
-Bei einer günstigen Partitionierung des Raumes ist somit zu erwarten, dass auf relativ hoher Ebene gewisse Kinder von Knoten, welche diesen Bereich abdecken, in der Terminologie von Abschnitt \ref{coloring} "`weiß"' und somit durch \mynull\ repräsentiert sind, wodurch der Suchalgorithmus die Information bekommt, dass dieses gesamte Gebiet nicht weiter berücksichtigt werden muss.
+Bei einer günstigen Partitionierung des Raumes ist daher zu erwarten, dass auf relativ hoher Ebene gewisse Kinder von Knoten, welche diesen Bereich abdecken, in der Terminologie von Abschnitt \ref{coloring} "`weiß"' und somit durch \mynull\ repräsentiert sind, wodurch der Suchalgorithmus die Information bekommt, dass dieses gesamte Gebiet nicht weiter berücksichtigt werden muss.
 In der ursprünglichen Implementierung ist diese Information nicht vorhanden, wodurch jede Koordinate in dieses Bereichs in der Hashmap unnötigerweise abfragt wird.
 
 Da die Unterteilung des Raumes in Quadraten vorgenommen wird und der Einflussbereich der Gebäude ein Rechteck mit abgerundeten Ecken ist, 
-muss der Algorithmus an den Rändern bis zur Blattebene absteigen, um die genaue Grenze zu bestimmen.
+muss der Algorithmus an den Rändern immer bis zur Blattebene absteigen, um die genaue Grenze zu bestimmen.
 
 \subsection{Wahl des Quadtreetyp}
 
 Die Art der im Quadtree zu speichernden Daten sind ausschließlich 1x1 große Tiles. Da man diese ebenso als Punkte interpretieren kann, eignen sich für diese Anwendung punktbasierte sowie bereichsbasierte Quadtreetypen gleichermaßen.
 
 Weiters liegt hier eine fixe Raumaufteilung vor:
-Siedlungen sind durch die Insel begrenzt und wachsen im Allgemeinen auf diese Größe.
+Siedlungen sind durch die Ausmaße der Insel begrenzt und wachsen im Allgemeinen auf diese Größe.
 Dies bedeutet, dass im Falle von punktbasierten Quadtrees, welche an sich entarten können, optimierte Bäume berechnet werden können, um diesem Problem zu entgegnen.
-Dadurch würde die Struktur dieser jener der bereichsbasierten Varianten ähneln, da alle Koordinaten innerhalb einer Inseln im Quadtree repräsentiert werden müssen, und die effizienteste Möglichkeit, dies zu tun, ist eine Aufteilung eines Bereiches genau in der Mitte, was exakt der Strategie des MX Quadtrees entspricht.
+Dadurch würde die Struktur dieser jener der bereichsbasierten Varianten ähneln, da alle Koordinaten innerhalb einer Inseln im Quadtree repräsentiert werden müssen, und die effizienteste Möglichkeit, dies zu tun, ist eine Aufteilung jedes Bereiches genau in der Mitte, was exakt der Strategie des MX Quadtrees entspricht.
 
-Aus diesen Gründen, sowie der Einfachheit des Löschens, habe ich mich dazu entschieden, die gestellte Aufgabe mit einem MX Quadtree zu lösen.
+Aus diesen Gründen sowie der Einfachheit des Löschens, habe ich mich dazu entschieden, die gestellte Aufgabe mit einem MX Quadtree zu lösen.
 Es ist jedoch anzumerken, dass im Prinzip jeder der hier vorgestellten Typen für diese Problemstellung verwendet werden kann.
 
-\clearpage
+\subsection{Implementierung}
 
-\begin{lstlisting}[float,caption=Python-ähnlicher Pseudocode zur Lösung des Markierungsproblems]
+Für diese Problemstellung ist nur das Suchen von Tiles innerhalb eines Bereiches wirklich zentral, daher werde ich hier nur darauf eingehen und die Einfüge- und Löschoperationen außen vor lassen.
+\lstlistingname{} \ref{visit_rad} auf Seite \pageref{visit_rad} zeigt diese Suchoperation schematisch in der Programmiersprache Python.
+
+Diese Implementierung stellt eine klassische rekursive Suche dar. 
+Anstatt wie oft üblich die entsprechenden Tiles in einer Liste zu sammeln und diese zurückzugeben, wurde hier die Variante gewählt, eine Callback-Funktion auf die betreffenden Objekte anzuwenden. Dies erspart eben den Listenerstellungsoverhead, sowie das Zurückgeben durch möglicherweise stark geschachtelten Aufrufe.
+
+Die Suche beginnt bei einem Knoten, welcher in der Folge die Suche bei allen betroffenen Kindern fortsetzt.
+In Zeile \ref{nonequadrants} werden durch die \inlinecode{if}-Abfrage "`weiße"' Knoten ausgeschlossen.
+Direkt darunter findet eine Optimierung statt, in welcher in jedem Schritt überprüft wird, ob sich ein Kind vollständig im zu markierenden Bereich befindet.
+Ist dies der Fall, werden ohne weitere Checks alle Kinder dieses Quadranten besucht.
+Auf der Blattebene (Zeile \ref{blatt}) wird schließlich trivialerweise nur mehr der aktuelle Knoten abgearbeitet.
+
+\begin{lstlisting}[float=h,caption=Python-ähnlicher Pseudocode zur Lösung des Markierungsproblems,label=visit_rad]
 """
 Klasse der Knoten des MX Quadtrees
 """
@@ -522,17 +535,18 @@ class Node(object):
 	"""
 	def visit_radius_tiles(self, area, callback)
 		if self.is_leaf():
-			# Auf Blattebene muss nur ueberprueft werden, ob der Callback auf den aktuellen Knoten angewendet werden soll
+			# Auf Blattebene muss nur ueberprueft werden, ob der Callback auf den aktuellen Knoten angewendet werden soll@\label{blatt}@
 			if area.includes(self):
 				callback(self)
 		else:
 			quadrants = self.get_overlapping_quadrants(area)
 			for quadrant in quadrants:
-				# Optimierung: Sollte der ganze Quadrant im Bereich liegen, muessen die einzelnen Subknoten nicht mehr einzeln ueberprueft werden.
-				if self.check_full_quadrant_included(quadrant, area):
-					quadrant.visit_all_tiles(callback)
-				else:
-					quadrant.visit_radius_tiles(area, callback)
+				if quadrant != None: @\label{nonequadrants}@
+					# Optimierung: Sollte der ganze Quadrant im Bereich liegen, muessen die einzelnen Subknoten nicht mehr einzeln ueberprueft werden.
+					if self.check_full_quadrant_included(quadrant, area):
+						quadrant.visit_all_tiles(callback)
+					else:
+						quadrant.visit_radius_tiles(area, callback)
 \end{lstlisting}
 
 \section{Analyse}
