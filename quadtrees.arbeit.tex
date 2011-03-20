@@ -300,7 +300,7 @@ Verwendet man hier einen dynamischen Ansatz, muss jedoch bei jedem Knoten der Di
 
 \begin{figure}[h]
 	\centering
-	\subfigure[foo lorem lorem]{ 
+	\subfigure[]{
 	\includegraphics[width=.23\textwidth]{img/kdtree-tree-trimmed}
 	\label{fig:kdtree1}
 	}
@@ -310,9 +310,11 @@ Verwendet man hier einen dynamischen Ansatz, muss jedoch bei jedem Knoten der Di
 	\label{fig:kdtree2}
 	}
 
-	\caption{Ein \kd\ Tree: Die Beschriftung links der Unterteilungen gibt die Achse an, bezüglich welcher die Knoten aufgeteilt werden.
-\\ \\
-Bezüglich den vorhergegangenen Abbildung wurden hier die Koordinaten der Knoten leicht verändert, da in diesem Fall ein äußerst schlecht balancierter \kd\ Tree entstehen würde, was der Autor aus Demonstrationszwecken vermeiden möchte.}
+	\caption[\kd\ Tree]{Ein \kd\ Tree in Baum- bzw.\ Koordinatendarstellung.
+	\\ \\
+	(a) Die Beschriftung der Unterteilungen gibt die Achse an, bezüglich welcher die Knoten aufgeteilt werden.
+	\\ \\
+	(b) Hinsichtlich den vorhergegangenen Abbildung wurden hier die Koordinaten der Knoten leicht verändert, da in diesem Fall ein äußerst schlecht balancierter \kd\ Tree entstehen würde, was der Autor aus Demonstrationszwecken vermeiden möchte.}
 \end{figure}
 
 %\myfig{img/kdtree-tree-full-trimmed}{kdtree}{width=.78\textwidth}{\kd\ Tree}{Ein \kd\ Tree: Die Beschriftung links der Unterteilungen gibt die Achse an, bezüglich welcher die Knoten aufgeteilt werden.
@@ -321,13 +323,12 @@ Bezüglich den vorhergegangenen Abbildung wurden hier die Koordinaten der Knoten
 
 Dieser Typ bietet gegenüber einem Point Quadtree Vorteile bezüglich des Platzbedarfs:
 anstatt $2^k$ sind hier nur 2 Kinder pro Knoten erforderlich.
-Dies löst das Problem von vielen unnötigen Leereinträgen, welche bei einem Point Quadtree bei einer großen Dimensionsanzahl auftreten können.
+Dies löst das Problem von vielen unnötigen Leereinträgen, welche bei einem Point Quadtree bei höherdimensionalen Datensätzen auftreten können.
 
 Weiters müssen bei einem Point Quadtree bei einer Suche in jedem Schritt alle Dimensionen verglichen werden.
 Bei einer großen Anzahl von Dimensionen kann dies überflüssig sein, wenn sich etwa Datensätze bereits durch eine echte Teilmenge ihrer Schlüssel einteilen lassen.
 In diesem Fall reicht das Überprüfen dieser Teilmenge,
 was in einem Point Quadtree nicht realisierbar ist, sich mit dem \kd\ Tree jedoch effizient verwirklichen lässt.\footzit{Vgl}{Samet90}{Seite 66}
-\clearpage
 
 Die Operationen Suche und Einfügen ergeben sich direkt aus dem Funktionsprinzip des \kd\ Trees, beide benötigen offensichtlich eine logarithmische Laufzeit im Average Case\footzit{Vgl.}{Bentley:1975}{Seite 1} (sofern der Baum nicht entartet).
 Schwieriger ist hingegen das Löschen:
@@ -337,7 +338,7 @@ Der wesentliche Aspekt dieses Verfahrens ist, dass der Ersatzknoten nicht wie be
 Anstatt im Worst Case (bei Löschung der Wurzel) $n$ Neueinfügungen mit dem naiven Ansatz benötigt diese Methode nur $O(\log n)$ (bei einer Knotenanzahl von $n$).
 
 Um diesem Problem gänzlich zu entgehen kann ähnlich dem Pseudo Quadtree\footnote{Siehe Kapitel \ref{sec:pseudoquadtree}} auch ein Pseudo \kd\ Tree\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 13ff} verwendet werden,
-in welchem analog zum Pseudo Quadtree die Unterteilung des Raumes nicht an den Koordinaten der Knoten, sondern an beliebigen Punkten vorgenommen wird, und so Daten nur in Blättern gespeichert werden.
+in welchem analog zum Pseudo Quadtree die Unterteilung des Raumes nicht an den Koordinaten der Knoten, sondern an beliebigen Punkten zwischen den Knoten vorgenommen wird, und so Daten nur in Blättern gespeichert werden.
 
 
 % nicht paralellisiert suchen (quelle?)
@@ -345,16 +346,16 @@ in welchem analog zum Pseudo Quadtree die Unterteilung des Raumes nicht an den K
 \section{Bereichsbasierte Quadtrees}
 %\subsection{Region Quadtree}
 
-Wie im Kapitel \ref{sec:pointbased} ausführlich erläutert wurde, erfolgt die räumliche Dekomposition bei punktbasierten Quadtrees immer anhand der gegebenen Punkte.\footnote{Bei Point bzw.\ \kd\ Trees gilt dies direkt; bei Pseudo Quadtrees hingegen besteht die Abhängigkeit vielmehr indirekt: die Aufteilung stellt eine Funktion der Punkte dar.}
+Wie im Kapitel \ref{sec:pointbased} ausführlich erläutert wurde, erfolgt die räumliche Dekomposition bei punkt\-basierten Quadtrees immer anhand der gegebenen Punkte.\footnote{Bei Point bzw.\ \kd\ Trees gilt dies direkt; bei Pseudo Quadtrees hingegen besteht die Abhängigkeit vielmehr indirekt: die Aufteilung stellt eine Funktion der Punkte dar.}
 Dieses Kapitel beschäftigt sich mit Quadtrees, deren Form vordergründig a priori durch die Struktur des Raumes determiniert wird, was in etwa mit dem Prinzip von Tries vergleichbar ist.\footzit{Vgl.}{Samet90}{Seite 85}
 
 Weiters wird in diesem Abschnitt nur insofern auf die verschiedenen Operationen eingegangen, als sie sich von punktbasierten Quadtrees unterscheiden.
 
 \subsection{MX Quadtree}
-Der MX Quadtree zeichnet durch seine Art der Raumunterteilung aus:
+Der MX Quadtree zeichnet sich durch seine Art der Raumunterteilung aus:
 Der Bereich, in dem die Datenpunkte liegen, wird unabhängig von den konkreten Daten unterteilt,
-und zwar rekursiv in vier gleichgroße Quadranten, 
-bis auf der untersten Ebene 1x1 große Felder erreicht werden, welche die Daten beinhalten.\footzit{Vgl.}{Samet:1985:SCP:282957.282966}{Seite 1f}
+und zwar rekursiv in vier gleichgroße Quadranten (im zweidimensionalen Fall), 
+bis auf der untersten Ebene $1\times1$ große Felder erreicht werden, welche die Daten beinhalten.\footzit{Vgl.}{Samet:1985:SCP:282957.282966}{Seite 1f}
 
 Diese Art der Dekomposition setzt folgendes voraus:
 \renewcommand{\labelenumi}{({\theenumi})}
@@ -364,23 +365,23 @@ Diese Art der Dekomposition setzt folgendes voraus:
 	\item \textbf{Diskrete Koordinaten.}
 		Die Schlüssel dürfen nur diskrete Werte annehmen, ähnlich den Einträgen einer Matrix, woher sich auch der Name "`MX"' ableitet.\footzit{Vgl.}{Samet90}{Seite 86}
 	\item \textbf{Die Fläche des Raumes ist quadratisch mit einer Zweierpotenz als Seitenlänge.}
-		Da der Raum aus praktischen Gründen in 4 gleichgroße Teile partitioniert wird, entsteht eine Gesamtgröße von $2^n$x$2^n$. Bei Datenregionen, welche nicht diese Ausdehnung besitzen, können Leereinträge verwendet werden, um diese Größe zu erreichen.
+		Da der Raum aus praktischen Gründen in 4 gleichgroße Teile partitioniert wird, entsteht eine Gesamtgröße von $2^n\times2^n$. Bei Datenregionen, welche nicht diese Ausdehnung besitzen, können Leereinträge verwendet werden, um diese Größe zu erreichen.
 \end{enumerate}
 
 \myfig{img/mxquadtre-full-origdata-trimmed}{mxquadtree}{width=.7\textwidth}{MX Quadtree}{MX Quadtree. Diese Instanz ist eher spärlich besetzt.}
-Abbildung \ref{fig:mxquadtree} zeigt dieselben Daten wie in den vorhergegangen Grafiken in Form eines MX Quadtrees.
+Abbildung \ref{fig:mxquadtree} zeigt einen MX Quadtree auf Basis der bei den vorherigen Grafiken verwendeten Datensatzes.
 Dabei fällt auf, dass die Aufteilung des Raumes hier unabhängig von der Reihenfolge des Einfügens der Knoten ist,
 was eine Konsequenz aus der Partitionierung auf Basis der Raumstruktur ist.
-Dies führt auch zu einer konstanten Höhe $h$ des Baumes ohne Bezug zu den konkret vorhandenen Datenblättern, wodurch wiederum nur die begrenzte Anzahl von Knoten $2^h * 2^h$ in einem MX Quadtree gespeichert werden können.\footzit{Vgl}{Samet90}{Seite 88}
-Diese Einschränkung ist jedoch durch die obigen Bedingungen gesichert.
+Dies führt auch zu einer konstanten Höhe $h$ des Baumes ohne Bezug zu den konkret vorhandenen Datenblättern, wodurch wiederum nur eine begrenzte Anzahl von Knoten ($2^h * 2^h$) in einem MX Quadtree gespeichert werden können.\footzit{Vgl}{Samet90}{Seite 88}
+Diese Einschränkung ergibt sich durch die obigen Bedingungen.
 
-Ein klassischer Anwendungsfall dieses Prinzip sind Rastergrafiken, welche ein geeignetes mentales Modell für MX Quadtrees darstellen, da hier jeder Datenpunkt  (Pixel) offensichtlich genau 1x1 groß ist und einer Koordinate zugeordnet ist.\footzitx{Vgl.}{bb29082}
+Ein klassischer Anwendungsfall dieses Prinzips sind Rastergrafiken, welche ein geeignetes mentales Modell für MX Quadtrees darstellen, da hier jeder Datenpunkt  (Pixel) offensichtlich genau $1\times1$ groß ist und einer Koordinate zugeordnet ist.\footzitx{Vgl.}{bb29082}
 Davon abgeleitet spricht man in diesem Kontext von weißen, schwarzen und grauen Knoten\footzit{Vgl}{DBLP:journals/cacm/Gargantini82}{Seite 2}:% cp
 \label{coloring}
 \begin{description}
 	\item[Schwarze Knoten] sind entweder Datenblätter oder Knoten mit vier schwarzen Kindern.
 	\item[Graue Knoten] stellen Knoten dar, welche mindestens ein graues Kind besitzen oder mindestens je ein schwarzes und ein weißes Kind.
-	\item[Weiße Knoten] sind leere Blätter ohne Daten bzw.\ Knoten, die weder direkt noch indirekt mittels Kindverweise auf Daten verweisen. Diese werden im Allgemeinen nicht explizit repräsentiert.
+	\item[Weiße Knoten] sind leere Blätter ohne Daten bzw.\ Knoten, die weder direkt noch indirekt mittels Kindverweise auf Daten verweisen. Diese werden im Allgemeinen nicht explizit repräsentiert, also in der implementierten Datenstruktur nicht gespeichert.
 \end{description}
 
 Eine konkrete Instanz eines MX Quadtree enthält somit nur schwarze und graue Knoten.
@@ -391,10 +392,10 @@ Das Löschen von Knoten im MX Quadtree ist weiters trivial, da im Gegensatz zu P
 
 \subsection{PR Quadtree}
 
-Die Einschränkung durch diskrete Koordinaten bei MX Quadtrees ist manchmal in der Praxis nicht tragbar.
+Die Einschränkung durch diskrete Koordinaten bei MX Quadtrees verhindert oft deren praktische Anwendung.
 Nichtsdestoweniger ist die Eigenschaft, dass dieser Baumtyp nicht entarten kann (da die Einfügereihenfolge keine Rolle spielt), oft sehr sinnvoll. 
 
-Der PR Quadtree stellt eine Möglichkeit dar, diesen Zwiespalt zu Lösen. 
+Der PR Quadtree stellt eine Möglichkeit dar, diesen Zwiespalt zu lösen. 
 Er ist eine Kombination von Point und Region Quadtree, wovon sich auch der Name ableitet (\textbf{P}oint \textbf{R}egion Quadtree).\footzit{Vgl.}{Samet90}{Seite 92f}
 Hier orientiert sich die Aufteilung des Raumes ähnlich den MX Quadtrees wiederum an der rekursiven Dekomposition eines fixen Bereiches, diese kann jedoch beliebig tief werden.
 
@@ -402,16 +403,20 @@ Die Einfügeoperation läuft wie folgt ab:
 Der tiefste Quadrant, welcher die Koordinaten eines einzufügenden Knotens beinhaltet, wird gesucht.
 Ist dieser leer, kann der Knoten hier platziert werden.
 Andernfalls muss eine weitere Unterteilung vorgenommen werden, was durch Partitionierung des Quadranten in gleichgroße Teile geschieht. 
-Der Knoten, welcher sich in dem Quadranten befand, wird in die neue Unterteilung überführt, und es wird neuerlich versucht, den einzufügenden Knoten in dieser zu platzieren. 
-Sollte es hier erneut zu Konflikten kommen, wird der Prozess der Partitionierung rekursiv so lange wiederholt, bis beide Knoten in verschiedene Quadranten eingeteilt werden.
-Dies ist trivialerweise garantiert, wenn die Koordinaten verschieden voneinander sind.
+Der Knoten, welcher sich bereits in diesem Quadranten befand, wird in die neue Unterteilung überführt, und es wird neuerlich versucht, den einzufügenden Knoten zu platzieren. 
+Wenn hier erneut beide Knoten in den selben Quadranten gespeichert werden würden, muss der Prozess der Partitionierung rekursiv wiederholt werden.
+Sind die Koordinaten der Knoten voneinander verschieden, ist trivialerweise garantiert, dass sie nach endlich vielen Schritten in verschiedene Quadranten eingeteilt werden. 
+Sollte es in der Anwendung möglich sein, dass zwei Knoten mit äquivalenten Koordinaten auftreten, müssen diese speziell behandelt werden, etwa durch eine Überlaufliste.
+
+%Sollte es hier erneut zu Konflikten kommen, wird der Prozess der Partitionierung rekursiv so lange wiederholt, bis beide Knoten in verschiedene Quadranten eingeteilt werden.
+%Dies ist trivialerweise garantiert, wenn die Koordinaten verschieden voneinander sind.
 % ref z.b. SametPolygon S 4
 
-Bei diesem Vorgang ist die Dekompositionsstruktur offensichtlich unabhängig von den konkreten Schlüsseln, wodurch die Einfügereihenfolge irrelevant wird und der Baum nicht im Sinne von Point Quadtrees entarten kann.\footzit{Vgl}{Samet90}{Seite 96}.
+Bei diesem Vorgang ist die Dekompositionsstruktur offensichtlich unabhängig von den konkreten Schlüsseln, wodurch die Einfügereihenfolge irrelevant wird und der Baum nicht im Sinne von Point Quadtrees entarten kann.\footzit{Vgl}{Samet90}{Seite 96}
 
 Diese Strategie kann jedoch problematisch werden, wenn Datenpunkte nahe aneinander liegen.
-Hier müssen viele Unterteilungen getroffen werden, bis sie in verschiedene Quadranten eingeteilt werden können. 
-Diese Struktur ist somit mit dieser Einschränkung für alle Schlüsseltypen geeignet.\footzit{Vgl}{Samet90}{Seite 95f}
+Hier müssen unter Umständen viele Unterteilungen getroffen werden, bis sie in verschiedene Quadranten eingeteilt werden können. 
+Diese Struktur ist daher nur für entsprechend verschiedene Schlüsseltypen geeignet.\footzit{Vgl}{Samet90}{Seite 95f}
 
 Das Löschen aus einem PR Quadtree ist wiederum unkompliziert, da sich die Daten nur in Blättern befinden.
 Durch das Entfernen eines Blattes können Unterteilungen überflüssig werden, wenn etwa ein Knoten nur ein Kind besitzt.
@@ -420,19 +425,16 @@ In diesem Fall kann der entsprechende Knoten einfach durch das Kind ersetzt werd
 \newpage
 \part{Praktikum}
 
-{\Huge \bf Dieser Abschnitt ist ein work in progress.}
-\newpage
-
 \section{Problemstellung}
 
-In dem Praktikum habe ich mich mit einer Problemstellung aus dem Spiel "`Unknown Horizons"' beschäftigt.
+In dem an die Bachelorarbeit angeschlossenen Praktikum habe ich mich mit einer Problemstellung aus dem Spiel "`Unknown Horizons"' beschäftigt.
 Um das Umfeld der Aufgabenstellung deutlich zu machen, werde ich zuerst auf dieses Programm näher eingehen.
 
 \subsection{Unknown Horizons}
 "`Unknown Horizons"' ist ein klassisches Aufbaustrategiespiel, in welchem eine Inselgruppe besiedelt wird. 
 Das Szenario ist historisch gesehen vergleichbar zur Besiedelung Amerikas durch europäische Siedler.
 
-Ziel des Spieles ist es, eine florierende Wirtschaft aufzubauen, welche die Bevölkerung mit Waren versorgt, die wiederum mit Steuern die laufenden Kosten der Produktionsketten und den Bau neuer Gebäude finanzieren.
+Ziel des Spieles ist, eine florierende Wirtschaft aufzubauen, welche die Bevölkerung mit Waren versorgt, die wiederum mit Steuern die laufenden Kosten der Produktionsketten und den Bau neuer Gebäude finanzieren.
 Aus Spieler\_innensicht geschieht der Aufbau der Siedlung durch das Errichten von Gebäuden, welche anschließend weitestgehend autonom arbeiten.
 
 Das Programm ist unter der GPL-2\footurl{http://www.gnu.org/licenses/gpl-2.0.html}{01.03.2011} lizenziert und somit freie, offene Software. 
@@ -442,7 +444,7 @@ Nähere Informationen sind unter \url{http://www.unknown-horizons.org} verfügba
 \subsection{Technische Details}
 
 Die Spiellogik ist in Version 2.6 der Sprache Python\footurl{http://www.python.org}{01.03.2011} implementiert und
-baut auf die Engine FIFE\footurl{http://fifengine.de}{01.03.2011} auf.
+baut auf der Engine FIFE\footurl{http://fifengine.de}{01.03.2011} auf.
 Weiters läuft das Spiel in nur einem Thread ab, weswegen jede Berechnung den Programmablauf blockiert, und somit sehr effizient sein muss.
 
 Die Spielwelt stellt eine zweidimensionale Fläche dar.
@@ -457,12 +459,12 @@ Aus diesem System folgt, dass alle Objekte im Spiel nur ganzzahlige, diskrete Ko
 Die Problemstellung, welche in diesem Praktikum behandelt wird, ist eine Bereichsabfrage:
 
 Im Spiel hat jedes Gebäude einen Einflussbereich, innerhalb welchem gewisse Aktionen ausgeführt werden können.
-Ein Holzfäller etwa kann nur Bäume fällen, welche sich innerhalb dieses Radius befinden,
-eine Schule nur Einwohner dieses Bereiches betreuen.
+Ein Holzfäller etwa kann nur Bäume fällen, welche sich innerhalb seines Radius befinden,
+eine Schule nur Einwohner des entsprechenden Bereiches betreuen.
 \myfig{img/uh-boatbuilder-overview}{boatbuilder}{width=.8\textwidth}
 {Screenshot aus "`Unknown Horizons"'}
 {Screenshot aus "`Unknown Horizons"'. Abbgebildet ist hier ein Bootsbauer inklusive seinem Aktionsradius, welcher den Bereich beschreibt, aus welchem dieser Rohstoffe für den Bootsbau einsammeln kann.}
-Abbildung \ref{fig:boatbuilder} zeigt ein Gebäude, dessen Einflussbereich eingefärbt wurde.
+Abbildung\nolinebreak\ \ref{fig:boatbuilder} zeigt ein Gebäude, dessen Einflussbereich eingefärbt wurde.
 
 Dieses Gebiet umfasst alle Tiles, welche folgende Ungleichung erfüllen
 \begin{equation}
@@ -474,29 +476,29 @@ sowie sich
 	\item an markierbaren Stellen
 \end{enumerate}
 befinden.
-Da die Fläche eines Gebäudes eine beliebige rechteckige Form darstellen kann, entsteht durch diese Gleichung ein Rechteck mit abgerundeten Ecken, welches durch Bedingungen 1 und 2 beliebig beschränkt sein kann.
+Da die Fläche eines Gebäudes eine beliebige rechteckige Form darstellen kann, entsteht durch diese Ungleichung ein Rechteck mit abgerundeten Ecken, welches durch Bedingungen 1 und 2 beliebig beschränkt sein kann.
 
-Nachdem dieser Bereich beim Gebäudebau einen zentralen Faktor darstellt, muss er dargestellt werden, wenn die Maus über die Spielwelt bewegt wird, um eine geeignete Position für ein zu bauendes Gebäude zu suchen, was offensichtlicherweise auch sehr schnell geschehen muss, um hier Verzögerungen zu vermeiden.
+Nachdem dieser Bereich beim Gebäudebau ein zentrales Kriterium darstellt, muss dieser dargestellt werden, wenn die Maus über die Spielwelt bewegt wird, um eine geeignete Position für ein zu bauendes Gebäude zu suchen, was offensichtlicherweise auch sehr schnell geschehen muss, um hier Verzögerungen zu vermeiden.
 Die Einfärbungsroutine wird nur dann aufgerufen, wenn der Mauszeiger einen Moment über einer gewissen Koordinate verweilt, um "`Ruckler"' zu vermeiden. Im allgemeinen Anwendungsfall wird anschließend auf die Darstellung des Bereiches gewartet, um sicher zu stellen, dass das Gebäude mit diesem Aktionsradius die gewünschte Funktion übernehmen kann.
 
 %Konkret geschieht die Anzeige des Bereiches durch das einzelne Übergeben aller Tiles des Einflussgebietes an eine Markierungsfunktion der Engine, welche die entsprechenden Objekte als einzufärben vermerkt und dies schließlich beim nächsten Durchlauf des Renderers durchführt.
 
-Die ursprüngliche Implementierung dieser Aufgabe ist für einen flüssigen Spielablauf zu ineffizient, besonders erfahrene Spieler\_innen stoßen hier durch ihr zügiges Spieltempo auf Verzögerungen.
-Wie später noch deutlich werden wird, entstehen die Verzögerungen im Wesentlichen durch Berechnung der zu markierenden Tiles, das Übergeben dieser an die Engine sowie das eigentliche Einfärben. 
+Die ursprüngliche Implementierung dieser Aufgabe ist für einen flüssigen Spielablauf zu ineffizient, besonders erfahrene SpielerInnen stoßen hier durch ihr zügiges Spieltempo auf Verzögerungen.
+Wie später noch deutlich wird, entstehen die Verzögerungen im Wesentlichen durch die Berechnung der zu markierenden Tiles, das Übergeben dieser an die Engine sowie das eigentliche Einfärben. 
 In dieser Arbeit werde ich mich auf die Optimierung des ersten Teils beschränken, was für zufriedenstellende Laufzeitergebnisse alleine in der Praxis nicht ausreicht.
 Die Performance der Engine ist hier weiters schwer messbar, was verschiedene Gründe hat:
-Diese ist in einer anderen Programmiersprache als die Spiellogik implementiert, wodurch bei jedem Funktionsaufruf (etwa die Übergabe der einzelnen Tiles) Zeit im Wrapper verbraucht wird, welcher das Interface bereitstellt.
+Diese ist in einer anderen Programmiersprache (C++) als die Spiellogik implementiert, wodurch bei jedem Funktionsaufruf (etwa die Übergabe der einzelnen Tiles) Zeit im Wrapper verbraucht wird, welcher das Interface bereitstellt.
 Die Markierungsfunktion erledigt weiters nur einen Teil der Arbeit -- das eigentliche Rendern findet in periodischen Durchläufen statt, in welchen das gesamte Bild berechnet wird.
 In diesen Prozess fließen somit viele äußere Faktoren ein. 
 
-\subsection{Ursprünglicher Lösungsansatz}
+\subsection{Ursprünglicher Ansatz}
 
 Die bisherige Methode zur Speicherung der Tiles stellt eine Hashmap dar, in welcher die Koordinaten der Insel als Schlüssel auf die Tileobjekte verweisen. 
 Es sei darauf hingewiesen, dass hier Nähebeziehungen nicht repräsentiert werden.
 
 Der Lösungsansatz besteht im Wesentlichen aus drei Schritten:
 \begin{enumerate}
-	\item Berechnung der Koordinaten im Einflussbereichs.
+	\item Berechnung der Koordinaten innerhalb des Einflussbereichs.
 	\item Lookup dieser Koordinaten in der Hashmap.
 	\item Überprüfung der Tiles bezüglich Siedlungszugehörigkeit und Markierbarkeit.
 \end{enumerate}
@@ -504,41 +506,42 @@ Der Lösungsansatz besteht im Wesentlichen aus drei Schritten:
 Schritt 1 kann äußerst schnell durchgeführt werden.
 Zusammengefasst berechnet der verwendete Algorithmus die Grenze eines Viertels des Bereiches, die restlichen Viertel werden gespiegelt.
 Diese Begrenzungen können schließlich einfach zeilenweise aufgefüllt werden.
-In dieser Form ist der Ansatz nicht optimal (die Berechnung eines Achtels würde etwa auch \mbox{ausreichen}), in der Praxis ist hingegen der Anteil an der gesamten Laufzeit so gering, dass weitere Optimierungen nicht gerechtfertigt werden könnten.
+In dieser Form ist der Ansatz nicht optimal (die Berechnung eines Achtels würde auch \mbox{ausreichen}), in der Praxis ist hingegen der Anteil an der gesamten Laufzeit so gering, dass weitere Optimierungen nicht gerechtfertigt werden könnten.
 
 Der nächste Schritt kann für einzelne Elemente auch sehr schnell umgesetzt werden, bei großen Flächen entsteht hier jedoch durch die Anzahl der Tiles eine messbare Verzögerung.
 Es ist nicht möglich, mehrere angrenzende Tiles gleichzeitig anzusprechen, jedes muss einzeln aus der Hashmap abgefragt werden.
 Besonders wenn viele Tiles am Meer liegen, wie es etwa in Abbildung \ref{fig:boatbuilder} der Fall ist, scheitern alle diese Lookups, denn die Koordinatenberechnung hat keine Informationen über die Struktur der Insel.
 
-Der dritte Schritt ist notwendig, da die Hashmap der Insel für verschiedene andere Anwendungsfälle sämtliche Tiles der Insel beinhalten muss; eine spezielle Hashmap zur Markierung könnte dies vereinfachen.
+Der dritte Schritt ist notwendig, da die Hashmap der Insel für verschiedene andere Anwendungsfälle sämtliche Tiles der Insel beinhalten muss; Beispiele hierfür sind etwa das Überprüfen, ob sich eine Koordinate auf einer Insel befindet, oder Pathfinding für unabhängige Einheiten.
+Eine spezielle Hashmap zur Markierung könnte dies vereinfachen.
 
-\section{Neue Lösung}
-Nachdem bei diesem Markierungsproblem die Lage der Tiles zueinander eine entscheidende Rolle spielt, ist es naheliegend, dieses mittels Quadtrees zu lösen.
-In einem solchen kann die Struktur der Inseln auf eine Weise abgebildet werden,
-welche es der Suche ermöglicht, Gebiete am Meer bzw.\ außerhalb der Siedlung schnell zu ignorieren sowie größere, zusammenhängende Blöcke effizient als innerhalb des Bereiches liegend zu identifizieren.
+\section{Neuer Ansatz}
+Nachdem bei diesem Markierungsproblem die Lage der Tiles zueinander eine entscheidende Rolle spielt, ist es naheliegend, dieses Problem mittels Quadtrees zu lösen.
+Diese Datenstruktur kann die Struktur der Inseln auf eine Weise abgebilden,
+welche der Suche ermöglicht, Gebiete am Meer bzw.\ außerhalb der Siedlung schnell zu ignorieren sowie größere, zusammenhängende Blöcke effizient als innerhalb des Bereiches liegend zu identifizieren.
 
 Der Aufbau und die Wartung des Quadtrees können zwar je nach Quadtreetyp einen Mehraufwand darstellen, dieser ist jedoch nur beim Spielstart (währenddessen ohnehin mit einer Verzögerung gerechnet wird) bzw.\ seltener beim Bau verschiedener Gebäude, welche den Einflussbereich der Siedlung erweitern, erforderlich.
 Insofern ist es hier sinnvoll, diesen Overhead in Kauf zu nehmen, um Verzögerungen während des Baumodus zu vermeiden.
 
 Mit einer schnelleren Laufzeit kann vor allem dann gerechnet werden, wenn viele Bereiche bei der Suche ausgeschlossen werden können.
-In Abbildung \ref{fig:boatbuilder} liegen etwa die Hälfte der Tiles im Einflussgebiet des Gebäudes am Meer und sind somit im Quadtree nicht vorhanden.
-Bei einer günstigen Partitionierung des Raumes ist daher zu erwarten, dass auf relativ hoher Ebene gewisse Kinder von Knoten, welche diesen Bereich abdecken, in der Terminologie von Abschnitt \ref{coloring} "`weiß"' und somit durch \mynull\ repräsentiert sind, wodurch der Suchalgorithmus die Information bekommt, dass dieses gesamte Gebiet nicht weiter berücksichtigt werden muss.
-In der ursprünglichen Implementierung ist diese Information nicht vorhanden, wodurch jede Koordinate in dieses Bereichs in der Hashmap unnötigerweise abfragt wird.
+In Abbildung \ref{fig:boatbuilder} liegen ungefähr die Hälfte der Tiles im Einflussgebiet des Gebäudes im Meer und sind somit im Quadtree nicht vorhanden.
+Bei einer günstigen Partitionierung des Raumes ist daher zu erwarten, dass auf relativ hoher Ebene im Quadtree gewisse Kinder von Knoten, welche diesen Bereich abdecken, in der Terminologie von Abschnitt \ref{coloring} "`weiß"' und somit durch \mynull\ repräsentiert sind, wodurch der Suchalgorithmus die Information bekommt, dass dieses gesamte Gebiet nicht weiter berücksichtigt werden muss.
+In der ursprünglichen Implementierung ist diese Information nicht vorhanden, wodurch jede Koordinate dieses Bereichs in der Hashmap unnötigerweise abfragt wird.
 
 Da die Unterteilung des Raumes in Quadraten vorgenommen wird und der Einflussbereich der Gebäude ein Rechteck mit abgerundeten Ecken ist, 
 muss der Algorithmus an den Rändern immer bis zur Blattebene absteigen, um die genaue Grenze zu bestimmen.
 
 \subsection{Wahl des Quadtreetyp}
 
-Die Art der im Quadtree zu speichernden Daten sind ausschließlich 1x1 große Tiles. Da man diese ebenso als Punkte interpretieren kann, eignen sich für diese Anwendung punktbasierte sowie bereichsbasierte Quadtreetypen gleichermaßen.
+Die Art der im Quadtree zu speichernden Daten sind ausschließlich $1\times1$ große Tiles. Da man diese ebenso als Punkte interpretieren kann, eignen sich für diese Anwendung punktbasierte sowie bereichsbasierte Quadtreetypen gleichermaßen.
 
 Weiters liegt hier eine fixe Raumaufteilung vor:
-Siedlungen sind durch die Ausmaße der Insel begrenzt und wachsen im Allgemeinen auf diese Größe.
+Siedlungen sind durch die Ausmaße der Insel begrenzt und bedecken während des Spielverlaufs im Allgemeinen das gesamte Areal.
 Dies bedeutet, dass im Falle von punktbasierten Quadtrees, welche an sich entarten können, optimierte Bäume berechnet werden können, um diesem Problem zu entgegnen.
-Dadurch würde die Struktur dieser jener der bereichsbasierten Varianten ähneln, da alle Koordinaten innerhalb einer Inseln im Quadtree repräsentiert werden müssen, und die effizienteste Möglichkeit, dies zu tun, ist eine Aufteilung jedes Bereiches genau in der Mitte, was exakt der Strategie des MX Quadtrees entspricht.
+Dadurch würde die Struktur dieses Typs jener der bereichsbasierten Varianten ähneln, da alle Koordinaten innerhalb einer Inseln im Quadtree repräsentiert werden müssen, und die effizienteste Möglichkeit, dies zu tun, ist eine Aufteilung jedes Bereiches genau in der Mitte, was exakt der Strategie des MX Quadtrees entspricht.
 
 Aus diesen Gründen sowie der Einfachheit des Löschens, habe ich mich dazu entschieden, die gestellte Aufgabe mit einem MX Quadtree zu lösen.
-Es ist jedoch anzumerken, dass im Prinzip jeder der hier vorgestellten Typen für diese Problemstellung verwendet werden kann.
+Es ist jedoch anzumerken, dass im Prinzip jeder der vorgestellten Typen für diese Problemstellung verwendet werden kann.
 
 \subsection{Implementierung}
 
@@ -563,7 +566,7 @@ class Node(object):
 	[...]
 
 	"""
-	Rekursive Methode der Klasse Node, welche einen Callback auf alle Blaetter anwendet, die innerhalb der Bereichsspezifikation "area" liegen.
+	Rekursive Methode der Klasse Node, welche einen Callback auf alle Blaetter anwendet, die innerhalb der Bereichsspezifikation "area" liegen. Sie kann dazu verwendet werden, alle Tiles im Aktionsradius eines Gebaeudes einzufaerben.
 	"""
 	def visit_radius_tiles(self, area, callback)
 		if self.is_leaf():
