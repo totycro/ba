@@ -586,46 +586,72 @@ class Node(object):
 
 \section{Analyse}
 
+% gebäude wirklich kontor, siedler, etc nennen?
+% tabelle kopfbeschriftungen
+
+Zur Überprüfung der Laufzeit der Verfahren habe ich einige Testfälle bestimmt, welche aus je einem Gebäude einer Siedlung bestehen.
+Diese werden vom Testcode selektiert, was in der Folge den gleichen Code ausführt, wie das Markieren der Tiles im Einflussgebiet im Baumodus.
+Um Umgebungseinflüsse zu minimieren wird diese Selektion 100 Mal durchgeführt und anschließend der Mittelwert und die Standardabweichung berechnet.
+
+Die verschiedenen Gebäudetypen besitzen unterschiedliche große Grundflächen und Radien.
+Aus diesem Grund kommen in den Testfällen verschiedene Typen vor.
+Tabelle \ref{table1} zeigt hierbei die Ergebnisse der Messung.
+Es fällt schnell auf, dass die Differenzen zwischen den Ansätzen variieren.
+Genauer gesagt wird hier eine Korrelation zwischen der Größe des zu berechnenden Bereichs und den Unterschieden der Laufzeiten deutlich. Daher werde ich die Ergebnisse in drei Kategorien analysieren:
+
+\paragraph{Große Bereiche.}
+Die ersten beiden Testfälle zeigen etwa, dass das neue Verfahren besonders bei Gebäuden mit hohen Radien besonders effizient ist.
+Die Ursache dafür ist der wirkungsvolle Umgang mit großen Quadranten, welche vollständig innerhalb des zu berechnenden Bereiches liegen.
+Hier muss unter Umständen am Rand des Bereiches nicht einmal bis zur letzten Ebene abgestiegen werden.
+Dies trifft zu, sofern die Grenze der Insel innerhalb des Bereiches liegt.
+In diesem Fall können oftmals Quadranten auf hoher Ebene im Baum als komplett im Bereich liegend identifiziert und markiert werden, auch wenn der Quadrant auch Flächen auf der Karte beinhaltet, welche nicht zur Siedlung gehören.
+Diese sind nämlich "`weiß"', also nicht repräsentiert, und werden folglich implizit ignoriert und müssen nicht explizit berücksichtigt werden.
+
+Da beim ursprüngliche, auf Hashmaps basierende Ansatz jedes Tile einzeln abgefragt werden muss, wächst hier die Laufzeit direkt mit dem Quadrat des Radius. Dieser Effekt kann mit dem Quadtreeansatz abgefedert werden, was sich in der Verbesserung von fast der Hälfte der ursprünglichen Zeit widerspiegelt.
+
+\paragraph{Mittlere Bereiche.}
+Obwohl der Marktplatz und der Siedler den selben Radius aufweisen, ist hier die Laufzeit deutlich verschieden, da die Grundfläche unterschiedlich groß sind.
+
+
 \begin{center}
-	\begin{table}[h!]
+	\begin{table}[htpb]
+		\label{table1}
 		\begin{tabularx}{\textwidth}{|X|cc|cc|cc|}
 			\hline
 			& \multicolumn{2}{c|}{Alter Ansatz} & \multicolumn{2}{c|}{Neuer Ansatz} & \multicolumn{2}{c|}{Differenz}\\
 			Use Case & time & std deriv & time & std deriv & absolut & relativ \\
 			\hline
 
-			%Weber am Strand & 0,00064046	& 0,00003893		& 0,00068206	& 0,00006361 \\
-			%Weber am Land, Gebäude & 0,00088746	& 0,00003927		& 0,00142159	& 0,00009162 \\
-			%Weber am Strand, Gebäude & 0,00070685	& 0,00004174		& 0,00073602	& 0,00002718 \\
-			%Siedler am Rand der Siedlung, einige Gebäude & 0,00128654	& 0,00006697		& 0,00092778	& 0,00006209 \\
-			%Lager am Strand, Gebäude& 0,00488289	& 0,00008609		& 0,00276451	& 0,00005818 \\
-			%Kontor am Strand, Gebäude & 0,00541894	& 0,00019435		& 0,00282915	& 0,00005866 \\
-			%Siedler am Land, Gebäude& 0,00188894	& 0,00017765		& 0,00177528	& 0,00004538 \\
-			%Siedler am Strand, Gebäude & 0,00141064	& 0,00007571		& 0,00104883	& 0,00003361 \\
-			%Siedler am Strang, wenig Gebäude & 0,00138563	& 0,00011778		& 0,00124810	& 0,00007953 \\
-			%Marktplatz in Strandnähe, einige Gebäude & 0,00240706	& 0,00005849		& 0,00209831	& 0,00005534 \\
-			%Marktplatz am Strand, viele Gebäude & 0,00229468	& 0,00005231		& 0,00184705	& 0,00005222 \\
-			%Siedler in Strandnähe, viele Gebäude& 0,00166260	& 0,00004420		& 0,00151414	& 0,00005543 \\
-
-
-
-Kontor am Strand, viele Geb"aude & 0,00541 & 0,00019 & 0,00282 & 0,00005 & -0,0025 & 52\%\\
-Lager am Strand, viele Geb"aude & 0,00488 & 0,00008 & 0,00276 & 0,00005 & -0,0021 & 56\%\\
+Kontor Strand, viele Geb"aude & 0,00541 & 0,00019 & 0,00282 & 0,00005 & -0,0025 & 52\%\\
+Lager Strand, viele Geb"aude & 0,00488 & 0,00008 & 0,00276 & 0,00005 & -0,0021 & 56\%\\
 Marktplatz in Strandn"ahe, viele Geb"aude & 0,00240 & 0,00005 & 0,00209 & 0,00005 & -0,0003 & 87\%\\
-Marktplatz am Strand, viele Geb"aude & 0,00229 & 0,00005 & 0,00184 & 0,00005 & -0,0004 & 80\%\\
-Siedler am Siedlungsrand, viele Geb"aude & 0,00128 & 0,00006 & 0,00092 & 0,00006 & -0,0003 & 72\%\\
-Siedler am Land, viele Geb"aude & 0,00188 & 0,00017 & 0,00177 & 0,00004 & -0,0001 & 94\%\\
-Siedler am Strand, viele Geb"aude & 0,00141 & 0,00007 & 0,00104 & 0,00003 & -0,0003 & 74\%\\
-Siedler am Strand, wenige Geb"aude & 0,00138 & 0,00011 & 0,00124 & 0,00007 & -0,0001 & 90\%\\
+Marktplatz Strand, viele Geb"aude & 0,00229 & 0,00005 & 0,00184 & 0,00005 & -0,0004 & 80\%\\
+Siedler Siedlungsrand, viele Geb"aude & 0,00128 & 0,00006 & 0,00092 & 0,00006 & -0,0003 & 72\%\\
+Siedler Land, viele Geb"aude & 0,00188 & 0,00017 & 0,00177 & 0,00004 & -0,0001 & 94\%\\
+Siedler Strand, viele Geb"aude & 0,00141 & 0,00007 & 0,00104 & 0,00003 & -0,0003 & 74\%\\
+Siedler Strand, wenige Geb"aude & 0,00138 & 0,00011 & 0,00124 & 0,00007 & -0,0001 & 90\%\\
 Siedler in Strandn"ahe, viele Geb"aude & 0,00166 & 0,00004 & 0,00151 & 0,00005 & -0,0001 & 91\%\\
-Weber am Strand, wenige Geb"aude & 0,00064 & 0,00003 & 0,00068 & 0,00006 & 0,00004 & 106\%\\
-Weber am Land, viele Geb"aude & 0,00088 & 0,00003 & 0,00142 & 0,00009 & 0,00053 & 160\%\\
-
-
+Weber Strand, wenige Geb"aude & 0,00064 & 0,00003 & 0,00068 & 0,00006 & 0,00004 & 106\%\\
+Weber Land, viele Geb"aude & 0,00088 & 0,00003 & 0,00142 & 0,00009 & 0,00053 & 160\%\\
 			\hline
 
 		\end{tabularx}
 		\caption{Laufzeitmessungen beider Ansätze im Vergleich}
+		\caption*{ % legende
+			Legende:
+
+			\begin{tabular}{|c|c|c|}
+				\hline
+				Gebäude & Größe & Radius \\
+				\hline
+				Kontor & $3\times3$ & 24 \\
+				Lager & $2\times2$ & 24 \\
+				Marktplatz & $6\times6$ & 12 \\
+				Siedler & $2\times2$ & 12 \\
+				Weber & $2\times2$ & 8 \\
+				\hline
+			\end{tabular}
+		}
 	\end{table}
 \end{center}
 
