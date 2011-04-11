@@ -1,0 +1,43 @@
+,,,,,,,,,,,
+,,,"old",,,,,,,,
+,"Lage","Gebäude",,,,,"new",,"diff",,
+"Weber","S","-","100097 weaver right, nearly only water",1,"0,00064046","0,00003893","0,00068206","0,00006361","0,00004160","1,06","weaver"
+"Weber","L","+","100100 weaver center, only land, some buildings",2,"0,00088746","0,00003927","0,00142159","0,00009162","0,00053413","1,6","weaver"
+"Siedler","SR","+","100103 settler right, mostly no settlement, some buildings",3,"0,00128654","0,00006697","0,00092778","0,00006209","-0,00035876","0,72","settler"
+"Lager","S","+","100108 storage tent, full settlement, water and land",4,"0,00488289","0,00008609","0,00276451","0,00005818","-0,00211838","0,57","storage"
+"Kontor","S","+","100002 branch office, full settlement, water and land",5,"0,00541894","0,00019435","0,00282915","0,00005866","-0,00258979","0,52","bo"
+"Siedler","L","+","100007 settler center, some buildings (trees)",6,"0,00188894","0,00017765","0,00177528","0,00004538","-0,00011365","0,94","settler"
+"Siedler","S","+","100012 settler left, mostly water, some trees",7,"0,00141064","0,00007571","0,00104883","0,00003361","-0,00036181","0,74","settler"
+"Siedler","S","-","100080 settler right top, nearly only water, hardly any buildings",8,"0,00138563","0,00011778","0,00124810","0,00007953","-0,00013752","0,9","settler"
+"Marktplatz","SN","+","100085 market place, water and land, some buildings",9,"0,00240706","0,00005849","0,00209831","0,00005534","-0,00030875","0,87","market"
+"Marktplatz","S","+","Standnähe",10,"0,00229468","0,00005231","0,00184705","0,00005222","-0,00044764","0,8","market"
+"Siedler","SN","+","100089 settler bottom, 1/3 water, many buildings",11,"0,00166260","0,00004420","0,00151414","0,00005543","-0,00014846","0,91","settler"
+"Weber","S","+","100094 weaver bottom, mostly water, many buildings (trees)",12,"0,00070685","0,00004174","0,00073602","0,00002718","0,00002917","1,04","weaver"
+,,,"settler",,"0,00152687","0,00024427","0,00130283","0,00031384","-0,00022404","0,85",
+,,,"branch office",,"0,00541894","0,00019435","0,00282915","0,00005866","-0,00258979","0,52",
+,,,"weaver",,"0,00074492","0,00011177","0,00094656","0,00034309","0,00020163","1,27",
+,,,"market",,"0,00235087","0,00007897","0,00197268","0,00013667","-0,00037820","0,84",
+,,,"storage tent",,"0,00488289","0,00008609","0,00276451","0,00005818","-0,00211838","0,57",
+,,,"all",,"0,00207272","0,00148384","0,00157440","0,00069216","-0,00049832","0,76",
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,"new (cb3)",,,,,,,,
+,,,,,,,,,,,
+,,,"100097 weaver right, nearly only water",,"0,00068206","0,00006361",,,,,
+,,,"100100 weaver center, only land, some buildings",,"0,00142159","0,00009162",,,,,
+,,,"100103 settler right, mostly no settlement, some buildings",,"0,00092778","0,00006209",,,,,
+,,,"100108 storage tent, full settlement, water and land",,"0,00276451","0,00005818",,,,,
+,,,"100002 branch office, full settlement, water and land",,"0,00282915","0,00005866",,,,,
+,,,"100007 settler center, some buildings (trees)",,"0,00177528","0,00004538",,,,,
+,,,"100012 settler left, mostly water, some trees",,"0,00104883","0,00003361",,,,,
+,,,"100080 settler right top, nearly only water, hardly any buildings",,"0,00124810","0,00007953",,,,,
+,,,"100085 market place, water and land, some buildings",,"0,00209831","0,00005534",,,,,
+,,,"100087 market place, mostly water, some buildings",,"0,00184705","0,00005222",,,,,
+,,,"100089 settler bottom, 1/3 water, many buildings",,"0,00151414","0,00005543",,,,,
+,,,"100094 weaver bottom, mostly water, many buildings (trees)",,"0,00073602","0,00002718",,,,,
+,,,"settler",,"0,00130283","0,00031384",,,,,
+,,,"branch office",,"0,00282915","0,00005866",,,,,
+,,,"weaver",,"0,00094656","0,00034309",,,,,
+,,,"market",,"0,00197268","0,00013667",,,,,
+,,,"storage tent",,"0,00276451","0,00005818",,,,,
+,,,"all",,"0,00157440","0,00069216",,,,,
