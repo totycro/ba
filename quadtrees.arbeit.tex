@@ -590,67 +590,44 @@ class Node(object):
 % tabelle kopfbeschriftungen
 
 Zur Überprüfung der Laufzeit der Verfahren habe ich einige Testfälle bestimmt, welche aus je einem Gebäude einer Siedlung bestehen.
-Diese werden vom Testcode selektiert, was in der Folge den gleichen Code ausführt, wie das Markieren der Tiles im Einflussgebiet im Baumodus.
+Diese werden vom Testcode selektiert, was den gleichen Code ausführt, wie das Markieren der Tiles im Einflussgebiet im Baumodus.
 Um Umgebungseinflüsse zu minimieren wird diese Selektion 100 Mal durchgeführt und anschließend der Mittelwert und die Standardabweichung berechnet.
 
-Die verschiedenen Gebäudetypen besitzen unterschiedliche große Grundflächen und Radien.
-Aus diesem Grund kommen in den Testfällen verschiedene Typen vor.
+Die verschiedenen Gebäude besitzen unterschiedliche große Grundflächen und Radien, weswegen
+in den Testfällen verschiedene Typen von Gebäuden vorkommen.
 Tabelle \ref{table1} zeigt hierbei die Ergebnisse der Messung.
-Es fällt schnell auf, dass die Differenzen zwischen den Ansätzen variieren.
-Genauer gesagt wird hier eine Korrelation zwischen der Größe des zu berechnenden Bereichs und den Unterschieden der Laufzeiten deutlich. Daher werde ich die Ergebnisse in drei Kategorien analysieren:
+Es fällt schnell auf, dass die Differenzen zwischen den Ansätzen variieren;
+genauer gesagt wird hier eine Korrelation zwischen der Größe des zu berechnenden Bereichs und den Unterschieden der Laufzeiten deutlich. Daher werde ich die Ergebnisse in drei Kategorien analysieren:
 
-\paragraph{Große Bereiche.}
-Die ersten beiden Testfälle zeigen etwa, dass das neue Verfahren besonders bei Gebäuden mit hohen Radien besonders effizient ist.
-Die Ursache dafür ist der wirkungsvolle Umgang mit großen Quadranten, welche vollständig innerhalb des zu berechnenden Bereiches liegen.
-Hier muss unter Umständen am Rand des Bereiches nicht einmal bis zur letzten Ebene abgestiegen werden.
-Dies trifft zu, sofern die Grenze der Insel innerhalb des Bereiches liegt.
-In diesem Fall können oftmals Quadranten auf hoher Ebene im Baum als komplett im Bereich liegend identifiziert und markiert werden, auch wenn der Quadrant auch Flächen auf der Karte beinhaltet, welche nicht zur Siedlung gehören.
-Diese sind nämlich "`weiß"', also nicht repräsentiert, und werden folglich implizit ignoriert und müssen nicht explizit berücksichtigt werden.
 
-Da beim ursprüngliche, auf Hashmaps basierende Ansatz jedes Tile einzeln abgefragt werden muss, wächst hier die Laufzeit direkt mit dem Quadrat des Radius. Dieser Effekt kann mit dem Quadtreeansatz abgefedert werden, was sich in der Verbesserung von fast der Hälfte der ursprünglichen Zeit widerspiegelt.
-
-\paragraph{Mittelgroße Bereiche.}
-Obwohl der Marktplatz und der Siedler den selben Radius aufweisen, ist hier die Laufzeit deutlich verschieden, da die Grundfläche unterschiedlich groß sind, was natürlich zu ausgedehnteren Bereichen führt.
-
-Bei Flächen dieses Ausmaßes führt das neue Verfahren bereits nicht mehr zu erheblich schnelleren Ergebnissen, auch wenn die Verbesserungen noch signifikant sind.
-Besonders die Messungen bei Siedlern zeigen, dass die Performanceunterschiede von der Platzierung der Gebäude hinsichtlich Meerflächen im Einzugsgebiet abhängen.
-
-Testfall 6 etwa zeigt, dass die Geschwindigkeit beider Verfahren am Land in etwa vergleichbar ist.
-Im Vergleich zu Testfällen am Strand wie etwa 5 oder 7 ist die Laufzeit bei beiden Verfahren höher, da das eigentliche Markieren der Tiles in den Ergebnissen inkludiert ist, und im ersteren mehr Tiles innerhalb des Radiuses auch wirklich markiert werden müssen.
-Hier ist weiters zu erkennen, das der neue Ansatz bei Testfällen am Strand deutlich effizienter ist, da die Tiles am Meer schneller ausgeschlossen werden können, was die ursprünglichen Annahmen des Projektes bestätigt.
-
-\paragraph{Kleine Bereiche.}
-Diese sind in den Tests weniger stark berücksichtigt, da bei kleinen Instanzen die Ausführungsgeschwindigkeit ohnehin hoch und somit Optimierungen nicht notwendig sind.
-
-In den Use Cases 10, 11 und 12 zeigt sich, dass hier das Hashmap-basierte Verfahren je nach dem wie stark der Vorteil des Ausschließens von Meertiles zum Tragen kommt schneller ist. Im ersteren und letzteren sind die Unterschiede minimal, während beim zweiteren die Quadtree-Variante kaum auf hoher Ebene Kinder ausschließen kann, und somit deutlich langsamer ist.
-
+\label{table1}
 
 \begin{center}
 	\begin{table}[htpb]
-		\label{table1}
 		\begin{tabularx}{\textwidth}{|cX|cc|cc|cc|}
 			\hline
 			& & \multicolumn{2}{c|}{Alter Ansatz} & \multicolumn{2}{c|}{Neuer Ansatz} & \multicolumn{2}{c|}{Differenz}\\
 			\multicolumn{2}{|c|}{Use Case} & t[sec] & der[\%] & t[sec] & der[\%] & absolut & relativ \\
 			%Use Case & time & std deriv & time & std deriv & absolut & relativ \\
 			\hline
-
 1 & Kontor am Strand, viele Geb"aude & 0,00541 & 0,00019 & 0,00282 & 0,00005 & -0,0025 & 52\%\\
 2 & Lager am Strand, viele Geb"aude & 0,00488 & 0,00008 & 0,00276 & 0,00005 & -0,0021 & 56\%\\
 3 & Marktplatz in Strandn"ahe, viele Geb"aude & 0,00240 & 0,00005 & 0,00209 & 0,00005 & -0,0003 & 87\%\\
 4 & Marktplatz am Strand, viele Geb"aude & 0,00229 & 0,00005 & 0,00184 & 0,00005 & -0,0004 & 80\%\\
-5 & Siedler am Siedlungsrand, viele Geb"aude & 0,00128 & 0,00006 & 0,00092 & 0,00006 & -0,0003 & 72\%\\
+5 & Siedler am Siedlungsrand, viele Geb"aude & 0,00128 & 0,00003 & 0,00068 & 0,00006 & 0,00004 & 106\%\\
 6 & Siedler am Land, viele Geb"aude & 0,00188 & 0,00017 & 0,00177 & 0,00004 & -0,0001 & 94\%\\
 7 & Siedler am Strand, viele Geb"aude & 0,00141 & 0,00007 & 0,00104 & 0,00003 & -0,0003 & 74\%\\
 8 & Siedler am Strand, wenige Geb"aude & 0,00138 & 0,00011 & 0,00124 & 0,00007 & -0,0001 & 90\%\\
 9 & Siedler in Strandn"ahe, viele Geb"aude & 0,00166 & 0,00004 & 0,00151 & 0,00005 & -0,0001 & 91\%\\
-10 & Weber am Strand, wenige Geb"aude & 0,00064 & 0,00003 & 0,00068 & 0,00006 & 0,00004 & 106\%\\
-11 & Weber am Land, viele Geb"aude & 0,00088 & 0,00003 & 0,00142 & 0,00009 & 0,00053 & 160\%\\
+10 & Weber am Strand, wenige Geb"aude & 0,00064 & 0,00003 & 0,00142 & 0,00009 & 0,00053 & 160\%\\
+11 & Weber am Land, viele Geb"aude & 0,00088 & 0,00006 & 0,00092 & 0,00006 & -0,0003 & 72\%\\
 12 & Weber am Strand, viele Geb"aude & 0,00070 & 0,00004 & 0,00073 & 0,00002 & 0,00002 & 104\%\\
+
 
 			\hline
 		\end{tabularx}
 		\caption{Laufzeitmessungen beider Ansätze im Vergleich}
+		\label{table1}
 		\caption*{ % legende
 			Legende:
 
@@ -669,9 +646,40 @@ In den Use Cases 10, 11 und 12 zeigt sich, dass hier das Hashmap-basierte Verfah
 	\end{table}
 \end{center}
 
-\myfig{img/testdata}{testdata}{width=\textwidth}{Laufzeitmessungen beider Ansätze im Vergliech}
+\paragraph{Große Bereiche.}
+Die ersten beiden Testfälle zeigen etwa, dass das neue Verfahren besonders bei Gebäuden mit hohen Radien effizient ist.
+Die Ursache dafür ist der wirkungsvolle Umgang mit großen Quadranten, welche vollständig innerhalb des zu berechnenden Bereiches liegen.
+Hier muss unter Umständen am Rand des Bereiches nicht einmal bis zur letzten Ebene abgestiegen werden, und zwar sofern die Grenze der Insel innerhalb des Bereiches liegt.
+In diesem Fall können oftmals Quadranten auf hoher Ebene im Baum als komplett im Bereich liegend identifiziert und markiert werden, auch wenn der Quadrant auch Flächen auf der Karte beinhaltet, welche nicht zur Siedlung gehören.
+Diese sind nämlich "`weiß"', also nicht repräsentiert, und werden folglich implizit ignoriert und müssen nicht auf niedrigerer Ebene berücksichtigt werden.
+
+Da beim ursprünglichen, auf Hashmaps basierenden Ansatz jedes Tile einzeln abgefragt werden muss, wächst hier die Laufzeit direkt mit dem Quadrat des Radius. Dieser Effekt kann mit dem Quadtreeansatz abgefedert werden, was sich in der Verbesserung von fast der Hälfte der ursprünglichen Zeit widerspiegelt.
+
+\paragraph{Mittelgroße Bereiche.}
+Obwohl der Marktplatz und der Siedler den selben Radius aufweisen, ist hier die Laufzeit deutlich verschieden, da die Grundfläche unterschiedlich groß sind, was natürlich zu ausgedehnteren Bereichen führt.
+
+Bei Flächen dieses Ausmaßes führt das neue Verfahren bereits nicht mehr zu erheblich schnelleren Ergebnissen, auch wenn die Verbesserungen noch signifikant sind.
+Besonders die Messungen bei Siedlern zeigen, dass die Performanceunterschiede von der Platzierung der Gebäude hinsichtlich Meerflächen im Einzugsgebiet abhängen.
+
+Testfall 6 etwa zeigt, dass die Geschwindigkeit beider Verfahren am Land in etwa vergleichbar ist.
+Im Vergleich zu Testfällen mit Gebäuden am Strand wie etwa 5 oder 7 ist die Laufzeit bei beiden Verfahren höher, da das eigentliche Markieren der Tiles in den Ergebnissen inkludiert ist, und im ersteren mehr Tiles innerhalb des Radiuses auch wirklich markiert werden müssen.
+Hier ist weiters zu erkennen, dass der neue Ansatz bei Testfällen mit Gebäuden am Strand deutlich effizienter ist, da die Tiles am Meer schneller ausgeschlossen werden können, was die ursprünglichen Annahmen des Praktikums bestätigt.
+
+\paragraph{Kleine Bereiche.}
+Diese sind in den Tests weniger stark berücksichtigt, da bei kleinen Instanzen die Ausführungsgeschwindigkeit ohnehin hoch und somit Optimierungen nicht notwendig sind.
+
+In den Use Cases 10, 11 und 12 zeigt sich, dass hier das Hashmap-basierte Verfahren je nach dem wie stark der Vorteil des Ausschließens von Meertiles zum Tragen kommt schneller ist.
+In den Letzteren sind die Unterschiede minimal, während beim Ersteren die Quadtree-Variante offenbar kaum auf hoher Ebene Kinder ausschließen kann, und somit deutlich langsamer ist. 
+Dies ist durch die Zerstückelung des Bereiches begründet, welche Abbildung \ref{fig:weaver} zeigt.
+
+\myfig{img/weaver}{weaver}{width=.6\textwidth}{Zerstückelter Bereich eines Webers}{Zerstückelter Bereich eines Webers}
+
+
+\myfig{img/testdata}{testdata}{width=\textwidth}{Laufzeitmessungen beider Ansätze im Vergleich}{Laufzeitmessungen beider Ansätze im Vergleich. Die Nummerierung der Testfälle entspricht jener in Tabelle \ref{table1}.}
 
 \subsection{Ausblick}
+
+
 
 \clearpage
 

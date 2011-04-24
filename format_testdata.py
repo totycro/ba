@@ -37,6 +37,7 @@ def format_percent(p):
 counter = 0
 for i in l:
 	counter += 1
+	#if counter == 10: import pudb ; pudb.set_trace()
 	out = ""
 	out += str(counter) + " & "
 	out += i[0] + " " + format_lage(i[1]) + ', ' + format_geb(i[2]) + ' & '
