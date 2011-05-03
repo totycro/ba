@@ -662,15 +662,15 @@ Obwohl der Marktplatz und der Siedler den selben Radius aufweisen, ist hier die 
 Bei Flächen dieses Ausmaßes führt das neue Verfahren bereits nicht mehr zu erheblich schnelleren Ergebnissen, auch wenn die Verbesserungen noch signifikant sind.
 Besonders die Messungen bei Siedlern zeigen, dass die Performanceunterschiede von der Platzierung der Gebäude hinsichtlich Meerflächen im Einzugsgebiet abhängen.
 
-Testfall 6 etwa zeigt, dass die Geschwindigkeit beider Verfahren am Land in etwa vergleichbar ist.
-Im Vergleich zu Testfällen mit Gebäuden am Strand wie etwa 5 oder 7 ist die Laufzeit bei beiden Verfahren höher, da das eigentliche Markieren der Tiles in den Ergebnissen inkludiert ist, und im ersteren mehr Tiles innerhalb des Radiuses auch wirklich markiert werden müssen.
+Die Testfäll 6 und 9 etwa zeigen, dass die Geschwindigkeit beider Verfahren am Land in etwa vergleichbar ist.
+Im Vergleich zu Testfällen mit Gebäuden am Strand bzw. am Rande der Siedlung wie etwa 5, 7 oder 8 ist die Laufzeit bei beiden Verfahren höher, da das eigentliche Markieren der Tiles in den Ergebnissen inkludiert ist, und im ersteren mehr Tiles innerhalb des Radiuses auch wirklich markiert werden müssen.
 Hier ist weiters zu erkennen, dass der neue Ansatz bei Testfällen mit Gebäuden am Strand deutlich effizienter ist, da die Tiles am Meer schneller ausgeschlossen werden können, was die ursprünglichen Annahmen des Praktikums bestätigt.
 
 \paragraph{Kleine Bereiche.}
 Diese sind in den Tests weniger stark berücksichtigt, da bei kleinen Instanzen die Ausführungsgeschwindigkeit ohnehin hoch und somit Optimierungen nicht notwendig sind.
 
 In den Use Cases 10, 11 und 12 zeigt sich, dass hier das Hashmap-basierte Verfahren je nach dem wie stark der Vorteil des Ausschließens von Meertiles zum Tragen kommt schneller ist.
-In den Letzteren sind die Unterschiede minimal, während beim Ersteren die Quadtree-Variante offenbar kaum auf hoher Ebene Kinder ausschließen kann, und somit deutlich langsamer ist. 
+In den beiden Letzteren sind die Unterschiede minimal, während beim Ersteren die Quadtree-Variante offenbar kaum auf hoher Ebene Kinder ausschließen kann, und somit deutlich langsamer ist. 
 Dies ist durch die Zerstückelung des Bereiches begründet, welche Abbildung \ref{fig:weaver} zeigt.
 
 \myfig{img/weaver}{weaver}{width=.6\textwidth}{Zerstückelter Bereich eines Webers}{Zerstückelter Bereich eines Webers}
@@ -685,7 +685,7 @@ Hier werden Gebäude bei der Platzierung oft nur um wenige Felder verschoben.
 In diesem Fall werden in der aktuellen Implementierung alle Felder deselektiert, die neuen Felder berechnet und anschließend selektiert.
 Dies ist offensichtlicherweise nicht notwendig, es werden viele Tiles demarkiert nur um kurz darauf wieder markiert zu werden. 
 Es erscheint sinnvoll, hier nur die Differenz zu berechnen, und die entsprechenden Aktionen auszuführen, um vom der ursprünglichen Zustand in den gewünschten zu gelangen.
-Erste Tests mit einer unvollständigen Implementierung bestätigen diese Überlegung <TODO: zeit nochmal messen>. 
+Erste Tests mit einer unvollständigen Implementierung bestätigen diese Überlegung <TODO: Zeit nochmal messen und hier einfügen>. 
 Hier ist noch anzumerken, dass diese Optimierung nur mit der ursprünglichen Hashmapimplementierung wirklich effizient funktioniert, da ausschließlich einzelne Koordinaten berechnet und abgefragt werden. 
 
 
