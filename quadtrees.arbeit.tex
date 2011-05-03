@@ -600,7 +600,7 @@ Es fällt schnell auf, dass die Differenzen zwischen den Ansätzen variieren;
 genauer gesagt wird hier eine Korrelation zwischen der Größe des zu berechnenden Bereichs und den Unterschieden der Laufzeiten deutlich. Daher werde ich die Ergebnisse in drei Kategorien analysieren:
 
 
-\label{table1}
+%\label{table1}
 
 \begin{center}
 	\begin{table}[htpb]
@@ -623,7 +623,6 @@ genauer gesagt wird hier eine Korrelation zwischen der Größe des zu berechnend
 11 & Weber am Land, viele Geb"aude & 0,00088 & 0,00006 & 0,00092 & 0,00006 & -0,0003 & 72\%\\
 12 & Weber am Strand, viele Geb"aude & 0,00070 & 0,00004 & 0,00073 & 0,00002 & 0,00002 & 104\%\\
 
-
 			\hline
 		\end{tabularx}
 		\caption{Laufzeitmessungen beider Ansätze im Vergleich}
@@ -645,6 +644,8 @@ genauer gesagt wird hier eine Korrelation zwischen der Größe des zu berechnend
 		}
 	\end{table}
 \end{center}
+
+\myfig{img/testdata}{testdata}{width=\textwidth}{Laufzeitmessungen beider Ansätze im Vergleich}{Laufzeitmessungen beider Ansätze im Vergleich. Die Nummerierung der Testfälle entspricht jener in Tabelle \ref{table1}.}
 
 \paragraph{Große Bereiche.}
 Die ersten beiden Testfälle zeigen etwa, dass das neue Verfahren besonders bei Gebäuden mit hohen Radien effizient ist.
@@ -675,10 +676,17 @@ Dies ist durch die Zerstückelung des Bereiches begründet, welche Abbildung \re
 \myfig{img/weaver}{weaver}{width=.6\textwidth}{Zerstückelter Bereich eines Webers}{Zerstückelter Bereich eines Webers}
 
 
-\myfig{img/testdata}{testdata}{width=\textwidth}{Laufzeitmessungen beider Ansätze im Vergleich}{Laufzeitmessungen beider Ansätze im Vergleich. Die Nummerierung der Testfälle entspricht jener in Tabelle \ref{table1}.}
-
 \subsection{Ausblick}
 
+Die bisher erzielten Ergebnisse sind bereits zufriedenstellend, vor allem hinsichtlich Bereichen mit höheren Radien. Als nächste Schritte müssen noch Verbesserungen im Code der Engine angedacht werden, welche außerhalb des Umfanges dieser Arbeit liegen.
+
+Bezüglich den Markierungen der Tiles im Einflussbereich ist noch eine weitere Optimierung möglich:
+Hier werden Gebäude bei der Platzierung oft nur um wenige Felder verschoben.
+In diesem Fall werden in der aktuellen Implementierung alle Felder deselektiert, die neuen Felder berechnet und anschließend selektiert.
+Dies ist offensichtlicherweise nicht notwendig, es werden viele Tiles demarkiert nur um kurz darauf wieder markiert zu werden. 
+Es erscheint sinnvoll, hier nur die Differenz zu berechnen, und die entsprechenden Aktionen auszuführen, um vom der ursprünglichen Zustand in den gewünschten zu gelangen.
+Erste Tests mit einer unvollständigen Implementierung bestätigen diese Überlegung <TODO: zeit nochmal messen>. 
+Hier ist noch anzumerken, dass diese Optimierung nur mit der ursprünglichen Hashmapimplementierung wirklich effizient funktioniert, da ausschließlich einzelne Koordinaten berechnet und abgefragt werden. 
 
 
 \clearpage
