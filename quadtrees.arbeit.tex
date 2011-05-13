@@ -199,7 +199,7 @@ Point Quadtrees kann man als direkte Verallgemeinerung von binären Suchbäumen 
 
 Abbildung \ref{fig:pointquadtree} zeigt eine Instanz eines Point Quadtrees in zwei üblichen Darstellungsvarianten: Baum- und Graphenform.
 In der Ersten wird nur die Struktur des Baumes betrachtet, die Lage der Datenknoten ist ausschließlich relativ zueinander sichtbar.
-Die Zweite konzentriert sich mehr auf die absolute Position der Punkte in einem Koordinatensystem und zeigt zusätzlich dazu die rekursive Dekompositionsstruktur ein.
+Die Zweite konzentriert sich mehr auf die absolute Position der Punkte in einem Koordinatensystem und zeigt zusätzlich dazu die rekursive Dekompositionsstruktur an.
 Die Bezeichnung der Knoten in der Grafik gibt hier die Reihenfolge des Einfügens an. Bereits hier wird deutlich, dass die Form des Baumes durch diese Reihenfolge determiniert wird.\footnote{Vgl. Kapitel \ref{sec:pointquadtree:insert}}
 \myfig{img/pointquadtree-ins7+tree-trimmed}{pointquadtree}{width=.9\textwidth}{Point Quadtree}{Gegenüberstellung: ein Point Quadtree in Baum- bzw.\ Koordinatendarstellung}
 
@@ -237,7 +237,7 @@ Der asymptotische Aufwand dieser Operation ist natürlich identisch mit jenem de
 Der neu eingefügte Knoten teilt den Raum wiederum an seinen $x$- bzw. $y$-Koordinaten und erweitert so die Struktur des Baumes.  
 Es ist schnell ersichtlich, dass hier, genau wie bei einem Binärbaum, Entartungen auftreten können, da sich die Struktur dynamisch mit jedem eingefügten Element herausbildet.
 
-Ein besonders Problem stellen hier etwa geordnete Daten da. Werden diese in der gegebenen Reihenfolge eingefügt, degeneriert der Baum zu einer linearen Liste, wodurch ein linearer Such- und somit gleichzeitig auch Einfügeaufwand entsteht, wie Abbildung \ref{fig:entartung} demonstriert.
+Ein besonderes Problem stellen hier etwa geordnete Daten da. Werden diese in der gegebenen Reihenfolge eingefügt, degeneriert der Baum zu einer linearen Liste, wodurch ein linearer Such- und somit gleichzeitig auch Einfügeaufwand entsteht, wie Abbildung \ref{fig:entartung} demonstriert.
 \myfig{img/pointquadtree-entartet-trimmed}{entartung}{width=.6\textwidth}{Entarteter Point Quadtree}{Ein Entarteter Point Quadtree}
 
 Sind andererseits beim Aufbau des Baumes bereits alle Daten verfügbar, kann durch folgende Strategie ein optimale Balancierung erreicht werden: Der Median der sortierten Liste von Daten wird als Wurzel verwendet, die restlichen Elemente werden in 4 Gruppen eingeteilt, welche den Quadranten dieser Wurzel zugeordnet werden.
@@ -247,7 +247,7 @@ Auf jede dieser Unterteilungen wird der Prozess rekursiv angewendet. Dadurch kan
 \subsubsection{Löschen}
 \label{sec:pointquadtree:delete}
 Das Entfernen eines Knotens aus einem Quadtree ist im Allgemeinen eine komplexe Operation, da die Knoten alleine die Struktur des Baumes bilden, und diese auch nach dem Löschen weiterhin gewisse Eigenschaften innehaben muss.
-Daher ist es notwendig, eventuelle Kinder eines entfernten Knoten gemäß dem Baumaufbau neu zu platzieren.\footzit{Vgl.}{DBLP:journals/acta/FinkelB74}{Seite 8}
+Daher ist es notwendig, eventuelle Kinder eines entfernten Knotens gemäß dem Baumaufbau neu zu platzieren.\footzit{Vgl.}{DBLP:journals/acta/FinkelB74}{Seite 8}
 Bei Binärbäumen stellt dies kein allzu großes Problem dar, da in einem eindimensionalen Raum immer ein geeigneter Ersatz in Form des nächsten Knotens für einen zu entfernenden Knoten zur Verfügung steht.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 2}
 Im Fall von Quadtrees muss eine Substitution hingegen Bedingungen hinsichtlich zweier Dimensionen genügen, wodurch es ein Näheverhältnis wie im eindimensionalen Fall nicht gibt.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 2}
 Hier ist ein Ersatz nur dann möglich, wenn ein Blattknoten existiert, für den sich im Bereich zwischen den Achsen, welche durch die Koordinaten des Blattknoten bzw.\ deren des zu entfernenden Knoten verlaufen, kein anderer Knoten befindet.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 3}
@@ -264,8 +264,8 @@ Durch dieses Verfahren kann folglich der Aufwand einzelner Löschoperationen abg
 \label{sec:pseudoquadtree}
 Der Pseudo Quadtree ist eine Abwandlung des Point Quadtrees, welche Löschen in logarithmischer Zeit sowie einfachere Rebalancierung bei Deformation ermöglicht. Diese Form des Quadtrees wurde 1982 von Overmars und van Leeuwen in \cite{DBLP:journals/acta/OvermarsL82} entwickelt.
 
-Dem Pseudo Quadtree liegt die Analyse zu Grunde, dass die Probleme beim Entfernen von Knoten und bei der Balancierung bei Point Quadtrees daher stammen, dass die Datenpunkte selbst die Struktur des Baumes bilden, und so nur äußerst wenig Flexibilität vorhanden ist.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 6}
-Der Pseudo Quadtree unterscheidet sich davon insofern, als dass die Dekomposition des Raum an theoretisch beliebigen Punkten stattfinden kann. 
+Dem Pseudo Quadtree liegt die Analyse zu Grunde, dass die Probleme beim Entfernen von Knoten und bei der Balancierung bei Point Quadtrees daher stammen, dass die Datenpunkte selbst die Struktur des Baumes bilden und so nur äußerst wenig Flexibilität vorhanden ist.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 6}
+Der Pseudo Quadtree unterscheidet sich davon insofern, als dass die Dekomposition des Raumes an theoretisch beliebigen Punkten stattfinden kann. 
 
 Konkret funktioniert das Einfügen beim Pseudo Quadtree wie folgt:
 Der Quadrant eines Datenpunktes wird gesucht.
@@ -281,7 +281,7 @@ Abbildung \ref{fig:pseudoquadtree} zeigt einen Pseudo Quadtree, welcher dieselbe
 Sollte trotz einer angepassten Strategie ein Ungleichgewicht entstehen, kann der Subbaum, dessen Wurzel der höchste Knoten ist, bei welchem eine unbalancierte Verteilung seiner Kindknoten festgestellt wird, neu strukturiert werden, indem eine neue Aufteilung der vorhandenen Knoten berechnet wird.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 4f} % cp
 Es kann gezeigt werden, dass im allgemeinen Fall eine Teilung möglich ist,
 so dass sich in keinem der vier Quadranten mehr als ein Drittel der Knoten befindet.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 7} % cp
-Mit dieser Methode kann weiters garantiert werden, dass ein Pseudo Quadtree aufgebaut werden kann, dessen Höhe $\lceil \log_{d+1} N\rceil$ nicht überschreitet, wobei $N$ die Anzahl der Knoten darstellt.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 8}
+Mit dieser Methode kann weiters garantiert werden, dass ein Pseudo Quadtree aufgebaut werden kann, dessen Höhe $\lceil \log_{d+1} N\rceil$ nicht überschreitet, wobei $N$ die Anzahl der Knoten sowie $d$ die Anzahl der Dimensionen darstellt.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 8}
 
 Durch Raumaufteilung der Punkte befinden sich Daten schließlich nur noch an den Blättern. Dies wiederum ist der optimale Fall bezüglich dem Entfernen von Knoten -- ein Knoten ohne Kinder kann jederzeit ohne zusätzlichen Aufwand gelöscht werden. Da das Entfernen eines Knotens immer auch das Suchen desselben erfordert, entsteht somit ein logarithmischer Aufwand.
 
@@ -291,7 +291,7 @@ Durch Raumaufteilung der Punkte befinden sich Daten schließlich nur noch an den
 Diese Variante wurde von Bentley kurz nach dem Point Quadtree 1974 in \cite{Bentley:1975} entwickelt. Der Name \kd\ deutet an, dass dieser Baum $k$-dimensionale Schlüssel verwendet. 
 
 Der \kd\ Tree kann wie der Point Quadtree als Verallgemeinerung des Binärbaums gesehen werden, hier wird hingegen ein etwas anderer Ansatz verfolgt:
-Anstatt den Raum auf jeder Teilungsebene in allen Dimensionen zu partitionieren, was zu $2^k$ Kinder pro Knoten führt, wird in jedem Schritt nur eine Dimension berücksichtigt und so eine binäre Unterteilung von eigentlich mehrdimensionalen Schlüsseln ermöglicht.
+Anstatt den Raum auf jeder Teilungsebene in allen Dimensionen zu partitionieren, was zu $2^k$ Kindern pro Knoten führt, wird in jedem Schritt nur eine Dimension berücksichtigt und so eine binäre Unterteilung von eigentlich mehrdimensionalen Schlüsseln ermöglicht.
 Diese Mehrdimensionalität wird bei \kd\ Trees weiters dadurch ausgedrückt, dass die Dimensionen, bezüglich derer an einer gewissen Tiefe geteilt wird, nach verschiedenen Strategien alternieren.
 Im zweidimensionalen Fall könnte hier etwa bei geraden Tiefenebenen an der $x$-Achse bzw.\ bei ungeraden an der $y$-Achse geteilt werden, wie etwa Abbildung \ref{fig:kdtree} zeigt.
 Ursprünglich wurde genau dieses Abwechslungsmuster vorgeschlagen,\footzit{Vgl.}{Bentley:1975}{Seite 2}
@@ -314,7 +314,8 @@ Verwendet man hier einen dynamischen Ansatz, muss jedoch bei jedem Knoten der Di
 	\\ \\
 	(a) Die Beschriftung der Unterteilungen gibt die Achse an, bezüglich welcher die Knoten aufgeteilt werden.
 	\\ \\
-	(b) Hinsichtlich den vorhergegangenen Abbildung wurden hier die Koordinaten der Knoten leicht verändert, da in diesem Fall ein äußerst schlecht balancierter \kd\ Tree entstehen würde, was der Autor aus Demonstrationszwecken vermeiden möchte.}
+	(b) Hinsichtlich der vorhergegangenen Abbildungen wurden hier die Koordinaten der Knoten leicht verändert, da in diesem Fall ein äußerst schlecht balancierter \kd\ Tree entstehen würde, was der Autor aus Demonstrationszwecken vermeiden möchte.}
+	\label{fig:kdtree}
 \end{figure}
 
 %\myfig{img/kdtree-tree-full-trimmed}{kdtree}{width=.78\textwidth}{\kd\ Tree}{Ein \kd\ Tree: Die Beschriftung links der Unterteilungen gibt die Achse an, bezüglich welcher die Knoten aufgeteilt werden.
@@ -404,7 +405,7 @@ Der tiefste Quadrant, welcher die Koordinaten eines einzufügenden Knotens beinh
 Ist dieser leer, kann der Knoten hier platziert werden.
 Andernfalls muss eine weitere Unterteilung vorgenommen werden, was durch Partitionierung des Quadranten in gleichgroße Teile geschieht. 
 Der Knoten, welcher sich bereits in diesem Quadranten befand, wird in die neue Unterteilung überführt, und es wird neuerlich versucht, den einzufügenden Knoten zu platzieren. 
-Wenn hier erneut beide Knoten in den selben Quadranten gespeichert werden würden, muss der Prozess der Partitionierung rekursiv wiederholt werden.
+Wenn hier erneut beide Knoten in denselben Quadranten gespeichert werden würden, muss der Prozess der Partitionierung rekursiv wiederholt werden.
 Sind die Koordinaten der Knoten voneinander verschieden, ist trivialerweise garantiert, dass sie nach endlich vielen Schritten in verschiedene Quadranten eingeteilt werden. 
 Sollte es in der Anwendung möglich sein, dass zwei Knoten mit äquivalenten Koordinaten auftreten, müssen diese speziell behandelt werden, etwa durch eine Überlaufliste.
 
@@ -435,10 +436,10 @@ Um das Umfeld der Aufgabenstellung deutlich zu machen, werde ich zuerst auf dies
 Das Szenario ist historisch gesehen vergleichbar zur Besiedelung Amerikas durch europäische Siedler.
 
 Ziel des Spieles ist, eine florierende Wirtschaft aufzubauen, welche die Bevölkerung mit Waren versorgt, die wiederum mit Steuern die laufenden Kosten der Produktionsketten und den Bau neuer Gebäude finanzieren.
-Aus Spieler\_innensicht geschieht der Aufbau der Siedlung durch das Errichten von Gebäuden, welche anschließend weitestgehend autonom arbeiten.
+Aus SpielerInnensicht geschieht der Aufbau der Siedlung durch das Errichten von Gebäuden, welche anschließend weitestgehend autonom arbeiten.
 
 Das Programm ist unter der GPL-2\footurl{http://www.gnu.org/licenses/gpl-2.0.html}{01.03.2011} lizenziert und somit freie, offene Software. 
-Es befindet sich noch in einer relative frühen Phase der Entwicklung, obschon der bereits implementierte Teil "`spielbar"' ist.
+Es befindet sich noch in einer relativ frühen Phase der Entwicklung, obschon der bereits implementierte Teil "`spielbar"' ist.
 Nähere Informationen sind unter \url{http://www.unknown-horizons.org} verfügbar.
 
 \subsection{Technische Details}
@@ -447,10 +448,11 @@ Die Spiellogik ist in Version 2.6 der Sprache Python\footurl{http://www.python.o
 baut auf der Engine FIFE\footurl{http://fifengine.de}{01.03.2011} auf.
 Weiters läuft das Spiel in nur einem Thread ab, weswegen jede Berechnung den Programmablauf blockiert, und somit sehr effizient sein muss.
 
-Die Spielwelt stellt eine zweidimensionale Fläche dar.
-Sie ist in 1x1 große Tiles unterteilt, welche daher die kleinste Größeneinheit sind. 
+Die Spielwelt ist in eine zweidimensionale Fläche eingebettet.
+Sie ist in $1\times1$ große Tiles (dt.: "`Fliesen"') unterteilt, welche daher die kleinste Größeneinheit sind. 
 Die Zuordnung von Tiles zu Koordinaten ist bijektiv und über den ganzen Spielverlauf hindurch konstant.
-Diese Tiles (dt.: "`Fliesen"') sind in verschiedene geographische Typen unterteilt (unter anderem Wasser, Land, Küste), denen zur graphischen Darstellung ein entsprechendes Bild zugeordnet ist. Desweiteren enthalten sie einen Verweis auf etwaige Gebäude, welche den Platz an dieser Koordinate einnehmen und stellen so die Basis der räumlichen Verwaltung der Inseln dar.
+Diese Tiles sind in verschiedene geographische Typen unterteilt (unter anderem Wasser, Land, Küste), denen zur graphischen Darstellung ein entsprechendes Bild zugeordnet ist.
+Desweiteren enthalten sie einen Verweis auf etwaige Gebäude, welche den Platz an dieser Koordinate einnehmen und so die Basis der räumlichen Verwaltung der Inseln darstellen.
 
 Aus diesem System folgt, dass alle Objekte im Spiel nur ganzzahlige, diskrete Koordinaten aufweisen.
 
@@ -463,7 +465,7 @@ Ein Holzfäller etwa kann nur Bäume fällen, welche sich innerhalb seines Radiu
 eine Schule nur Einwohner des entsprechenden Bereiches betreuen.
 \myfig{img/uh-boatbuilder-overview}{boatbuilder}{width=.8\textwidth}
 {Screenshot aus "`Unknown Horizons"'}
-{Screenshot aus "`Unknown Horizons"'. Abbgebildet ist hier ein Bootsbauer inklusive seinem Aktionsradius, welcher den Bereich beschreibt, aus welchem dieser Rohstoffe für den Bootsbau einsammeln kann.}
+{Screenshot aus "`Unknown Horizons"'. Abbgebildet ist hier ein Bootsbauer inklusive seinem Aktionsradius, welcher den Bereich beschreibt, aus welchem der Bootsbauer Rohstoffe für den Bootsbau einsammeln kann.}
 Abbildung\nolinebreak\ \ref{fig:boatbuilder} zeigt ein Gebäude, dessen Einflussbereich eingefärbt wurde.
 
 Dieses Gebiet umfasst alle Tiles, welche folgende Ungleichung erfüllen
@@ -472,11 +474,11 @@ Dieses Gebiet umfasst alle Tiles, welche folgende Ungleichung erfüllen
 \end{equation}
 sowie sich
 \begin{enumerate}
-	\item im Areal der Siedlung 
+	\item im Areal der Siedlung,
 	\item an markierbaren Stellen
 \end{enumerate}
 befinden.
-Da die Fläche eines Gebäudes eine beliebige rechteckige Form darstellen kann, entsteht durch diese Ungleichung ein Rechteck mit abgerundeten Ecken, welches durch Bedingungen 1 und 2 beliebig beschränkt sein kann.
+Da die Fläche eines Gebäudes eine beliebige rechteckige Form darstellen kann, entsteht durch diese Ungleichung ein Rechteck mit abgerundeten Ecken, welches durch Bedingungen (1) und (2) beliebig beschränkt sein kann.
 
 Nachdem dieser Bereich beim Gebäudebau ein zentrales Kriterium darstellt, muss dieser dargestellt werden, wenn die Maus über die Spielwelt bewegt wird, um eine geeignete Position für ein zu bauendes Gebäude zu suchen, was offensichtlicherweise auch sehr schnell geschehen muss, um hier Verzögerungen zu vermeiden.
 Die Einfärbungsroutine wird nur dann aufgerufen, wenn der Mauszeiger einen Moment über einer gewissen Koordinate verweilt, um "`Ruckler"' zu vermeiden. Im allgemeinen Anwendungsfall wird anschließend auf die Darstellung des Bereiches gewartet, um sicher zu stellen, dass das Gebäude mit diesem Aktionsradius die gewünschte Funktion übernehmen kann.
@@ -493,22 +495,23 @@ In diesen Prozess fließen somit viele äußere Faktoren ein.
 
 \subsection{Ursprünglicher Ansatz}
 
-Die bisherige Methode zur Speicherung der Tiles stellt eine Hashmap dar, in welcher die Koordinaten der Insel als Schlüssel auf die Tileobjekte verweisen. 
+Die bisherige Methode zur Speicherung der Tiles ist in Form einer Hashmap implementiert, in welcher die Koordinaten der Insel als Schlüssel auf die Tileobjekte verweisen. 
 Es sei darauf hingewiesen, dass hier Nähebeziehungen nicht repräsentiert werden.
 
 Der Lösungsansatz besteht im Wesentlichen aus drei Schritten:
 \begin{enumerate}
-	\item Berechnung der Koordinaten innerhalb des Einflussbereichs.
-	\item Lookup dieser Koordinaten in der Hashmap.
+	\item Berechnung der Koordinaten innerhalb des Einflussbereichs,
+	\item Lookup dieser Koordinaten in der Hashmap,
 	\item Überprüfung der Tiles bezüglich Siedlungszugehörigkeit und Markierbarkeit.
 \end{enumerate}
 
-Schritt 1 kann äußerst schnell durchgeführt werden.
+Schritt (1) kann äußerst schnell durchgeführt werden.
 Zusammengefasst berechnet der verwendete Algorithmus die Grenze eines Viertels des Bereiches, die restlichen Viertel werden gespiegelt.
 Diese Begrenzungen können schließlich einfach zeilenweise aufgefüllt werden.
 In dieser Form ist der Ansatz nicht optimal (die Berechnung eines Achtels würde auch \mbox{ausreichen}), in der Praxis ist hingegen der Anteil an der gesamten Laufzeit so gering, dass weitere Optimierungen nicht gerechtfertigt werden könnten.
 
-Der nächste Schritt kann für einzelne Elemente auch sehr schnell umgesetzt werden, bei großen Flächen entsteht hier jedoch durch die Anzahl der Tiles eine messbare Verzögerung.
+Im nächsten Schritt müssen die den in (1) berechneten Koordinaten zugehörigen Tileobjekte in der Hashmap nachgeschlagen werden, um zu überprüfen, ob diese existieren, also Teil der Insel sind, und um später an weitere Informationen über diese Koordinate zu gelangen.
+Dies kann für einzelne Elemente auch sehr schnell umgesetzt werden, bei großen Flächen entsteht hier jedoch durch die Anzahl der Tiles eine messbare Verzögerung.
 Es ist nicht möglich, mehrere angrenzende Tiles gleichzeitig anzusprechen, jedes muss einzeln aus der Hashmap abgefragt werden.
 Besonders wenn viele Tiles am Meer liegen, wie es etwa in Abbildung \ref{fig:boatbuilder} der Fall ist, scheitern alle diese Lookups, denn die Koordinatenberechnung hat keine Informationen über die Struktur der Insel.
 
@@ -517,7 +520,7 @@ Eine spezielle Hashmap zur Markierung könnte dies vereinfachen.
 
 \section{Neuer Ansatz}
 Nachdem bei diesem Markierungsproblem die Lage der Tiles zueinander eine entscheidende Rolle spielt, ist es naheliegend, dieses Problem mittels Quadtrees zu lösen.
-Diese Datenstruktur kann die Struktur der Inseln auf eine Weise abgebilden,
+Diese Datenstruktur kann die Struktur der Inseln auf eine Weise abbilden,
 welche der Suche ermöglicht, Gebiete am Meer bzw.\ außerhalb der Siedlung schnell zu ignorieren sowie größere, zusammenhängende Blöcke effizient als innerhalb des Bereiches liegend zu identifizieren.
 
 Der Aufbau und die Wartung des Quadtrees können zwar je nach Quadtreetyp einen Mehraufwand darstellen, dieser ist jedoch nur beim Spielstart (währenddessen ohnehin mit einer Verzögerung gerechnet wird) bzw.\ seltener beim Bau verschiedener Gebäude, welche den Einflussbereich der Siedlung erweitern, erforderlich.
@@ -589,11 +592,11 @@ class Node(object):
 % gebäude wirklich kontor, siedler, etc nennen?
 % tabelle kopfbeschriftungen
 
-Zur Überprüfung der Laufzeit der Verfahren habe ich einige Testfälle bestimmt, welche aus je einem Gebäude einer Siedlung bestehen.
-Diese werden vom Testcode selektiert, was den gleichen Code ausführt, wie das Markieren der Tiles im Einflussgebiet im Baumodus.
-Um Umgebungseinflüsse zu minimieren wird diese Selektion 100 Mal durchgeführt und anschließend der Mittelwert und die Standardabweichung berechnet.
+Zur Überprüfung der Laufzeit der Verfahren habe ich zwölf Testfälle bestimmt, welche aus je einem Gebäude einer Siedlung bestehen.
+Die Durchführung des Tests besteht darin, die Tiles im Einflussgebiet des Gebäudes zu markieren.
+Um Umgebungseinflüsse des Codes zu egalisieren wird diese Selektion 100 Mal durchgeführt und anschließend der Mittelwert und die Standardabweichung berechnet.
 
-Die verschiedenen Gebäude besitzen unterschiedliche große Grundflächen und Radien, weswegen
+Die verschiedenen Gebäude besitzen unterschiedlich große Grundflächen und Radien, weswegen
 in den Testfällen verschiedene Typen von Gebäuden vorkommen.
 Tabelle \ref{table1} zeigt hierbei die Ergebnisse der Messung.
 Es fällt schnell auf, dass die Differenzen zwischen den Ansätzen variieren;
@@ -632,7 +635,7 @@ genauer gesagt wird hier eine Korrelation zwischen der Größe des zu berechnend
 
 			\begin{tabular}{|c|c|c|}
 				\hline
-				Gebäude & Größe & Radius \\
+				Gebäude & Größe & Aktionsradius \\
 				\hline
 				Kontor & $3\times3$ & 24 \\
 				Lager & $2\times2$ & 24 \\
