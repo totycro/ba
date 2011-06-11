@@ -24,6 +24,7 @@
 \usepackage[doublespacing]{setspace}
 \usepackage{tabularx}
 \usepackage{comment}
+\usepackage{color}
 \usepackage[final]{listings} % sourcecode in document
 \usepackage{url}      % for urls
 \usepackage{multicol}
@@ -198,8 +199,8 @@ Point Quadtrees kann man als direkte Verallgemeinerung von binären Suchbäumen 
 % As we have seen in this chapter, the size and depth of a quadtree for a set of n points cannot be bounded in terms of the number of the number of points only.
 
 Abbildung \ref{fig:pointquadtree} zeigt eine Instanz eines Point Quadtrees in zwei üblichen Darstellungsvarianten: Baum- und Graphenform.
-In der Ersten wird nur die Struktur des Baumes betrachtet, die Lage der Datenknoten ist ausschließlich relativ zueinander sichtbar.
-Die Zweite konzentriert sich mehr auf die absolute Position der Punkte in einem Koordinatensystem und zeigt zusätzlich dazu die rekursive Dekompositionsstruktur an.
+In der ersten Variante wird nur die Struktur des Baumes betrachtet, die Lage der Datenknoten ist ausschließlich relativ zueinander sichtbar.
+Die zweitere konzentriert sich mehr auf die absolute Position der Punkte in einem Koordinatensystem und zeigt zusätzlich dazu die rekursive Dekompositionsstruktur an.
 Die Bezeichnung der Knoten in der Grafik gibt hier die Reihenfolge des Einfügens an. Bereits hier wird deutlich, dass die Form des Baumes durch diese Reihenfolge determiniert wird.\footnote{Vgl. Kapitel \ref{sec:pointquadtree:insert}}
 \myfig{img/pointquadtree-ins7+tree-trimmed}{pointquadtree}{width=.9\textwidth}{Point Quadtree}{Gegenüberstellung: ein Point Quadtree in Baum- bzw.\ Koordinatendarstellung}
 
@@ -220,14 +221,14 @@ was im Falle einer Entartung (Worst Case) zu einer linearen Laufzeit von $O(N)$ 
 Die Bereichssuche gestaltet sich ähnlich der Punktabfrage.
 Der essentielle Unterschied besteht darin, dass hier die Suche möglicherweise in mehreren Quadranten eines Knotens fortgesetzt werden muss.
 Die zu durchsuchenden Quadranten werden bestimmt, indem überprüft wird, ob der Bereich dieses Quadranten mit dem gesuchten Bereich überlappt.
-Weiters wird für jeden Knoten, welcher besucht wird, festgestellt, ob dieser sich in dem spezifizierten Bereich befindet; dieser wird gegebenenfalls zurückgegeben.\footzit{Vgl.}{DBLP:journals/acta/FinkelB74}{Seite 5f}
+Weiters wird für jeden Knoten, welcher besucht wird, festgestellt, ob er sich in dem spezifizierten Bereich befindet; dieser wird gegebenenfalls zurückgegeben.\footzit{Vgl.}{DBLP:journals/acta/FinkelB74}{Seite 5f}
 In dieser Formulierung wird ebenso sofort deutlich, dass die gesuchte Region nicht unbedingt ein Rechteck bilden muss.
 
 %Weiters kann gezeigt werden, dass Range Queries in $O(n\ log_k\ n)$ abgearbeitet werden können.\footzit{Vgl.}{Lueker78}{Seite 1}
 
 \subsubsection{Einfügen}
 \label{sec:pointquadtree:insert}
-Das Verfahren zum Einfügen neuer Daten baut direkt auf die Suche auf.
+Das Verfahren zum Einfügen neuer Daten baut direkt auf der Suche auf.
 %In dem Quadranten, in welchem eine normale Suche abbrechen würde, wird das Datum eingefügt, indem an der entsprechenden Stelle, die sich offensichtlicher Weise in diesem Quadranten befinden muss, der Datenknoten platziert wird.
 Das heißt, man sucht nach dem einzufügenden Objekt und findet dieses nicht.
 Anstatt nun aber zu terminieren, wird an der potentiell freien Stelle das entsprechende Objekt hinzugefügt.
@@ -238,7 +239,7 @@ Der neu eingefügte Knoten teilt den Raum wiederum an seinen $x$- bzw. $y$-Koord
 Es ist schnell ersichtlich, dass hier, genau wie bei einem Binärbaum, Entartungen auftreten können, da sich die Struktur dynamisch mit jedem eingefügten Element herausbildet.
 
 Ein besonderes Problem stellen hier etwa geordnete Daten da. Werden diese in der gegebenen Reihenfolge eingefügt, degeneriert der Baum zu einer linearen Liste, wodurch ein linearer Such- und somit gleichzeitig auch Einfügeaufwand entsteht, wie Abbildung \ref{fig:entartung} demonstriert.
-\myfig{img/pointquadtree-entartet-trimmed}{entartung}{width=.6\textwidth}{Entarteter Point Quadtree}{Ein Entarteter Point Quadtree}
+\myfig{img/pointquadtree-entartet-trimmed}{entartung}{width=.6\textwidth}{Entarteter Point Quadtree}{Ein entarteter Point Quadtree}
 
 Sind andererseits beim Aufbau des Baumes bereits alle Daten verfügbar, kann durch folgende Strategie eine optimale Balancierung erreicht werden: Der Median der sortierten Liste von Daten wird als Wurzel verwendet, die restlichen Elemente werden in 4 Gruppen eingeteilt, welche den Quadranten dieser Wurzel zugeordnet werden.
 Auf jede dieser Unterteilungen wird der Prozess rekursiv angewendet. Dadurch kann erreicht werden, dass für jeden Knoten kein Kind mehr als die Hälfte aller Subknoten von diesem enthält, was empirisch zu 15\% geringeren Gesamtpfadlängen führt.\footzit{Vgl.}{DBLP:journals/acta/FinkelB74}{Seite 8f}
@@ -250,15 +251,15 @@ Das Entfernen eines Knotens aus einem Quadtree ist im Allgemeinen eine komplexe 
 Daher ist es notwendig, eventuelle Kinder eines entfernten Knotens gemäß dem Baumaufbau neu zu platzieren.\footzit{Vgl.}{DBLP:journals/acta/FinkelB74}{Seite 8}
 Bei Binärbäumen stellt dies kein allzu großes Problem dar, da in einem eindimensionalen Raum immer ein geeigneter Ersatz in Form des nächsten Knotens für einen zu entfernenden Knoten zur Verfügung steht.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 2}
 Im Fall von Quadtrees muss eine Substitution hingegen Bedingungen hinsichtlich zweier Dimensionen genügen, wodurch es ein Näheverhältnis wie im eindimensionalen Fall nicht gibt.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 2}
-Hier ist ein Ersatz nur dann möglich, wenn ein Blattknoten existiert, für den sich im Bereich zwischen den Achsen, welche durch die Koordinaten des Blattknoten bzw.\ deren des zu entfernenden Knoten verlaufen, kein anderer Knoten befindet.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 3}
+Hier ist ein Ersatz nur dann möglich, wenn ein Blattknoten existiert, für den sich im Bereich zwischen den Achsen, welche durch die Koordinaten des Blattknotens bzw.\ deren des zu entfernenden Knotens verlaufen, kein anderer Knoten befindet.\footzit{Vgl.}{DBLP:journals/cacm/Samet80a}{Seite 3}
 
 Ursprünglich wurde vorgeschlagen, alle Kinder des zu entfernenden Knotens neu einzufügen, was einen sehr aufwändigen Prozess darstellen kann.\footzit{Vgl.}{DBLP:journals/acta/FinkelB74}{Seite 8}
 Sollte kein Knoten das oben genannte Kriterium erfüllen, kann nur durch günstige Wahl des Ersatzknotens die Anzahl der neu einzufügenden Knoten minimiert werden, wie etwa in \cite{DBLP:journals/cacm/Samet80a} gezeigt wird.
 
 Eine weitere Optimierung kann dadurch erreicht werden, dass gelöschte Knoten nicht aus dem Baum entfernt, sondern nur als gelöscht markiert werden, um so die Struktur zu erhalten.
 Die markierten Knoten dürfen bei zukünftigen Suchen nicht mehr zurückgegeben werden.
-Nach jeder Entfernung erhöht sich hierdurch der Anteil der "`toten"' Knoten, was sich negativ auf die Performance aller Operationen auswirkt, und periodische Restrukturierungsmaßnahmen des Baumes erfordert.
-Durch dieses Verfahren kann folglich der Aufwand einzelner Löschoperationen abgefedert werden, auf Kosten von regelmäßigen Wartungskosten.
+Nach jeder Entfernung erhöht sich hierdurch der Anteil der "`toten"' Knoten, was sich negativ auf die Performance aller Operationen auswirkt und periodische Restrukturierungsmaßnahmen des Baumes erfordert.
+Durch dieses Verfahren kann folglich der Aufwand einzelner Löschoperationen abgefedert werden, mit dem Nachteil von regelmäßigen Wartungskosten.
 
 \subsection{Pseudo Quadtree}
 \label{sec:pseudoquadtree}
@@ -283,7 +284,7 @@ Es kann gezeigt werden, dass im allgemeinen Fall eine Teilung möglich ist,
 so dass sich in keinem der vier Quadranten mehr als ein Drittel der Knoten befindet.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 7} % cp
 Mit dieser Methode kann weiters garantiert werden, dass ein Pseudo Quadtree aufgebaut werden kann, dessen Höhe $\lceil \log_{d+1} N\rceil$ nicht überschreitet, wobei $N$ die Anzahl der Knoten sowie $d$ die Anzahl der Dimensionen darstellt.\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 8}
 
-Durch Raumaufteilung der Punkte befinden sich Daten schließlich nur noch an den Blättern. Dies wiederum ist der optimale Fall bezüglich dem Entfernen von Knoten -- ein Knoten ohne Kinder kann jederzeit ohne zusätzlichen Aufwand gelöscht werden. Da das Entfernen eines Knotens immer auch das Suchen desselben erfordert, entsteht somit ein logarithmischer Aufwand.
+Durch Raumaufteilung der Punkte befinden sich Daten schließlich nur noch an den Blättern. Dies wiederum ist der optimale Fall bezüglich des Entfernens von Knoten -- ein Knoten ohne Kinder kann jederzeit ohne zusätzlichen Aufwand gelöscht werden. Da das Entfernen eines Knotens immer auch das Suchen desselben erfordert, entsteht somit ein logarithmischer Aufwand.
 
 %\ref{sec:pointquadtree:delete} 
 
@@ -293,7 +294,7 @@ Diese Variante wurde von Bentley kurz nach dem Point Quadtree 1974 in \cite{Bent
 Der \kd\ Tree kann wie der Point Quadtree als Verallgemeinerung des Binärbaums gesehen werden, hier wird hingegen ein etwas anderer Ansatz verfolgt:
 Anstatt den Raum auf jeder Teilungsebene in allen Dimensionen zu partitionieren, was zu $2^k$ Kindern pro Knoten führt, wird in jedem Schritt nur eine Dimension berücksichtigt und so eine binäre Unterteilung von eigentlich mehrdimensionalen Schlüsseln ermöglicht.
 Diese Mehrdimensionalität wird bei \kd\ Trees weiters dadurch ausgedrückt, dass die Dimensionen, bezüglich derer an einer gewissen Tiefe geteilt wird, nach verschiedenen Strategien alternieren.
-Im zweidimensionalen Fall könnte hier etwa bei geraden Tiefenebenen an der $x$-Achse bzw.\ bei ungeraden an der $y$-Achse geteilt werden, wie etwa Abbildung \ref{fig:kdtree} zeigt.
+Im zweidimensionalen Fall könnte hier etwa bei geraden Tiefenebenen an der $x$-Achse bzw.\ bei ungeraden an der $y$-Achse geteilt werden, wie Abbildung \ref{fig:kdtree} zeigt.
 Ursprünglich wurde genau dieses Abwechslungsmuster vorgeschlagen,\footzit{Vgl.}{Bentley:1975}{Seite 2}
 wobei es, an die Daten angepasst, dynamisch gewählt werden kann\footzit{Vgl.}{Samet90}{Seite 66}.
 Verwendet man hier einen dynamischen Ansatz, muss jedoch bei jedem Knoten der Diskriminator mitgespeichert werden.
@@ -331,15 +332,15 @@ Bei einer großen Anzahl von Dimensionen kann dies überflüssig sein, wenn sich
 In diesem Fall reicht das Überprüfen dieser Teilmenge,
 was in einem Point Quadtree nicht realisierbar ist, sich mit dem \kd\ Tree jedoch effizient verwirklichen lässt.\footzit{Vgl}{Samet90}{Seite 66}
 
-Die Operationen Suche und Einfügen ergeben sich direkt aus dem Funktionsprinzip des \kd\ Trees, beide benötigen offensichtlich eine logarithmische Laufzeit im Average Case\footzit{Vgl.}{Bentley:1975}{Seite 1} (sofern der Baum nicht entartet).
+Die Operationen Suchen und Einfügen ergeben sich direkt aus dem Funktionsprinzip des \kd\ Trees, beide benötigen offensichtlich eine logarithmische Laufzeit im Average Case\footzit{Vgl.}{Bentley:1975}{Seite 1} (sofern der Baum nicht entartet).
 Schwieriger ist hingegen das Löschen:
 Nach dem Entfernen eines Knotens darf die Struktur des \kd\ Trees nicht verletzt werden, weshalb ein geeigneter Ersatz gefunden werden muss.
 Für dieses Problem wurde eine Strategie entwickelt, welche auf der Lösung des analogen Problems bei Binärbäumen basiert und zugleich die Mehrdimensionalität im \kd\ Tree berücksichtigt.
 Der wesentliche Aspekt dieses Verfahrens ist, dass der Ersatzknoten nicht wie beim Binärbaum immer ein Blatt ist, sondern im Allgemeinen auch Kinder hat, wodurch der Ersatzknoten auch substituiert werden muss.\footzit{Für eine detaillierte Beschreibung dieses Verfahrens siehe}{Bentley:1975}{Seite 7} 
 Anstatt im Worst Case (bei Löschung der Wurzel) $n$ Neueinfügungen mit dem naiven Ansatz benötigt diese Methode nur $O(\log n)$ (bei einer Knotenanzahl von $n$).
 
-Um diesem Problem gänzlich zu entgehen kann ähnlich dem Pseudo Quadtree\footnote{Siehe Kapitel \ref{sec:pseudoquadtree}} auch ein Pseudo \kd\ Tree\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 13ff} verwendet werden,
-in welchem analog zum Pseudo Quadtree die Unterteilung des Raumes nicht an den Koordinaten der Knoten, sondern an beliebigen Punkten zwischen den Knoten vorgenommen wird, und so Daten nur in Blättern gespeichert werden.
+Um diesem Problem gänzlich zu entgehen, kann ähnlich dem Pseudo Quadtree\footnote{Siehe Kapitel \ref{sec:pseudoquadtree}} auch ein Pseudo \kd\ Tree\footzit{Vgl.}{DBLP:journals/acta/OvermarsL82}{Seite 13ff} verwendet werden,
+in welchem analog zum Pseudo Quadtree die Unterteilung des Raumes nicht an den Koordinaten der Knoten, sondern an beliebigen Punkten zwischen den Knoten vorgenommen wird und somit Daten nur in Blättern gespeichert werden.
 
 
 % nicht paralellisiert suchen (quelle?)
@@ -347,7 +348,7 @@ in welchem analog zum Pseudo Quadtree die Unterteilung des Raumes nicht an den K
 \section{Bereichsbasierte Quadtrees}
 %\subsection{Region Quadtree}
 
-Wie im Kapitel \ref{sec:pointbased} ausführlich erläutert wurde, erfolgt die räumliche Dekomposition bei punkt\-basierten Quadtrees immer anhand der gegebenen Punkte.\footnote{Bei Point bzw.\ \kd\ Trees gilt dies direkt; bei Pseudo Quadtrees hingegen besteht die Abhängigkeit vielmehr indirekt: die Aufteilung stellt eine Funktion der Punkte dar.}
+Wie in Kapitel \ref{sec:pointbased} ausführlich erläutert wurde, erfolgt die räumliche Dekomposition bei punkt\-basierten Quadtrees immer anhand der gegebenen Punkte.\footnote{Bei Point bzw.\ \kd\ Trees gilt dies direkt; bei Pseudo Quadtrees hingegen besteht die Abhängigkeit vielmehr indirekt: die Aufteilung stellt eine Funktion der Punkte dar.}
 Dieses Kapitel beschäftigt sich mit Quadtrees, deren Form vordergründig a priori durch die Struktur des Raumes determiniert wird, was in etwa mit dem Prinzip von Tries vergleichbar ist.\footzit{Vgl.}{Samet90}{Seite 85}
 
 Weiters wird in diesem Abschnitt nur insofern auf die verschiedenen Operationen eingegangen, als sie sich von punktbasierten Quadtrees unterscheiden.
@@ -366,7 +367,7 @@ Diese Art der Dekomposition setzt folgendes voraus:
 	\item \textbf{Diskrete Koordinaten.}
 		Die Schlüssel dürfen nur diskrete Werte annehmen, ähnlich den Einträgen einer Matrix, woher sich auch der Name "`MX"' ableitet.\footzit{Vgl.}{Samet90}{Seite 86}
 	\item \textbf{Die Fläche des Raumes ist quadratisch mit einer Zweierpotenz als Seitenlänge.}
-		Da der Raum aus praktischen Gründen in 4 gleichgroße Teile partitioniert wird, entsteht eine Gesamtgröße von $2^n\times2^n$. Bei Datenregionen, welche nicht diese Ausdehnung besitzen, können Leereinträge verwendet werden, um diese Größe zu erreichen.
+		Da der Raum aus praktischen Gründen in 4 gleichgroße Teile partitioniert wird, entsteht eine Gesamtgröße von $2^n\times2^n$. Bei Datenregionen, welche nicht diese Ausdehnung besitzen, können Leereinträge verwendet werden, um die geforderte Größe zu erreichen.
 \end{enumerate}
 
 \myfig{img/mxquadtre-full-origdata-trimmed}{mxquadtree}{width=.7\textwidth}{MX Quadtree}{MX Quadtree. Diese Instanz ist eher spärlich besetzt.}
@@ -446,7 +447,7 @@ Nähere Informationen sind unter \url{http://www.unknown-horizons.org} verfügba
 
 Die Spiellogik ist in Version 2.6 der Sprache Python\footurl{http://www.python.org}{01.03.2011} implementiert und
 baut auf der Engine FIFE\footurl{http://fifengine.de}{01.03.2011} auf.
-Weiters läuft das Spiel in nur einem Thread ab, weswegen jede Berechnung den Programmablauf blockiert, und somit sehr effizient sein muss.
+Weiters läuft das Spiel in nur einem Thread ab, weswegen jede Berechnung den Programmablauf blockiert und somit sehr effizient sein muss.
 
 Die Spielwelt ist in eine zweidimensionale Fläche eingebettet.
 Sie ist in $1\times1$ große Tiles (dt.: "`Fliesen"') unterteilt, welche daher die kleinste Größeneinheit sind. 
@@ -525,7 +526,7 @@ Nachdem bei diesem Markierungsproblem die Lage der Tiles zueinander eine entsche
 Diese Datenstruktur kann die Struktur der Inseln auf eine Weise abbilden,
 welche der Suche ermöglicht, Gebiete am Meer bzw.\ außerhalb der Siedlung schnell zu ignorieren sowie größere, zusammenhängende Blöcke effizient als innerhalb des Bereiches liegend zu identifizieren.
 
-Der Aufbau und die Wartung des Quadtrees können zwar je nach Quadtreetyp einen Mehraufwand darstellen, dieser ist jedoch nur beim Spielstart (währenddessen ohnehin mit einer Verzögerung gerechnet wird) bzw.\ seltener beim Bau verschiedener Gebäude, welche den Einflussbereich der Siedlung erweitern, erforderlich.
+Der Aufbau und die Wartung des Quadtrees können zwar je nach Quadtreetyp einen Mehr\-auf\-wand darstellen, dieser ist jedoch nur beim Spielstart (währenddessen ohnehin mit einer Verzögerung gerechnet wird) bzw.\ seltener beim Bau verschiedener Gebäude, welche den Einflussbereich der Siedlung erweitern, erforderlich.
 Insofern ist es hier sinnvoll, diesen Overhead in Kauf zu nehmen, um Verzögerungen während des Baumodus zu vermeiden.
 
 Mit einer schnelleren Laufzeit kann vor allem dann gerechnet werden, wenn viele Bereiche bei der Suche ausgeschlossen werden können.
@@ -543,9 +544,9 @@ Die Art der im Quadtree zu speichernden Daten sind ausschließlich $1\times1$ gr
 Weiters liegt hier eine fixe Raumaufteilung vor:
 Siedlungen sind durch die Ausmaße der Insel begrenzt und bedecken während des Spielverlaufs im Allgemeinen das gesamte Areal.
 Dies bedeutet, dass im Falle von punktbasierten Quadtrees, welche an sich entarten können, optimierte Bäume berechnet werden können, um diesem Problem zu entgegnen.
-Dadurch würde die Struktur dieses Typs jener der bereichsbasierten Varianten ähneln, da alle Koordinaten innerhalb einer Inseln im Quadtree repräsentiert werden müssen, und die effizienteste Möglichkeit, dies zu tun, ist eine Aufteilung jedes Bereiches genau in der Mitte, was exakt der Strategie des MX Quadtrees entspricht.
+Dadurch würde die Struktur dieses Typs jener der bereichsbasierten Varianten ähneln, da alle Koordinaten innerhalb einer Insel im Quadtree repräsentiert werden müssen, und die effizienteste Möglichkeit, dies zu tun, ist eine Aufteilung jedes Bereiches genau in der Mitte, was exakt der Strategie des MX Quadtrees entspricht.
 
-Aus diesen Gründen sowie der Einfachheit des Löschens, habe ich mich dazu entschieden, die gestellte Aufgabe mit einem MX Quadtree zu lösen.
+Aus diesen Gründen sowie der Einfachheit des Löschens habe ich mich dazu entschieden, die gestellte Aufgabe mit einem MX Quadtree zu lösen.
 Es ist jedoch anzumerken, dass im Prinzip jeder der vorgestellten Typen für diese Problemstellung verwendet werden kann.
 
 \subsection{Implementierung}
@@ -562,7 +563,7 @@ Direkt darunter findet eine Optimierung statt, in welcher in jedem Schritt über
 Ist dies der Fall, werden ohne weitere Checks alle Kinder dieses Quadranten besucht.
 Auf der Blattebene (Zeile \ref{blatt}) wird schließlich trivialerweise nur mehr der aktuelle Knoten abgearbeitet.
 
-\begin{lstlisting}[float=h,caption=Python-ähnlicher Pseudocode zur Lösung des Markierungsproblems,label=visit_rad]
+\begin{lstlisting}[float=h,caption=Python-ähnlicher Pseudocode zur Lösung des Markierungsproblems,label=visit_rad,language=Python]
 """
 Klasse der Knoten des MX Quadtrees
 """
@@ -582,7 +583,7 @@ class Node(object):
 			quadrants = self.get_overlapping_quadrants(area)
 			for quadrant in quadrants:
 				if quadrant != None: @\label{nonequadrants}@
-					# Optimierung: Sollte der ganze Quadrant im Bereich liegen, muessen die einzelnen Subknoten nicht mehr einzeln ueberprueft werden.
+					# Optimierung: Sollte der ganze Quadrant im Bereich liegen, muessen die einzelnen Subknoten nicht mehr individuell ueberprueft werden.
 					if self.check_full_quadrant_included(quadrant, area):
 						quadrant.visit_all_tiles(callback)
 					else:
@@ -596,7 +597,7 @@ class Node(object):
 
 Zur Überprüfung der Laufzeit der Verfahren habe ich zwölf Testfälle bestimmt, welche aus je einem Gebäude einer Siedlung bestehen.
 Die Durchführung des Tests besteht darin, die Tiles im Einflussgebiet des Gebäudes zu markieren.
-Um Umgebungseinflüsse des Codes zu egalisieren wird diese Selektion 100 Mal durchgeführt und anschließend der Mittelwert und die Standardabweichung berechnet.
+Um Umgebungseinflüsse des Codes zu egalisieren, wird diese Selektion 100 Mal durchgeführt und anschließend der Mittelwert und die Standardabweichung berechnet.
 
 \subsection{Testfälle}
 
@@ -605,7 +606,7 @@ in den Testfällen verschiedene Typen von Gebäuden vorkommen. In Tabelle \ref{t
 
 Weiters unterscheiden sich die Use Cases durch ihre Lage und ihr Umfeld, da diese natürlich die Form und den Inhalt des Aktionsradius mitbeinflussen. Tabelle \ref{tab:usecases_cases} zeigt eine kurze Beschreibung der jeweiligen Testfälle.
 
-Die Ergebnisse der Messung ist schließlich in Tabelle \ref{tab:usecases_results} aufgelistet. Für beide Ansätze ist hier die Laufzeit in Sekunden und die Standardabweichung angegeben, sowie die absolute und relative Differenz der Verfahren.
+Die Ergebnisse der Messung sind schließlich in Tabelle \ref{tab:usecases_results} aufgelistet. Für beide Ansätze ist hier die Laufzeit in Sekunden und die Standardabweichung angegeben, sowie die absolute und relative Differenz der Verfahren.
 Es fällt schnell auf, dass die Differenzen variieren;
 genauer gesagt wird hier eine Korrelation zwischen der Größe des zu berechnenden Bereichs und den Unterschieden der Laufzeiten deutlich. Daher werde ich die Ergebnisse in drei Kategorien analysieren:
 
@@ -723,10 +724,11 @@ UC12 & 0.000707 & 0.000042 & 0.000736 & 0.000027 & 0.000029 & 4.1\%\\
 UC01 und UC02 zeigen etwa, dass das neue Verfahren besonders bei Gebäuden mit hohen Radien effizient ist.
 Die Ursache dafür ist der wirkungsvolle Umgang mit großen Quadranten, welche vollständig innerhalb des zu berechnenden Bereiches liegen.
 Hier muss unter Umständen am Rand des Bereiches nicht einmal bis zur letzten Ebene abgestiegen werden, und zwar sofern die Grenze der Insel innerhalb des Bereiches liegt.
-In diesem Fall können oftmals Quadranten auf hoher Ebene im Baum als komplett im Bereich liegend identifiziert und markiert werden, selbst dann wenn der Quadrant auch Flächen auf der Karte beinhaltet, welche nicht zur Siedlung gehören.
-Diese sind nämlich "`weiß"', also nicht repräsentiert, und werden folglich implizit ignoriert und müssen nicht auf niedrigerer Ebene berücksichtigt werden.
+In diesem Fall können oftmals Quadranten auf hoher Ebene im Baum als komplett im Bereich liegend identifiziert und markiert werden. Das gilt selbst dann, wenn der Quadrant auch Flächen auf der Karte beinhaltet, welche nicht zur Siedlung gehören.
+Diese sind nämlich "`weiß"', also nicht repräsentiert. Folglich werden sie implizit ignoriert und müssen nicht auf niedrigerer Ebene berücksichtigt werden.
 
-Da beim ursprünglichen, auf Hashmaps basierenden Ansatz jedes Tile einzeln abgefragt werden muss, wächst hier die Laufzeit direkt mit dem Quadrat des Radius. Dieser Effekt kann mit dem Quadtreeansatz abgefedert werden, was sich in der Verbesserung von fast der Hälfte der ursprünglichen Zeit widerspiegelt.
+Da beim ursprünglichen, auf Hashmaps basierenden Ansatz jedes Tile einzeln abgefragt werden muss, wächst hier die Laufzeit direkt mit dem Quadrat des Radius.
+Dieser Effekt kann mit dem Quadtreeansatz abgefedert werden, was sich in der Halbierung der ursprünglichen Zeit widerspiegelt.
 
 \paragraph{Mittelgroße Bereiche.}
 Obwohl der Marktplatz und der Siedler denselben Radius aufweisen, ist hier die Laufzeit deutlich verschieden, da die Grundflächen unterschiedlich groß sind, was natürlich zu ausgedehnteren Bereichen führt.
@@ -735,14 +737,14 @@ Bei Flächen dieses Ausmaßes führt das neue Verfahren bereits nicht mehr zu er
 Besonders die Messungen bei Siedlern zeigen, dass die Performanceunterschiede von der Platzierung der Gebäude hinsichtlich Meerflächen im Einzugsgebiet abhängen.
 
 Die Testfälle UC06 und UC09 etwa zeigen, dass die Geschwindigkeit beider Verfahren am Land in etwa vergleichbar ist.
-Im Vergleich zu Testfällen mit Gebäuden am Strand bzw. am Rande der Siedlung wie etwa 5, 7 oder 8 ist die Laufzeit bei beiden Verfahren höher, da das eigentliche Markieren der Tiles in den Ergebnissen inkludiert ist, und im ersteren mehr Tiles innerhalb des Radiuses auch wirklich markiert werden müssen.
+Im Vergleich zu Testfällen mit Gebäuden am Strand bzw. am Rande der Siedlung wie etwa 5, 7 oder 8 ist die Laufzeit bei beiden Verfahren höher, da das eigentliche Markieren der Tiles in den Ergebnissen inkludiert ist, und im ersteren mehr Tiles innerhalb des Radius auch wirklich markiert werden müssen.
 Hier ist weiters zu erkennen, dass der neue Ansatz bei Testfällen mit Gebäuden am Strand deutlich effizienter ist, da die Tiles am Meer schneller ausgeschlossen werden können, was die ursprünglichen Annahmen des Praktikums bestätigt.
 
 \paragraph{Kleine Bereiche.}
 Diese sind in den Tests weniger stark berücksichtigt, da bei kleinen Instanzen die Ausführungsgeschwindigkeit ohnehin hoch und somit Optimierungen nicht notwendig sind.
 
 In den Use Cases UC10, UC11 und UC12 zeigt sich, dass hier das Hashmap-basierte Verfahren, je nachdem wie stark der Vorteil des Ausschließens von Meertiles zum Tragen kommt, schneller ist.
-In den beiden Letzteren sind die Unterschiede minimal, während beim Ersteren die Quadtree-Variante offenbar kaum auf hoher Ebene Kinder ausschließen kann, und somit deutlich langsamer ist. 
+In den beiden letzteren Fällen sind die Unterschiede minimal, während beim Ersteren die Quadtree-Variante offenbar kaum auf hoher Ebene Kinder ausschließen kann und somit deutlich langsamer ist. 
 Dies ist durch die Zerstückelung des Bereiches begründet, welche Abbildung \ref{fig:weaver} zeigt.
 
 \myfig{img/weaver}{weaver}{width=.6\textwidth}{Zerstückelter Bereich eines Webers}{Zerstückelter Bereich eines Webers}
