@@ -609,8 +609,8 @@ Die Ergebnisse der Messung ist schließlich in Tabelle \ref{tab:usecases_results
 Es fällt schnell auf, dass die Differenzen variieren;
 genauer gesagt wird hier eine Korrelation zwischen der Größe des zu berechnenden Bereichs und den Unterschieden der Laufzeiten deutlich. Daher werde ich die Ergebnisse in drei Kategorien analysieren:
 
-\begin{center}
-	\begin{table}[htpb]
+\begin{table}[htpb]
+	\begin{center}
 		\begin{tabular}{|c|c|c|}
 			\hline
 			Gebäude & Größe & Aktionsradius \\
@@ -624,11 +624,11 @@ genauer gesagt wird hier eine Korrelation zwischen der Größe des zu berechnend
 		\end{tabular}
 		\caption{Daten der in den Testfällen verwendeten Gebäudetypen}
 		\label{tab:buildings}
-	\end{table}
-\end{center}
+	\end{center}
+\end{table}
 
-\begin{center}
 \begin{table}[htpb]
+\begin{center}
 	\begin{tabular}{|c|c|c|c|}
 		\hline
 		Use Case & Gebäudetyp & Lage & Umfeld \\
@@ -652,12 +652,13 @@ UC12 & Weber & Strand & viele Geb"aude\\
 	\end{tabular}
 	\caption{Beschreibung der Testfälle}
 	\label{tab:usecases_cases}
-\end{table}
 \end{center}
+\end{table}
 
 
 
 \begin{table}[htpb]
+	\begin{center}
 	\begin{tabular}{|c|cc|cc|cc|}
 
 		\hline
@@ -683,6 +684,7 @@ UC12 & 0.000707 & 0.000042 & 0.000736 & 0.000027 & 0.000029 & 4.1\%\\
 	\end{tabular}
 	\caption{Laufzeitmessungen beider Ansätze im Vergleich}
 	\label{tab:usecases_results}
+	\end{center}
 \end{table}
 
 %\begin{center}
@@ -745,6 +747,20 @@ Dies ist durch die Zerstückelung des Bereiches begründet, welche Abbildung \re
 
 \myfig{img/weaver}{weaver}{width=.6\textwidth}{Zerstückelter Bereich eines Webers}{Zerstückelter Bereich eines Webers}
 
+\subsection{Conclusio}
+
+In diesem Praktikum wurde versucht, einen bestehenden, eher naiven Algorithmus zum Markieren von Tiles in einem bestimmten Bereich, also eine räumliche Abfrage, durch ein neues Verfahren basierend auf Quadtrees zu ersetzen, um die Performance zu erhöhen.
+Der ursprüngliche Ansatz verwendet mit einer Hashmap eine verbreitete Datenstruktur, für welche die eingesetzte Programmiersprache eine hochoptimierte Implementierung zur Verfügung stellt.
+Auf dieser Grundlage ist es jedoch schwierig, Informationen über räumliche Zusammenhänge in die Suche mit einzubeziehen; oft müssen große, zusammenhängende Flächen koordinatenweise durchlaufen werden, da hier kein Konzept von Raum vorhanden ist.
+
+Der Leitgedanke des Praktikums war somit die effiziente Berücksichtigung solcher Informationen mithilfe eines eigens dafür implementierten Quadtrees.
+Dieser bildet den Raum hierarchisch strukturiert ab, wodurch eine Gliederung der Elemente auf verschiedenen Ebenen je nach den konkreten Gegebenheiten möglich wird.
+Aufgrund des unverändlichen und diskreten Charakters des Koordinatensystems in der Spielwelt wurde ein MX-Quadtree für die Implementierung ausgewählt.
+
+Die Ergebnisse zeigen teilweise die Stärke dieses Ansatzes auf, in gewissen Fällen wurde hingegen auch eine wesentlich schlechtere Laufzeit gemessen.
+Den entscheidenden Faktor stellt die Größe von zusammenhängenden Flächen dar. 
+Bei den größten getesteten Bereichen stellte sich das neue Verfahren als fast doppelt so schnell wie das alte heraus, in ungünstigen Fällen kann es jedoch auch um etwa diesen Faktor langsamer sein.
+Im Allgemeinen kann das Praktikum als Erfolg angesehen werden, da vor allem bei den großen Instanzen, welche besonders kritisch sind, gute Resultate erzielt werden konnten.
 
 \subsection{Ausblick}
 
@@ -754,8 +770,8 @@ Bezüglich den Markierungen der Tiles im Einflussbereich ist noch eine weitere O
 Hier werden Gebäude bei der Platzierung oft nur um wenige Felder verschoben.
 In diesem Fall werden in der aktuellen Implementierung alle Felder deselektiert, die neuen Felder berechnet und anschließend selektiert.
 Dies ist offensichtlicherweise nicht notwendig, es werden viele Tiles demarkiert nur um kurz darauf wieder markiert zu werden. 
-Es erscheint sinnvoll, hier nur die Differenz zu berechnen, und die entsprechenden Aktionen auszuführen, um vom ursprünglichen Zustand in den gewünschten zu gelangen.
-Erste Tests mit einer unvollständigen Implementierung bestätigen diese Überlegung <TODO: Zeit nochmal messen und hier einfügen>. 
+Daher erscheint es sinnvoll, hier nur die Differenz zu berechnen, und die entsprechenden Aktionen auszuführen, um vom ursprünglichen Zustand in den gewünschten zu gelangen.
+Erste Tests mit einer unvollständigen Implementierung weisen bei einer Verschiebung eines Gebäudes um eine Position eine Verringerung der Laufzeit um einen Faktor von etwa drei bis acht auf und bestätigen somit diese Überlegung. 
 Hier ist noch anzumerken, dass diese Optimierung nur mit der ursprünglichen Hashmapimplementierung wirklich effizient funktioniert, da ausschließlich einzelne Koordinaten berechnet und abgefragt werden. 
 
 
